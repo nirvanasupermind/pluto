@@ -1,2 +1,2 @@
 # pluto
-A dynamic, class-based programming language
+A dynamic, class-based programming language.
