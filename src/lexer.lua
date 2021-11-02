@@ -35,7 +35,8 @@ function lexer(input)
             tokens[#tokens + 1] = {type = "rparen"}
 
         else
-            error("Illegal character '"..char.."'")
+            print("error: illegal character '"..char.."'")
+            os.exit()
         end
     end
 
