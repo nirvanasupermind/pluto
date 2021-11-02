@@ -1,6 +1,8 @@
 local WHITESPACE = " \n\t"
 
 function lexer(input)
+    if input == nil then input = "" end
+
     local index = 1
     local tokens = {}
 
