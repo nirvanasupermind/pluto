@@ -1,0 +1,20 @@
+{
+    "files.associations": {
+        "*.owlet": "csharp",
+        "*.shape": "rust",
+        "*.skink": "csharp",
+        "*.csv": "java",
+        "*.toml": "java",
+        "*.sml": "java",
+        "*.shink": "csharp",
+        "*.pa": "java",
+        "*.pr": "java",
+        "*.px": "java",
+        "*.parasite": "java",
+        "*.parabola": "java",
+        "*.q": "java",
+        "*.pluto": "coffeescript",
+        "*.vml": "rust",
+        "vector": "cpp"
+    }
+}
