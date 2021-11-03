@@ -75,6 +75,28 @@ function lexer(path, input)
     return tokens
 end
 
+function parse(path, tokens)
+    local index = 0
+
+    function expr() 
+        return additive_expr()
+    end
+
+    function additive_expr() 
+        return bin_op(multiplicative_expr, {"plus", "minus"}) 
+    end
+
+    function multiplicative_expr() 
+        return bin_op(atom, {"multiply", "divide"})
+    end
+
+    function atom()
+    end
+
+    function bin_op()
+    end
+end
+
 if #arg == 1 then
     local path = arg[1]
     local file = io.open(PATH..path, "rb")
