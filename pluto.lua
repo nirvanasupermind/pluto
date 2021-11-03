@@ -2,6 +2,34 @@ local WHITESPACE = " \n\t"
 local DIGITS = "0123456789"
 local PATH = (({...})[2] or arg[0]):gsub("[^/]*$", "")
 
+-- utility function
+function contains(tbl, item)
+    for key, value in pairs(tbl) do
+        if value == item then return key end
+    end
+    return false
+end
+
+-- utility function for debugging
+function tprint (t, s)
+    for k, v in pairs(t) do
+        local kfmt = '["' .. tostring(k) ..'"]'
+        if type(k) ~= 'string' then
+            kfmt = '[' .. k .. ']'
+        end
+        local vfmt = '"'.. tostring(v) ..'"'
+        if type(v) == 'table' then
+            tprint(v, (s or '')..kfmt)
+        else
+            if type(v) ~= 'string' then
+                vfmt = tostring(v)
+            end
+            print(type(t)..(s or '')..kfmt..' = '..vfmt)
+        end
+    end
+end
+
+
 function lexical_error(path, line)
     print("pluto: "..path..":"..line..": ".."lexical error")
     os.exit()
@@ -30,7 +58,8 @@ function lexer(path, input)
             local value = ""
             local dot_count = 0
 
-            while index <= #input and string.find(DIGITS..".", char, 1, true) do
+            while index <= #input 
+                  and string.find(DIGITS..".", char, 1, true) do
                 if char == "." then
                     dot_count = dot_count + 1
                     if dot_count > 1 then break end
@@ -41,60 +70,164 @@ function lexer(path, input)
                 char = input:sub(index, index)
             end
 
-            tokens[#tokens + 1] = {line = line, type = "num", value = value}
+            tokens[#tokens + 1] = {
+                line = line, 
+                type = "num", 
+                value = value
+            }
 
         elseif char == "+" then
             index = index + 1
-            tokens[#tokens + 1] = {line = line, type = "plus"}
+            tokens[#tokens + 1] = {
+                line = line, 
+                type = "plus"
+            }
 
         elseif char == "-" then
             index = index + 1
-            tokens[#tokens + 1] = {line = line, type = "minus"}
+            tokens[#tokens + 1] = {
+                line = line, 
+                type = "minus"
+            }
 
         elseif char == "*" then
             index = index + 1
-            tokens[#tokens + 1] = {line = line, type = "multiply"}
+            tokens[#tokens + 1] = {
+                line = line, 
+                type = "multiply"
+            }
 
         elseif char == "/" then
             index = index + 1
-            tokens[#tokens + 1] = {line = line, type = "divide"}
+            tokens[#tokens + 1] = {
+                line = line, 
+                type = "divide"
+            }
 
         elseif char == "(" then
             index = index + 1
-            tokens[#tokens + 1] = {line = line, type = "lparen"}
+            tokens[#tokens + 1] = {
+                line = line, 
+                type = "lparen"
+            }
 
         elseif char == ")" then
             index = index + 1
-            tokens[#tokens + 1] = {line = line, type = "rparen"}
+            tokens[#tokens + 1] = {
+                line = line, 
+                type = "rparen"
+            }
 
         else
             lexical_error(path, line)
         end
     end
 
+    tokens[#tokens + 1] = { 
+        line = line, 
+        type = "eof"
+    }
+
     return tokens
 end
 
-function parse(path, tokens)
-    local index = 0
+function parser(path, tokens)
+    index = 1
 
-    function expr() 
+    function expr()
         return additive_expr()
     end
 
-    function additive_expr() 
-        return bin_op(multiplicative_expr, {"plus", "minus"}) 
+    function additive_expr()
+        result = multiplicative_expr()
+
+        while tokens[index].type ~= "eof" 
+              and contains({"plus", "minus"}, tokens[index].type) do
+            if tokens[index].type == "plus" then
+                index = index + 1
+                result = {
+                    line = result.line, 
+                    type = "plus", 
+                    args = {result, multiplicative_expr()}
+                }
+            else
+                index = index + 1
+                result = {
+                    line = result.line, 
+                    type = "minus", 
+                    args = {result, multiplicative_expr()}
+                }
+            end
+        end 
+
+        return result
     end
 
-    function multiplicative_expr() 
-        return bin_op(atom, {"multiply", "divide"})
+    function multiplicative_expr()
+        result = leaf_expr()
+
+        while tokens[index].type ~= "eof" 
+              and contains({"multiply", "divide"}, tokens[index].type) do
+            if tokens[index].type == "multiply" then
+                index = index + 1
+                result = {
+                    line = result.line, 
+                    type = "multiply", 
+                    args = {result, leaf_expr()}
+                }
+            else
+                index = index + 1
+                result = {
+                    line = result.line, 
+                    type = "divide", 
+                    args = {result, leaf_expr()}
+                }
+            end
+        end 
+
+        return result
     end
 
-    function atom()
+    function leaf_expr()
+        token = tokens[index]
+
+        if token.type == "num" then
+            index = index + 1
+            return {
+                line = token.line,
+                type = "num",
+                value = token.value
+            }
+
+        elseif token.type == "lparen" then
+            index = index + 1
+
+            exp = expr()
+
+            if tokens[index].type ~= "rparen" then
+                syntax_error(path, tokens[index].line)
+            end
+
+            return expr()
+        else
+            syntax_error(path, tokens[index].line)
+        end
     end
 
-    function bin_op()
+    if tokens[index].type == "eof" then
+        return {
+            line = tokens[index].line,
+            type = "empty"
+        }
     end
+
+    local result = expr()
+
+    if tokens[index].type ~= "eof" then 
+        syntax_error(path, tokens[index].line) 
+    end
+
+    return result
 end
 
 if #arg == 1 then
@@ -104,10 +237,7 @@ if #arg == 1 then
     file:close()
 
     local tokens = lexer(path, input)
-    
-    for i = 1, #tokens do
-        local token = tokens[i]
+    local tree = parser(path, tokens)
 
-        print(token.type)
-    end
+    tprint(tree)
 end
