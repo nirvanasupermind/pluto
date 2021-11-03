@@ -1,0 +1,10 @@
+class Point {
+    function constructor(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    function toString() {
+        return "(" + this.x.toString() + ", " + this.y.toString() + ")";
+    }
+}
