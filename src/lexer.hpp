@@ -72,12 +72,12 @@ namespace pluto {
 
             Token get_number() {
                 std::string value = "";
-                int decimal_point_count;
+                int decimal_point_count = 1;
                 
                 while(current_char() != '\0' && 
                      ((DIGITS + '.').find(current_char()) < (DIGITS + '.').length())) {
                     if(current_char() == '.')
-                        if(++decimal_point_count > 2)
+                        if(++decimal_point_count > 1)
                             break;
 
                     value += current_char();
