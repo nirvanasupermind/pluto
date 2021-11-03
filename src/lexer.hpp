@@ -46,22 +46,22 @@ namespace pluto {
                         tokens.push_back(get_number());
                     } else if(current_char() == '+') {
                         advance();
-                        tokens.push_back(Token("plus"));
+                        tokens.push_back(Token(line, "plus"));
                     } else if(current_char() == '-') {
                         advance();
-                        tokens.push_back(Token("minus"));
+                        tokens.push_back(Token(line, "minus"));
                     } else if(current_char() == '*') {
                         advance();
-                        tokens.push_back(Token("multiply"));
+                        tokens.push_back(Token(line, "multiply"));
                     } else if(current_char() == '/') {
                         advance();
-                        tokens.push_back(Token("divide"));
+                        tokens.push_back(Token(line, "divide"));
                     } else if(current_char() == '(') {
                         advance();
-                        tokens.push_back(Token("lparen"));
+                        tokens.push_back(Token(line, "lparen"));
                     } else if(current_char() == ')') {
                         advance();
-                        tokens.push_back(Token("rparen"));
+                        tokens.push_back(Token(line, "rparen"));
                     } else {
                         error();
                     }
@@ -73,6 +73,7 @@ namespace pluto {
             Token get_number() {
                 std::string value = "";
                 int decimal_point_count = 1;
+                int ln = line;
                 
                 while(current_char() != '\0' && 
                      ((DIGITS + '.').find(current_char()) < (DIGITS + '.').length())) {
@@ -84,7 +85,7 @@ namespace pluto {
                     advance();
                 }
                 
-                return Token("num", value);
+                return Token(ln, "num", value);
             }
     };
 };
