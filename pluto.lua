@@ -1,34 +1,8 @@
+#!/usr/bin/env lua
+
 local WHITESPACE = " \n\t"
 local DIGITS = "0123456789"
 local PATH = (({...})[2] or arg[0]):gsub("[^/]*$", "")
-
--- utility function
-function contains(tbl, item)
-    for key, value in pairs(tbl) do
-        if value == item then return key end
-    end
-    return false
-end
-
--- utility function for debugging
-function tprint (t, s)
-    for k, v in pairs(t) do
-        local kfmt = '["' .. tostring(k) ..'"]'
-        if type(k) ~= 'string' then
-            kfmt = '[' .. k .. ']'
-        end
-        local vfmt = '"'.. tostring(v) ..'"'
-        if type(v) == 'table' then
-            tprint(v, (s or '')..kfmt)
-        else
-            if type(v) ~= 'string' then
-                vfmt = tostring(v)
-            end
-            print(type(t)..(s or '')..kfmt..' = '..vfmt)
-        end
-    end
-end
-
 
 function lexical_error(path, line)
     print("pluto: "..path..":"..line..": ".."lexical error")
@@ -40,204 +14,118 @@ function syntax_error(path, line)
     os.exit()
 end
 
-function lexer(path, input)
-    if input == nil then input = "" end
+local Token = {}
+Token.__index = Token
 
-    local index = 1
-    local line = 1
-    local tokens = {}
+function Token:new(line, type, value)
+    return setmetatable({
+        line = line,
+        type = type, 
+        value = value
+    }, self)
+end
 
-    while index <= #input do
-        local char = input:sub(index, index)
+function Token:__tostring()
+    if self.value ~= nil then return self.type..":"..self.value end
+    return self.type
+end
 
-        if string.find(WHITESPACE, char, 1, true) then
-            if char == "\n" then line = line + 1 end
-            index = index + 1
+local Lexer = {}
+Lexer.__index = Lexer
 
-        elseif string.find(DIGITS, char, 1, true) then
-            local value = ""
-            local dot_count = 0
+function Lexer:new(path, text)
+    return setmetatable({
+        path = path, 
+        text = text.."\0", 
+        index = 0,
+        line = 1
+    }, self)
+end  
 
-            while index <= #input 
-                  and string.find(DIGITS..".", char, 1, true) do
-                if char == "." then
-                    dot_count = dot_count + 1
-                    if dot_count > 1 then break end
-                end
+function Lexer:advance()
+    self.index = self.index + 1
+end
 
-                value = value..char
-                index = index + 1
-                char = input:sub(index, index)
+function Lexer:current() 
+    return self.text:sub(self.index, self.index)
+end
+
+function Lexer:get_tokens()
+    tokens = {}
+
+    while self:current() ~= "\0" do
+        if string.find(WHITESPACE, self:current(), 1, true) then
+            if self:current() == "\n" then 
+                self.line = self.line + 1
             end
+            self:advance()
 
-            tokens[#tokens + 1] = {
-                line = line, 
-                type = "num", 
-                value = value
-            }
+        elseif string.find(DIGITS..".", self:current(), 1, true) then
+            tokens[#tokens + 1] = self:get_number()
 
-        elseif char == "+" then
-            index = index + 1
-            tokens[#tokens + 1] = {
-                line = line, 
-                type = "plus"
-            }
+        elseif self:current() == "+" then
+            self:advance()
+            tokens[#tokens + 1] = Token:new(self.line, "PLUS")
 
-        elseif char == "-" then
-            index = index + 1
-            tokens[#tokens + 1] = {
-                line = line, 
-                type = "minus"
-            }
+        elseif self:current() == "-" then
+            self:advance()
+            tokens[#tokens + 1] = Token:new(self.line, "MINUS")
 
-        elseif char == "*" then
-            index = index + 1
-            tokens[#tokens + 1] = {
-                line = line, 
-                type = "multiply"
-            }
+        elseif self:current() == "*" then
+            self:advance()
+            tokens[#tokens + 1] = Token:new(self.line, "MULTIPLY")
 
-        elseif char == "/" then
-            index = index + 1
-            tokens[#tokens + 1] = {
-                line = line, 
-                type = "divide"
-            }
+        elseif self:current() == "/" then
+            self:advance()
+            tokens[#tokens + 1] = Token:new(self.line, "DIVIDE")
 
-        elseif char == "(" then
-            index = index + 1
-            tokens[#tokens + 1] = {
-                line = line, 
-                type = "lparen"
-            }
+        elseif self:current() == "(" then
+            self:advance()
+            tokens[#tokens + 1] = Token:new(self.line, "LPAREN")
 
-        elseif char == ")" then
-            index = index + 1
-            tokens[#tokens + 1] = {
-                line = line, 
-                type = "rparen"
-            }
+        elseif self:current() == ")" then
+            self:advance()
+            tokens[#tokens + 1] = Token:new(self.line, "RPAREN")
 
         else
-            lexical_error(path, line)
+            lexical_error(self.path, self.line)
         end
     end
 
-    tokens[#tokens + 1] = { 
-        line = line, 
-        type = "eof"
-    }
+    tokens[#tokens + 1] = Token:new(self.line, "EOF")
 
     return tokens
 end
 
-function parser(path, tokens)
-    index = 1
-
-    function expr()
-        return additive_expr()
-    end
-
-    function additive_expr()
-        result = multiplicative_expr()
-
-        while tokens[index].type ~= "eof" 
-              and contains({"plus", "minus"}, tokens[index].type) do
-            if tokens[index].type == "plus" then
-                index = index + 1
-                result = {
-                    line = result.line, 
-                    type = "plus", 
-                    args = {result, multiplicative_expr()}
-                }
-            else
-                index = index + 1
-                result = {
-                    line = result.line, 
-                    type = "minus", 
-                    args = {result, multiplicative_expr()}
-                }
-            end
-        end 
-
-        return result
-    end
-
-    function multiplicative_expr()
-        result = leaf_expr()
-
-        while tokens[index].type ~= "eof" 
-              and contains({"multiply", "divide"}, tokens[index].type) do
-            if tokens[index].type == "multiply" then
-                index = index + 1
-                result = {
-                    line = result.line, 
-                    type = "multiply", 
-                    args = {result, leaf_expr()}
-                }
-            else
-                index = index + 1
-                result = {
-                    line = result.line, 
-                    type = "divide", 
-                    args = {result, leaf_expr()}
-                }
-            end
-        end 
-
-        return result
-    end
-
-    function leaf_expr()
-        token = tokens[index]
-
-        if token.type == "num" then
-            index = index + 1
-            return {
-                line = token.line,
-                type = "num",
-                value = token.value
-            }
-
-        elseif token.type == "lparen" then
-            index = index + 1
-
-            exp = expr()
-
-            if tokens[index].type ~= "rparen" then
-                syntax_error(path, tokens[index].line)
-            end
-
-            return expr()
-        else
-            syntax_error(path, tokens[index].line)
+function Lexer:get_number()
+    value = ""
+    decimal_point_count = 0
+    
+    while string.find(DIGITS..".", self:current(), 1, true) do
+        if self:current() == "." then
+            decimal_point_count = decimal_point_count + 1
+            if decimal_point_count > 1 then break end
         end
+
+        value = value..self:current()
+        self:advance()
     end
 
-    if tokens[index].type == "eof" then
-        return {
-            line = tokens[index].line,
-            type = "empty"
-        }
-    end
-
-    local result = expr()
-
-    if tokens[index].type ~= "eof" then 
-        syntax_error(path, tokens[index].line) 
-    end
-
-    return result
+    return Token:new(self.line, "NUMBER", value)
 end
 
 if #arg == 1 then
     local path = arg[1]
     local file = io.open(PATH..path, "rb")
-    local input = file:read("*a")
+    local text = file:read("*a")
     file:close()
 
-    local tokens = lexer(path, input)
-    local tree = parser(path, tokens)
+    local lexer = Lexer:new(path, text)
+    local tokens = lexer:get_tokens()
 
-    tprint(tree)
+    -- local value = interpreter(path, tree)
+
+    for i = 1, #tokens do
+        print(tokens[i])
+    end
 end
