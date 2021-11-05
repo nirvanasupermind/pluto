@@ -4,6 +4,21 @@ local WHITESPACE = " \n\t"
 local DIGITS = "0123456789"
 local PATH = (({...})[2] or arg[0]):gsub("[^/]*$", "")
 
+function in_array(v, t)
+    for i=1,#t do
+      if v == t[i] then return true end
+    end
+end
+
+function map(f, t)
+    local t1 = {}
+    local t_len = #t
+    for i = 1, t_len do
+        t1[i] = f(t[i])
+    end
+    return t1
+end
+
 function lexical_error(path, line)
     print("pluto: "..path..":"..line..": ".."lexical error")
     os.exit()
@@ -114,6 +129,20 @@ function Lexer:get_number()
     return Token:new(self.line, "NUMBER", value)
 end
 
+local Node = {}
+Node.__index = Node
+
+function Node:new(line, sxp)
+    return setmetatable({
+        line = line, 
+        sxp = sxp
+    }, self)
+end
+
+function Node:__tostring()
+    return "("..table.concat(map(tostring, self.sxp), " ")..")"
+end
+
 local Parser = {}
 Parser.__index = Parser
 
@@ -133,14 +162,6 @@ function Parser:current()
     return self.tokens[self.index]
 end
 
-function Parser:eat(type)
-    if self:current().type ~= type then
-        syntax_error(self.path, self:current().line)
-    end
-
-    self.advance()
-end
-
 function Parser:parse()
     local result = self:expr()
 
@@ -149,6 +170,104 @@ function Parser:parse()
     end
     
     return result
+end
+
+function Parser:expr()
+    return self:additive_expr()
+end
+
+function Parser:additive_expr()
+    result = self:multiplicative_expr()
+
+    while self:current().type ~= "EOF"
+          and in_array(self:current().type, {"PLUS", "MINUS"}) do
+            if self:current().type == "PLUS" then
+                self:advance()
+                result = Node:new(
+                    result.line,
+                    {"add", result, self:multiplicative_expr()}
+                )
+            else
+                self:advance()
+                result = Node:new(
+                    result.line,
+                    {"subtract", result, self:multiplicative_expr()}
+                )
+            end
+    end
+
+    return result
+end
+
+function Parser:multiplicative_expr()
+    result = self:unary_expr()
+
+    while self:current().type ~= "EOF"
+          and in_array(self:current().type, {"MULTIPLY", "DIVIDE"}) do
+            if self:current().type == "MULTIPLY" then
+                self:advance()
+                result = Node:new(
+                    result.line,
+                    {"multiply", result, self:unary_expr()}
+                )
+            else
+                self:advance()
+                result = Node:new(
+                    result.line,
+                    {"divide", result, self:unary_expr()}
+                )
+            end
+    end
+
+    return result
+end
+
+function Parser:unary_expr()
+    token = self:current()
+
+    if token.type == "MINUS" then
+        self:advance()
+
+        return Node:new(
+            token.line, 
+            {"minus", self:unary_expr()}
+        )
+    else
+        return self:paren_expr()
+    end
+end
+
+function Parser:paren_expr()
+    if self:current().type == "LPAREN" then
+        self:advance()
+
+        expr = self:expr()
+
+        if self:current().type ~= "RPAREN" then
+            syntax_error(self.path, self:current().line)
+        end
+
+        self:advance()
+        
+        return expr
+    else
+        return self:leaf_expr()
+    end
+end
+
+function Parser:leaf_expr()
+    token = self:current()
+
+    if self:current().type == "NUMBER" then
+        self:advance()
+
+        return Node:new(
+            token.line,
+            {"number", token.value}
+        )
+    else
+        syntax_error(self.path, self:current().line)
+    end
 end
 
 if #arg == 1 then
@@ -160,9 +279,8 @@ if #arg == 1 then
     local lexer = Lexer:new(path, text)
     local tokens = lexer:get_tokens()
 
-    -- local value = interpreter(path, tree)
+    local parser = Parser:new(path, tokens)
+    local tree = parser:parse()
 
-    for i = 1, #tokens do
-        print(tokens[i])
-    end
+    print(tree)
 end
