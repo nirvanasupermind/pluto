@@ -98,8 +98,8 @@ function Lexer:get_tokens()
 end
 
 function Lexer:get_number()
-    value = ""
-    decimal_point_count = 0
+    local value = ""
+    local decimal_point_count = 0
     
     while string.find(DIGITS..".", self:current(), 1, true) do
         if self:current() == "." then
