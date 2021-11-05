@@ -29,6 +29,11 @@ function syntax_error(path, line)
     os.exit()
 end
 
+function runtime_error(path, line)
+    print("pluto: "..path..":"..line..": ".."runtime error")
+    os.exit()
+end
+
 local Token = {}
 Token.__index = Token
 
@@ -126,7 +131,11 @@ function Lexer:get_number()
         self:advance()
     end
 
-    return Token:new(self.line, "NUMBER", value)
+    if value == "." then
+        return Token:new(self.line, "DOT")
+    end
+
+    return Token:new(self.line, "NUMBER", tonumber(value))
 end
 
 local Node = {}
@@ -248,7 +257,7 @@ function Parser:paren_expr()
         end
 
         self:advance()
-        
+
         return expr
     else
         return self:leaf_expr()
@@ -270,6 +279,84 @@ function Parser:leaf_expr()
     end
 end
 
+local Value = {}
+Value.__index = Value
+
+function Value:new(value)
+    return setmetatable({
+        value = value,
+        id = math.random()
+    }, self)
+end
+
+function Value:__tostring()
+    return tostring(self.value)
+end
+
+local Interpreter = {}
+Interpreter.__index = Interpreter
+
+function Interpreter:new(path)
+    return setmetatable({path = path}, Interpreter)
+end
+
+function Interpreter:eval(node)
+    if node.sxp[1] == "number" then
+        return Value:new(tonumber(node.sxp[2]))
+
+    elseif node.sxp[1] == "add" then
+        return self:eval_operation(
+            function ()
+                return self:eval(node.sxp[2]).value + self:eval(node.sxp[3]).value 
+            end,
+            node
+        )
+
+    elseif node.sxp[1] == "subtract" then
+        return self:eval_operation(
+            function ()
+                return self:eval(node.sxp[2]).value - self:eval(node.sxp[3]).value 
+            end,
+            node
+        )
+
+    elseif node.sxp[1] == "multiply" then
+        return self:eval_operation(
+            function ()
+                return self:eval(node.sxp[2]).value * self:eval(node.sxp[3]).value 
+            end,
+            node
+        )
+
+    elseif node.sxp[1] == "divide" then
+        return self:eval_operation(
+            function ()
+                return self:eval(node.sxp[2]).value / self:eval(node.sxp[3]).value 
+            end,
+            node
+        )
+
+    elseif node.sxp[1] == "minus" then
+        return self:eval_operation(
+            function ()
+                return -self:eval(node.sxp[2]).value
+            end,
+            node
+        )
+
+    else
+        error("Unknown node type "..node.sxp[1], 2)
+    end
+end
+
+function Interpreter:eval_operation(func, node)
+    if pcall(func) == false then 
+        runtime_error(self.path, node.line)
+    else
+        return Value:new(func())
+    end
+end
+
 if #arg == 1 then
     local path = arg[1]
     local file = io.open(PATH..path, "rb")
@@ -282,5 +369,8 @@ if #arg == 1 then
     local parser = Parser:new(path, tokens)
     local tree = parser:parse()
 
-    print(tree)
+    local interpreter = Interpreter:new(path)
+    local result = interpreter:eval(tree)
+
+    print(result)
 end
