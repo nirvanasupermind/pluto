@@ -117,15 +117,38 @@ end
 local Parser = {}
 Parser.__index = Parser
 
-function Parser:new(tokens)
+function Parser:new(path, tokens)
     return setmetatable({
+        path = path,
         tokens = tokens,
-        index = 0
+        index = 1
     }, self)
 end
 
 function Parser:advance()
     self.index = self.index + 1
+end
+
+function Parser:current()
+    return self.tokens[self.index]
+end
+
+function Parser:eat(type)
+    if self:current().type ~= type then
+        syntax_error(self.path, self:current().line)
+    end
+
+    self.advance()
+end
+
+function Parser:parse()
+    local result = self:expr()
+
+    if self:current().type ~= "EOF" then
+        syntax_error(self.path, self:current().line)
+    end
+    
+    return result
 end
 
 if #arg == 1 then
