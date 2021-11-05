@@ -37,7 +37,7 @@ function Lexer:new(path, text)
     return setmetatable({
         path = path, 
         text = text.."\0", 
-        index = 0,
+        index = 1,
         line = 1
     }, self)
 end  
@@ -115,6 +115,7 @@ function Lexer:get_number()
 end
 
 local Parser = {}
+Parser.__index = Parser
 
 function Parser:new(tokens)
     return setmetatable({
