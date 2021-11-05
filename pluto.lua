@@ -51,7 +51,7 @@ function Lexer:current()
 end
 
 function Lexer:get_tokens()
-    tokens = {}
+    local tokens = {}
 
     while self:current() ~= "\0" do
         if string.find(WHITESPACE, self:current(), 1, true) then
@@ -112,6 +112,19 @@ function Lexer:get_number()
     end
 
     return Token:new(self.line, "NUMBER", value)
+end
+
+local Parser = {}
+
+function Parser:new(tokens)
+    return setmetatable({
+        tokens = tokens,
+        index = 0
+    }, self)
+end
+
+function Parser:advance()
+    self.index = self.index + 1
 end
 
 if #arg == 1 then
