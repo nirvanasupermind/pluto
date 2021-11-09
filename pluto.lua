@@ -2,6 +2,7 @@
 
 local WHITESPACE = " \n\t"
 local DIGITS = "0123456789"
+local LETTERS = "_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 local PATH = (({...})[2] or arg[0]):gsub("[^/]*$", "")
 
 function in_array(v, t)
@@ -58,7 +59,8 @@ function Lexer:new(path, text)
         path = path, 
         text = text.."\0", 
         index = 1,
-        line = 1
+        line = 1,
+        keywords = {}
     }, self)
 end  
 
@@ -83,6 +85,9 @@ function Lexer:get_tokens()
         elseif string.find(DIGITS..".", self:current(), 1, true) then
             tokens[#tokens + 1] = self:get_number()
 
+        elseif string.find(LETTERS, self:current(), 1, true) then
+            tokens[#tokens + 1] = self:get_name()
+
         elseif self:current() == "+" then
             self:advance()
             tokens[#tokens + 1] = Token:new(self.line, "PLUS")
@@ -106,6 +111,14 @@ function Lexer:get_tokens()
         elseif self:current() == ")" then
             self:advance()
             tokens[#tokens + 1] = Token:new(self.line, "RPAREN")
+
+        elseif self:current() == "=" then
+            self:advance()
+            tokens[#tokens + 1] = Token:new(self.line, "EQ")
+        
+        elseif self:current() == ";" then
+            self:advance()
+            tokens[#tokens + 1] = Token:new(self.line, "SEMICOLON")
 
         else
             lexical_error(self.path, self.line)
@@ -136,6 +149,21 @@ function Lexer:get_number()
     end
 
     return Token:new(self.line, "NUMBER", tonumber(value))
+end
+
+function Lexer:get_name()
+    local name = ""
+    
+    while string.find(LETTERS..DIGITS, self:current(), 1, true) do
+        name = name..self:current()
+        self:advance()
+    end
+
+    if in_array(name, self.keywords) then
+        return Token:new(self.line, "KEYWORD", name)
+    end
+
+    return Token:new(self.line, "NAME", name)
 end
 
 local Node = {}
@@ -172,7 +200,18 @@ function Parser:current()
 end
 
 function Parser:parse()
-    local result = self:expr()
+    while self:current().type == "SEMICOLON" do
+        self:advance()
+    end
+
+    if self:current().type == "EOF" then
+        return Node:new(
+            self:current().line,
+            {"empty"}
+        )
+    end
+
+    local result = self:statements()
 
     if self:current().type ~= "EOF" then
         syntax_error(self.path, self:current().line)
@@ -181,8 +220,54 @@ function Parser:parse()
     return result
 end
 
+function Parser:statements()
+    local ln = self:current().line
+    local statements = {self:expr()}
+
+    while self:current().type ~= "EOF"
+          and self:current().type == "SEMICOLON" do
+        self:advance()
+            
+        while self:current().type == "SEMICOLON" do
+            self:advance()
+        end
+
+
+        if self:current().type == "EOF" then
+            break
+        end
+
+
+        statements[#statements + 1] = self:expr()
+    end
+
+
+
+    return Node:new(
+        ln,
+        {"statements", statements}
+    )
+end
+
 function Parser:expr()
-    return self:additive_expr()
+    local result = self:assignment_expr()
+
+    return result
+end
+
+function Parser:assignment_expr()
+    result = self:additive_expr()
+
+    if self:current().type == "EQ" then
+        self:advance()
+    
+        return Node:new(
+            result.line,
+            {"assignment", result, self:expr()}
+        )
+    end
+
+    return result
 end
 
 function Parser:additive_expr()
@@ -274,23 +359,38 @@ function Parser:leaf_expr()
             token.line,
             {"number", token.value}
         )
+    elseif self:current().type == "NAME" then
+        self:advance()
+
+        return Node:new(
+            token.line,
+            {"name", token.value}
+        )
     else
         syntax_error(self.path, self:current().line)
     end
 end
 
-local Value = {}
-Value.__index = Value
+local Null = {}
+Null.__index = Null
 
-function Value:new(value)
+function Null:new()
+    return setmetatable({}, self)
+end
+
+function Null:__tostring()
+    return "null"
+end
+
+local Object = {}
+Object.__index = Object
+
+function Object:new(tbl, value)
     return setmetatable({
+        tbl = tbl, 
         value = value,
         id = math.random()
     }, self)
-end
-
-function Value:__tostring()
-    return tostring(self.value)
 end
 
 local Interpreter = {}
@@ -300,14 +400,33 @@ function Interpreter:new(path)
     return setmetatable({path = path}, Interpreter)
 end
 
-function Interpreter:eval(node)
-    if node.sxp[1] == "number" then
-        return Value:new(tonumber(node.sxp[2]))
+function Interpreter:eval(node, env)
+    if node.sxp[1] == "empty" then
+        return Null:new()
 
+    elseif node.sxp[1] == "statements" then
+        for i = 1, #node.sxp[2] do
+            self:eval(node.sxp[2][i], env)
+        end
+        
+        return self:eval(node.sxp[2][#node.sxp[2]], env)
+
+    elseif node.sxp[1] == "number" then
+        return tonumber(node.sxp[2])
+
+    elseif node.sxp[1] == "name" then
+        local result = env[node.sxp[2]]
+
+        if result == nil then
+            runtime_error(self.path, node.line)
+        end
+
+        return result
+    
     elseif node.sxp[1] == "add" then
         return self:eval_operation(
             function ()
-                return self:eval(node.sxp[2]).value + self:eval(node.sxp[3]).value 
+                return self:eval(node.sxp[2], env) + self:eval(node.sxp[3], env)
             end,
             node
         )
@@ -315,7 +434,7 @@ function Interpreter:eval(node)
     elseif node.sxp[1] == "subtract" then
         return self:eval_operation(
             function ()
-                return self:eval(node.sxp[2]).value - self:eval(node.sxp[3]).value 
+                return self:eval(node.sxp[2], env) - self:eval(node.sxp[3], env)
             end,
             node
         )
@@ -323,7 +442,7 @@ function Interpreter:eval(node)
     elseif node.sxp[1] == "multiply" then
         return self:eval_operation(
             function ()
-                return self:eval(node.sxp[2]).value * self:eval(node.sxp[3]).value 
+                return self:eval(node.sxp[2], env) * self:eval(node.sxp[3], env)
             end,
             node
         )
@@ -331,21 +450,33 @@ function Interpreter:eval(node)
     elseif node.sxp[1] == "divide" then
         return self:eval_operation(
             function ()
-                return self:eval(node.sxp[2]).value / self:eval(node.sxp[3]).value 
+                return self:eval(node.sxp[2], env) / self:eval(node.sxp[3], env)
             end,
             node
         )
 
+    elseif node.sxp[1] == "assignment" then
+        if node.sxp[2].sxp[1] ~= "name" then
+            runtime_error(self.path, node.line)
+        end    
+
+        local name = node.sxp[2].sxp[2]
+        local value = self:eval(node.sxp[3])
+                
+        env[name] = value
+
+        return value
+
     elseif node.sxp[1] == "minus" then
         return self:eval_operation(
             function ()
-                return -self:eval(node.sxp[2]).value
+                return -self:eval(node.sxp[2], env)
             end,
             node
         )
 
     else
-        error("Unknown node type "..node.sxp[1], 2)
+        error("unknown node type "..node.sxp[1], 2)
     end
 end
 
@@ -353,9 +484,11 @@ function Interpreter:eval_operation(func, node)
     if pcall(func) == false then 
         runtime_error(self.path, node.line)
     else
-        return Value:new(func())
+        return func()
     end
 end
+
+global_env = {}
 
 if #arg == 1 then
     local path = arg[1]
@@ -369,8 +502,9 @@ if #arg == 1 then
     local parser = Parser:new(path, tokens)
     local tree = parser:parse()
 
+    local env = {}
     local interpreter = Interpreter:new(path)
-    local result = interpreter:eval(tree)
+    local result = interpreter:eval(tree, env)
 
     print(result)
 end
