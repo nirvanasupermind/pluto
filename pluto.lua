@@ -60,7 +60,7 @@ function Lexer:new(path, text)
         text = text.."\0", 
         index = 1,
         line = 1,
-        keywords = {"null"}
+        keywords = {"null", "true", "false"}
     }, self)
 end  
 
@@ -112,10 +112,33 @@ function Lexer:get_tokens()
             self:advance()
             tokens[#tokens + 1] = Token:new(self.line, "RPAREN")
 
+        elseif self:current() == "<" then
+            self:advance()
+            if self:current() == "=" then
+                self:advance()
+                tokens[#tokens + 1] = Token:new(self.line, "LE") 
+            else               
+                tokens[#tokens + 1] = Token:new(self.line, "LT")
+            end
+
         elseif self:current() == "=" then
             self:advance()
-            tokens[#tokens + 1] = Token:new(self.line, "EQ")
+            if self:current() == "=" then
+                self:advance()
+                tokens[#tokens + 1] = Token:new(self.line, "EE") 
+            else               
+                tokens[#tokens + 1] = Token:new(self.line, "EQ")
+            end
         
+        elseif self:current() == ">" then
+            self:advance()
+            if self:current() == "=" then
+                self:advance()
+                tokens[#tokens + 1] = Token:new(self.line, "GE") 
+            else               
+                tokens[#tokens + 1] = Token:new(self.line, "GT")
+            end
+
         elseif self:current() == ";" then
             self:advance()
             tokens[#tokens + 1] = Token:new(self.line, "SEMICOLON")
@@ -252,7 +275,7 @@ function Parser:expr()
 end
 
 function Parser:assignment_expr()
-    result = self:additive_expr()
+    result = self:relational_expr()
 
     if self:current().type == "EQ" then
         self:advance()
@@ -261,6 +284,56 @@ function Parser:assignment_expr()
             result.line,
             {"assignment", result, self:expr()}
         )
+    end
+
+    return result
+end
+
+function Parser:relational_expr()
+    result = self:equality_expr()
+
+    while self:current().type ~= "EOF"
+          and in_array(self:current().type, {"LT", "GT", "LE", "GE"}) do
+            if self:current().type == "LT" then
+                self:advance()
+                result = Node:new(
+                    result.line,
+                    {"lt", result, self:equality_expr()}
+                )
+            elseif self:current().type == "GT" then
+                self:advance()
+                result = Node:new(
+                    result.line,
+                    {"gt", result, self:equality_expr()}
+                )
+            elseif self:current().type == "LE" then
+                self:advance()
+                result = Node:new(
+                    result.line,
+                    {"le", result, self:equality_expr()}
+                )    
+            else
+                self:advance()
+                result = Node:new(
+                    result.line,
+                    {"ge", result, self:multiplicative_expr()}
+                )
+            end
+    end
+
+    return result
+end
+
+function Parser:equality_expr()
+    result = self:additive_expr()
+
+    while self:current().type ~= "EOF"
+          and self:current().type == "EE" do
+            self:advance()
+            result = Node:new(
+                result.line,
+                {"eq", result, self:additive_expr()}
+            ) 
     end
 
     return result
@@ -364,6 +437,22 @@ function Parser:leaf_expr()
             {"null"}
         )
 
+    elseif token.type == "KEYWORD" and token.value == "true" then
+        self:advance()
+
+        return Node:new(
+            token.line,
+            {"true"}
+        )
+
+    elseif token.type == "KEYWORD" and token.value == "false" then
+        self:advance()
+
+        return Node:new(
+            token.line,
+            {"false"}
+        )
+
     elseif token.type == "NAME" then
         self:advance()
 
@@ -423,11 +512,17 @@ function Interpreter:eval(node, env)
     elseif node.sxp[1] == "null" then
         return Null:new()
 
+    elseif node.sxp[1] == "true" then
+        return true
+  
+    elseif node.sxp[1] == "false" then
+        return false
+
     elseif node.sxp[1] == "name" then
         local result = env[node.sxp[2]]
 
         if result == nil then
-            runtime_error(self.path, node.line)
+            return Null:new()
         end
 
         return result
@@ -465,13 +560,53 @@ function Interpreter:eval(node, env)
             node
         )
 
+    elseif node.sxp[1] == "eq" then
+        return self:eval_operation(
+            function ()
+                return self:eval(node.sxp[2], env) == self:eval(node.sxp[3], env)
+            end,
+            node
+        )
+
+    elseif node.sxp[1] == "lt" then
+        return self:eval_operation(
+            function ()
+                return self:eval(node.sxp[2], env) < self:eval(node.sxp[3], env)
+            end,
+            node
+        )
+
+    elseif node.sxp[1] == "gt" then
+        return self:eval_operation(
+            function ()
+                return self:eval(node.sxp[2], env) > self:eval(node.sxp[3], env)
+            end,
+            node
+        )
+
+    elseif node.sxp[1] == "le" then
+        return self:eval_operation(
+            function ()
+                return self:eval(node.sxp[2], env) <= self:eval(node.sxp[3], env)
+            end,
+            node
+        )
+
+    elseif node.sxp[1] == "ge" then
+        return self:eval_operation(
+            function ()
+                return self:eval(node.sxp[2], env) >= self:eval(node.sxp[3], env)
+            end,
+            node
+        )
+
     elseif node.sxp[1] == "assignment" then
         if node.sxp[2].sxp[1] ~= "name" then
             runtime_error(self.path, node.line)
         end    
 
         local name = node.sxp[2].sxp[2]
-        local value = self:eval(node.sxp[3])
+        local value = self:eval(node.sxp[3], env)
                 
         env[name] = value
 
@@ -498,7 +633,8 @@ function Interpreter:eval_operation(func, node)
     end
 end
 
-global_env = {}
+local global_env = {}
+global_env.global = Object:new(global_env, nil)
 
 if #arg == 1 then
     local path = arg[1]
@@ -512,9 +648,8 @@ if #arg == 1 then
     local parser = Parser:new(path, tokens)
     local tree = parser:parse()
 
-    local env = {}
     local interpreter = Interpreter:new(path)
-    local result = interpreter:eval(tree, env)
+    local result = interpreter:eval(tree, global_env)
 
     print(result)
 end
