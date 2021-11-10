@@ -60,7 +60,7 @@ function Lexer:new(path, text)
         text = text.."\0", 
         index = 1,
         line = 1,
-        keywords = {"null", "true", "false"}
+        keywords = {"null", "true", "false", "if", "else"}
     }, self)
 end  
 
@@ -112,6 +112,14 @@ function Lexer:get_tokens()
             self:advance()
             tokens[#tokens + 1] = Token:new(self.line, "RPAREN")
 
+        elseif self:current() == "{" then
+            self:advance()
+            tokens[#tokens + 1] = Token:new(self.line, "LCURLY")
+
+        elseif self:current() == "}" then
+            self:advance()
+            tokens[#tokens + 1] = Token:new(self.line, "RCURLY")
+
         elseif self:current() == "<" then
             self:advance()
             if self:current() == "=" then
@@ -148,6 +156,28 @@ function Lexer:get_tokens()
                 tokens[#tokens + 1] = Token:new(self.line, "NOT")
             end
 
+        elseif self:current() == "&" then
+            self:advance()
+            if self:current() == "&" then
+                self:advance()
+                tokens[#tokens + 1] = Token:new(self.line, "AND") 
+            else               
+                tokens[#tokens + 1] = Token:new(self.line, "BITAND")
+            end
+
+        elseif self:current() == "|" then
+            self:advance()
+            if self:current() == "&" then
+                self:advance()
+                tokens[#tokens + 1] = Token:new(self.line, "OR") 
+            else               
+                tokens[#tokens + 1] = Token:new(self.line, "BITOR")
+            end
+
+        elseif self:current() == "~" then
+            self:advance()            
+            tokens[#tokens + 1] = Token:new(self.line, "BITNOT")
+        
         elseif self:current() == ";" then
             self:advance()
             tokens[#tokens + 1] = Token:new(self.line, "SEMICOLON")
@@ -278,9 +308,7 @@ function Parser:statements()
 end
 
 function Parser:expr()
-    local result = self:assignment_expr()
-
-    return result
+    return self:assignment_expr()
 end
 
 function Parser:assignment_expr()
@@ -485,9 +513,67 @@ function Parser:leaf_expr()
             {"name", token.value}
         )
 
+    elseif self:current().type == "KEYWORD" and self:current().value == "if" then
+        return self:if_expr()
+
     else
         syntax_error(self.path, self:current().line)
     end
+end
+
+function Parser:curly_expr()
+    if self:current().type ~= "LCURLY" then
+        syntax_error(self.path, self:current().line)
+    end
+
+    self:advance() 
+
+    while self:current().type == "SEMICOLON" do
+        self:advance()
+    end
+
+    if self:current().type == "RCURLY" then
+        return Node:new(
+            self:current().line,
+            {"empty"}
+        )
+    end
+    
+    expr = self:expr()
+
+    if self:current().type ~= "RCURLY" then
+        syntax_error(self.path, self:current().line)
+    end
+
+    return expr
+end
+
+function Parser:if_expr()
+    self:advance()
+    condition = self:expr()
+
+    if_body = self:curly_expr()
+
+    self:advance()
+
+    if self:current().type == "KEYWORD" and self:current().value == "else" then
+        self:advance()
+
+        else_body = self:curly_expr()
+        
+        self:advance()
+        return Node:new(
+            condition.line,
+            {"ifelse", condition, if_body, else_body}
+        )
+    end
+    
+    self:advance()
+
+    return Node:new(
+        condition.line,
+        {"if", condition, if_body}
+    )
 end
 
 local Null = {}
@@ -495,6 +581,14 @@ Null.__index = Null
 
 function Null:new()
     return setmetatable({}, self)
+end
+
+function Null:__eq(other)
+    return getmetatable(other) == Null
+end
+
+function Null:__ne(other)
+    return getmetatable(other) ~= Null
 end
 
 function Null:__tostring()
@@ -585,6 +679,15 @@ function Interpreter:eval(node, env)
             node
         )
 
+
+    elseif node.sxp[1] == "ne" then
+        return self:eval_operation(
+            function ()
+                return self:eval(node.sxp[2], env) ~= self:eval(node.sxp[3], env)
+            end,
+            node
+        )
+
     elseif node.sxp[1] == "lt" then
         return self:eval_operation(
             function ()
@@ -632,6 +735,20 @@ function Interpreter:eval(node, env)
             end,
             node
         )
+
+    elseif node.sxp[1] == "if" then
+        condition = self:eval(node.sxp[2], env)
+
+        if is_true(condition) then return self:eval(node.sxp[3], env) end
+
+        return Null:new()
+
+    elseif node.sxp[1] == "ifelse" then
+        condition = self:eval(node.sxp[2], env)
+
+        if is_true(condition) then return self:eval(node.sxp[3], env) end
+        
+        return self:eval(node.sxp[4], env)
 
     elseif node.sxp[1] == "assignment" then
         if node.sxp[2].sxp[1] ~= "name" then
