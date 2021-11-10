@@ -5,13 +5,13 @@ local DIGITS = "0123456789"
 local LETTERS = "_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 local PATH = (({...})[2] or arg[0]):gsub("[^/]*$", "")
 
-function in_array(v, t)
+local function in_array(v, t)
     for i=1,#t do
       if v == t[i] then return true end
     end
 end
 
-function map(f, t)
+local function map(f, t)
     local t1 = {}
     local t_len = #t
     for i = 1, t_len do
@@ -20,17 +20,17 @@ function map(f, t)
     return t1
 end
 
-function lexical_error(path, line)
+local function lexical_error(path, line)
     print("pluto: "..path..":"..line..": ".."lexical error")
     os.exit()
 end
 
-function syntax_error(path, line)
+local function syntax_error(path, line)
     print("pluto: "..path..":"..line..": ".."syntax error")
     os.exit()
 end
 
-function runtime_error(path, line)
+local function runtime_error(path, line)
     print("pluto: "..path..":"..line..": ".."runtime error")
     os.exit()
 end
@@ -137,6 +137,15 @@ function Lexer:get_tokens()
                 tokens[#tokens + 1] = Token:new(self.line, "GE") 
             else               
                 tokens[#tokens + 1] = Token:new(self.line, "GT")
+            end
+
+        elseif self:current() == "!" then
+            self:advance()
+            if self:current() == "=" then
+                self:advance()
+                tokens[#tokens + 1] = Token:new(self.line, "NE") 
+            else               
+                tokens[#tokens + 1] = Token:new(self.line, "NOT")
             end
 
         elseif self:current() == ";" then
@@ -328,12 +337,20 @@ function Parser:equality_expr()
     result = self:additive_expr()
 
     while self:current().type ~= "EOF"
-          and self:current().type == "EE" do
-            self:advance()
-            result = Node:new(
-                result.line,
-                {"eq", result, self:additive_expr()}
-            ) 
+          and in_array(self:current().type, {"EQ", "NE"}) do
+            if self:current().type == "EQ" then
+                self:advance()
+                result = Node:new(
+                    result.line,
+                    {"eq", result, self:equality_expr()}
+                )    
+            else
+                self:advance()
+                result = Node:new(
+                    result.line,
+                    {"ne", result, self:multiplicative_expr()}
+                )
+            end
     end
 
     return result
@@ -394,6 +411,13 @@ function Parser:unary_expr()
         return Node:new(
             token.line, 
             {"minus", self:unary_expr()}
+        )
+    elseif token.type == "NOT" then
+        self:advance()
+
+        return Node:new(
+            token.line, 
+            {"not", self:unary_expr()}
         )
     else
         return self:paren_expr()
@@ -600,6 +624,22 @@ function Interpreter:eval(node, env)
             node
         )
 
+    elseif node.sxp[1] == "minus" then
+        return self:eval_operation(
+            function ()
+                return -self:eval(node.sxp[2], env)
+            end,
+            node
+        )
+    
+    elseif node.sxp[1] == "not" then
+        return self:eval_operation(
+            function ()
+                return not self:eval(node.sxp[2], env)
+            end,
+            node
+        )
+
     elseif node.sxp[1] == "assignment" then
         if node.sxp[2].sxp[1] ~= "name" then
             runtime_error(self.path, node.line)
@@ -611,14 +651,6 @@ function Interpreter:eval(node, env)
         env[name] = value
 
         return value
-
-    elseif node.sxp[1] == "minus" then
-        return self:eval_operation(
-            function ()
-                return -self:eval(node.sxp[2], env)
-            end,
-            node
-        )
 
     else
         error("unknown node type "..node.sxp[1], 2)
@@ -634,7 +666,6 @@ function Interpreter:eval_operation(func, node)
 end
 
 local global_env = {}
-global_env.global = Object:new(global_env, nil)
 
 if #arg == 1 then
     local path = arg[1]
