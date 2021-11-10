@@ -232,16 +232,12 @@ function Parser:statements()
             self:advance()
         end
 
-
         if self:current().type == "EOF" then
             break
         end
 
-
         statements[#statements + 1] = self:expr()
     end
-
-
 
     return Node:new(
         ln,
@@ -367,7 +363,7 @@ function Parser:leaf_expr()
             token.line,
             {"null"}
         )
-        
+
     elseif token.type == "NAME" then
         self:advance()
 
