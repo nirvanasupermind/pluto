@@ -60,7 +60,7 @@ function Lexer:new(path, text)
         text = text.."\0", 
         index = 1,
         line = 1,
-        keywords = {}
+        keywords = {"null"}
     }, self)
 end  
 
@@ -352,20 +352,30 @@ end
 function Parser:leaf_expr()
     token = self:current()
 
-    if self:current().type == "NUMBER" then
+    if token.type == "NUMBER" then
         self:advance()
 
         return Node:new(
             token.line,
             {"number", token.value}
         )
-    elseif self:current().type == "NAME" then
+
+    elseif token.type == "KEYWORD" and token.value == "null" then
+        self:advance()
+
+        return Node:new(
+            token.line,
+            {"null"}
+        )
+        
+    elseif token.type == "NAME" then
         self:advance()
 
         return Node:new(
             token.line,
             {"name", token.value}
         )
+
     else
         syntax_error(self.path, self:current().line)
     end
@@ -414,6 +424,9 @@ function Interpreter:eval(node, env)
     elseif node.sxp[1] == "number" then
         return tonumber(node.sxp[2])
 
+    elseif node.sxp[1] == "null" then
+        return Null:new()
+
     elseif node.sxp[1] == "name" then
         local result = env[node.sxp[2]]
 
@@ -423,6 +436,7 @@ function Interpreter:eval(node, env)
 
         return result
     
+            
     elseif node.sxp[1] == "add" then
         return self:eval_operation(
             function ()
