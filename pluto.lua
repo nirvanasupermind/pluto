@@ -4,7 +4,7 @@ local WHITESPACE = " \n\t"
 local DIGITS = "0123456789"
 local LETTERS = "_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 local PATH = (({...})[2] or arg[0]):gsub("[^/]*$", "")
-
+ 
 local function in_array(v, t)
     for i=1,#t do
       if v == t[i] then return true end
@@ -337,8 +337,8 @@ function Parser:equality_expr()
     result = self:additive_expr()
 
     while self:current().type ~= "EOF"
-          and in_array(self:current().type, {"EQ", "NE"}) do
-            if self:current().type == "EQ" then
+          and in_array(self:current().type, {"EE", "NE"}) do
+            if self:current().type == "EE" then
                 self:advance()
                 result = Node:new(
                     result.line,
@@ -501,15 +501,8 @@ function Null:__tostring()
     return "null"
 end
 
-local Object = {}
-Object.__index = Object
-
-function Object:new(tbl, value)
-    return setmetatable({
-        tbl = tbl, 
-        value = value,
-        id = math.random()
-    }, self)
+local function is_true(t)
+    return not (t == false or getmetatable(t) == Null)
 end
 
 local Interpreter = {}
@@ -635,7 +628,7 @@ function Interpreter:eval(node, env)
     elseif node.sxp[1] == "not" then
         return self:eval_operation(
             function ()
-                return not self:eval(node.sxp[2], env)
+                return not is_true(self:eval(node.sxp[2], env))
             end,
             node
         )
