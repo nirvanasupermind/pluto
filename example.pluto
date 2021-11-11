@@ -3,8 +3,4 @@ class Point {
         this.x = x;
         this.y = y;
     }
-
-    function toString() {
-        return "(" + this.x.toString() + ", " + this.y.toString() + ")";
-    }
 }

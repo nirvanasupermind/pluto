@@ -161,23 +161,20 @@ function Lexer:get_tokens()
             if self:current() == "&" then
                 self:advance()
                 tokens[#tokens + 1] = Token:new(self.line, "AND") 
-            else               
-                tokens[#tokens + 1] = Token:new(self.line, "BITAND")
+            else      
+                lexical_error(self.path, self.line)         
             end
 
         elseif self:current() == "|" then
             self:advance()
-            if self:current() == "&" then
+
+            if self:current() == "|" then
                 self:advance()
                 tokens[#tokens + 1] = Token:new(self.line, "OR") 
             else               
-                tokens[#tokens + 1] = Token:new(self.line, "BITOR")
+                lexical_error(self.path, self.line)
             end
 
-        elseif self:current() == "~" then
-            self:advance()            
-            tokens[#tokens + 1] = Token:new(self.line, "BITNOT")
-        
         elseif self:current() == ";" then
             self:advance()
             tokens[#tokens + 1] = Token:new(self.line, "SEMICOLON")
@@ -312,7 +309,7 @@ function Parser:expr()
 end
 
 function Parser:assignment_expr()
-    result = self:relational_expr()
+    result = self:or_expr()
 
     if self:current().type == "EQ" then
         self:advance()
@@ -321,6 +318,36 @@ function Parser:assignment_expr()
             result.line,
             {"assignment", result, self:expr()}
         )
+    end
+
+    return result
+end
+
+function Parser:or_expr()
+    result = self:and_expr()
+
+    while self:current().type ~= "EOF"
+          and self:current().type == "OR" do
+            self:advance()
+            result = Node:new(
+                result.line,
+                {"or", result, self:and_expr()}
+            )
+    end
+
+    return result
+end
+
+function Parser:and_expr()
+    result = self:relational_expr()
+
+    while self:current().type ~= "EOF"
+          and self:current().type == "AND" do
+            self:advance()
+            result = Node:new(
+                result.line,
+                {"and", result, self:relational_expr()}
+            )
     end
 
     return result
@@ -716,6 +743,22 @@ function Interpreter:eval(node, env)
         return self:eval_operation(
             function ()
                 return self:eval(node.sxp[2], env) >= self:eval(node.sxp[3], env)
+            end,
+            node
+        )
+
+    elseif node.sxp[1] == "and" then
+        return self:eval_operation(
+            function ()
+                return is_true(self:eval(node.sxp[2], env)) and is_true(self:eval(node.sxp[3], env))
+            end,
+            node
+        )
+
+    elseif node.sxp[1] == "or" then
+        return self:eval_operation(
+            function ()
+                return is_true(self:eval(node.sxp[2], env)) or iself:eval(node.sxp[3], env)
             end,
             node
         )
