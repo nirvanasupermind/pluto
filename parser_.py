@@ -1,7 +1,7 @@
-    from tokens import TokenType
-    from lexer import Lexer
+from tokens import TokenType
+from lexer import Lexer
 
-    class Parser:
+class Parser:
     def __init__(self, path, tokens):
         self.path = path
         self.tokens = iter(tokens)
