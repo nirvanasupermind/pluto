@@ -16,7 +16,7 @@ if len(sys.argv) >= 1:
     tree = parser.parse()
 
     interpreter = Interpreter(path)
-    result = interpreter.visit(tree)
+    result = interpreter.visit(tree, {})
 
     print('result: ')
     print(result)

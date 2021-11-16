@@ -28,17 +28,20 @@ class Parser:
 
     def statements(self):
         statements = [self.expr()]
-
-        while self.current_token.type != TokenType.EOF and self.current_token.type == TokenType.SEMICOLON:
-            self.advance()
-            statements.append(self.expr())
-            while self.current_token.type != TokenType.EOF and self.current_token.type == TokenType.SEMICOLON:
-                self.advance()
+    
+        while self.current_token.type != TokenType.EOF:
+            # self.advance()
+            statements.append(self.expr())        
 
         return ('statements', *statements)
 
     def expr(self):
-        return self.additive_expr()
+        result = self.additive_expr()
+
+        while self.current_token.type != TokenType.EOF and self.current_token.type == TokenType.SEMICOLON:
+            self.advance()
+
+        return result
 
     def additive_expr(self):
         result = self.multiplicative_expr()
@@ -100,6 +103,10 @@ class Parser:
         if token.type == TokenType.NUMBER:
             self.advance()
             return ('number', token.value)
+
+        elif token.type == TokenType.NAME:
+            self.advance()
+            return ('name', token.value)
 
         else:
             self.raise_error()

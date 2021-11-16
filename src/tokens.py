@@ -2,6 +2,8 @@ from enum import Enum, auto
 
 class TokenType(Enum):
     NUMBER = auto()
+    NAME = auto()
+    KEYWORD = auto()
     PLUS = auto()
     MINUS = auto()
     MULTIPLY = auto()
