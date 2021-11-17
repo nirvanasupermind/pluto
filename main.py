@@ -4,6 +4,7 @@ import sys
 from src.lexer import Lexer
 from src.parser_ import Parser
 from src.interpreter import Interpreter
+from src.global_env import global_env
 
 if len(sys.argv) >= 1:
     path = sys.argv[1]
@@ -16,7 +17,7 @@ if len(sys.argv) >= 1:
     tree = parser.parse()
 
     interpreter = Interpreter(path)
-    result = interpreter.visit(tree, {})
+    result = interpreter.visit(tree, global_env)
 
     print('result: ')
     print(result)

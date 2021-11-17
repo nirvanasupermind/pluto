@@ -16,32 +16,24 @@ class Parser:
             self.current_token = None
 
     def parse(self):
-        if self.current_token.type == TokenType.EOF:
+        return self.statements()
+
+    def statements(self, stop_at=TokenType.EOF):
+        if self.current_token.type == stop_at:
             return ('empty',)
 
-        result = self.statements()
-
-        if self.current_token.type != TokenType.EOF:
-            self.raise_error()
-
-        return result
-
-    def statements(self):
         statements = [self.expr()]
     
-        while self.current_token.type != TokenType.EOF:
-            # self.advance()
+        while self.current_token.type != stop_at:
             statements.append(self.expr())        
+
+        if self.current_token.type != stop_at:
+            self.raise_error()
 
         return ('statements', *statements)
 
     def expr(self):
-        result = self.assignment_expr()
-
-        while self.current_token.type != TokenType.EOF and self.current_token.type == TokenType.SEMICOLON:
-            self.advance()
-
-        return result
+        return self.assignment_expr()
 
     def assignment_expr(self):
         result = self.additive_expr()
@@ -117,5 +109,23 @@ class Parser:
             self.advance()
             return ('name', token.value)
 
+        elif token.type == TokenType.LCURLY:
+            return self.block_expr()
+
         else:
             self.raise_error()
+
+    def block_expr(self):
+        if self.current_token.type != TokenType.LCURLY:
+            self.raise_error()
+        
+        self.advance()
+        
+        body = self.statements(TokenType.RCURLY)
+
+        if self.current_token.type != TokenType.RCURLY:
+            self.raise_error()
+        
+        self.advance()
+
+        return ('block', body)

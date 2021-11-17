@@ -1,5 +1,3 @@
-(Work-in-progress)
-
 # Introduction
 # The Language
 ## Lexical Conventions
@@ -9,3 +7,5 @@
 ## Scope
 ## Error Handling
 ## Threads
+
+(Work-in-progress)

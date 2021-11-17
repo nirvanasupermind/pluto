@@ -1,4 +1,6 @@
 from src.null import Null
+from src.env import Env
+from src.global_env import global_env
 
 class Interpreter:
     def __init__(self, path):
@@ -19,7 +21,7 @@ class Interpreter:
         return node[1]
 
     def visit_name_node(self, node, env):
-        result = env.get(node[1], None)
+        result = env.get(node[1])
 
         if result == None:
             self.raise_error(f'{node[1]} is not defined')
@@ -50,17 +52,20 @@ class Interpreter:
         except TypeError:
             self.raise_error('invalid operation')
 
-    def visit_assign_node(self, node, env):
+    def visit_assign_node(self, node, env): 
+        # FYI node[1] = ('name', 'x')
+           
         if node[1][0] != 'name':
             self.raise_error('invalid left-hand side in assignment')
-        
+
         name = node[1][1]
         value = self.visit(node[2], env)
 
-        env[name] = value
+        return env.set(name, value)
 
-        return value
-
+    def visit_block_node(self, node, env):
+        block_env = Env(parent=env)
+        return self.visit(node[1], block_env)
 
     def visit_plus_node(self, node, env):
         try:

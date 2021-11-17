@@ -1,7 +1,7 @@
 import string
 from src.tokens import Token, TokenType
 
-WHITESPACE = ' \n\t'
+WHITESPACE = ' \t\r\n'
 DIGITS = '0123456789'
 LETTERS = '_' + string.ascii_letters
 KEYWORDS = [
@@ -51,6 +51,12 @@ class Lexer:
             elif self.current_char == ')':
                 self.advance()
                 tokens.append(Token(TokenType.RPAREN))
+            elif self.current_char == '{':
+                self.advance()
+                tokens.append(Token(TokenType.LCURLY))
+            elif self.current_char == '}':
+                self.advance()
+                tokens.append(Token(TokenType.RCURLY))
             elif self.current_char == '=':
                 self.advance()
                 tokens.append(Token(TokenType.EQ))
