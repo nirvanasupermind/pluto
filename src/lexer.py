@@ -51,6 +51,9 @@ class Lexer:
             elif self.current_char == ')':
                 self.advance()
                 tokens.append(Token(TokenType.RPAREN))
+            elif self.current_char == '=':
+                self.advance()
+                tokens.append(Token(TokenType.EQ))
             elif self.current_char == ';':
                 self.advance()
                 tokens.append(Token(TokenType.SEMICOLON))

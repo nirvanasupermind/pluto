@@ -50,6 +50,18 @@ class Interpreter:
         except TypeError:
             self.raise_error('invalid operation')
 
+    def visit_assign_node(self, node, env):
+        if node[1][0] != 'name':
+            self.raise_error('invalid left-hand side in assignment')
+        
+        name = node[1][1]
+        value = self.visit(node[2], env)
+
+        env[name] = value
+
+        return value
+
+
     def visit_plus_node(self, node, env):
         try:
             return +self.visit(node[1], env)

@@ -36,13 +36,22 @@ class Parser:
         return ('statements', *statements)
 
     def expr(self):
-        result = self.additive_expr()
+        result = self.assignment_expr()
 
         while self.current_token.type != TokenType.EOF and self.current_token.type == TokenType.SEMICOLON:
             self.advance()
 
         return result
 
+    def assignment_expr(self):
+        result = self.additive_expr()
+
+        if self.current_token.type == TokenType.EQ:
+            self.advance()
+            return ('assign', result, self.expr())
+        else:
+            return result
+   
     def additive_expr(self):
         result = self.multiplicative_expr()
 

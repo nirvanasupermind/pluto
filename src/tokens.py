@@ -11,6 +11,7 @@ class TokenType(Enum):
     LPAREN = auto()
     RPAREN = auto()
     DOT = auto()
+    EQ = auto()
     SEMICOLON = auto()
     EOF = auto()
 
