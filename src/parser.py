@@ -115,7 +115,10 @@ class Parser:
 
         elif token.matches(TokenType.KEYWORD, 'if'):
             return self.if_expr()
-            
+
+        elif token.matches(TokenType.KEYWORD, 'while'):
+            return self.while_expr()
+
         else:
             self.raise_error()
 
@@ -159,4 +162,22 @@ class Parser:
             return ('ifelse', condition, if_body, else_body)   
 
         return ('if', condition, if_body)
+
+    def while_expr(self):
+        self.advance()
+
+        if self.current_token.type != TokenType.LPAREN:
+            self.raise_error()
         
+        self.advance()
+
+        condition = self.expr()
+
+        if self.current_token.type != TokenType.RPAREN:
+            self.raise_error()
+        
+        self.advance()
+
+        body = self.block_expr()
+
+        return ('while', condition, body)

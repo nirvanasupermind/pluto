@@ -95,6 +95,14 @@ class Interpreter:
         else:
             return self.visit(node[3], env)
 
+    def visit_while_node(self, node, env):
+        condition = self.visit(node[1], env)
+
+        while is_true(condition):
+            self.visit(node[2], env)
+
+        return Symbol('null')
+
     def visit_statements_node(self, node, env):
         if len(node) == 0: 
             return Symbol('null')

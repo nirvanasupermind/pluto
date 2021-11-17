@@ -6,7 +6,8 @@ DIGITS = '0123456789'
 LETTERS = '_' + string.ascii_letters
 KEYWORDS = [
     'if',
-    'else'
+    'else',
+    'while'
 ]
 
 class Lexer:
