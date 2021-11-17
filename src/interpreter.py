@@ -1,6 +1,7 @@
-from src.null import Null
+from src.symbol import Symbol
 from src.env import Env
 from src.global_env import global_env
+from src.util import is_true
 
 class Interpreter:
     def __init__(self, path):
@@ -15,7 +16,7 @@ class Interpreter:
         return method(node, env)
 
     def visit_empty_node(self, node, env):
-        return Null()
+        return Symbol('null')
 
     def visit_number_node(self, node, env):
         return node[1]
@@ -52,21 +53,6 @@ class Interpreter:
         except TypeError:
             self.raise_error('invalid operation')
 
-    def visit_assign_node(self, node, env): 
-        # FYI node[1] = ('name', 'x')
-           
-        if node[1][0] != 'name':
-            self.raise_error('invalid left-hand side in assignment')
-
-        name = node[1][1]
-        value = self.visit(node[2], env)
-
-        return env.set(name, value)
-
-    def visit_block_node(self, node, env):
-        block_env = Env(parent=env)
-        return self.visit(node[1], block_env)
-
     def visit_plus_node(self, node, env):
         try:
             return +self.visit(node[1], env)
@@ -79,9 +65,39 @@ class Interpreter:
         except TypeError:
             self.raise_error('invalid operation')
     
+
+    def visit_assign_node(self, node, env):            
+        if node[1][0] != 'name':
+            self.raise_error('invalid left-hand side in assignment')
+
+        name = node[1][1]
+        value = self.visit(node[2], env)
+
+        return env.set(name, value)
+
+    def visit_block_node(self, node, env):
+        block_env = Env(parent=env)
+        return self.visit(node[1], block_env)
+
+    def visit_if_node(self, node, env):
+        condition = self.visit(node[1], env)
+
+        if is_true(condition):
+            return self.visit(node[2], env)
+        else:
+            return Symbol('null')
+
+    def visit_ifelse_node(self, node, env):
+        condition = self.visit(node[1], env)
+
+        if is_true(condition):
+            return self.visit(node[2], env)
+        else:
+            return self.visit(node[3], env)
+
     def visit_statements_node(self, node, env):
         if len(node) == 0: 
-            return Null()
+            return Symbol('null')
         
         for i in range(1, len(node) - 1):
             self.visit(node[i], env)

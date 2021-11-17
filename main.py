@@ -2,7 +2,7 @@
 
 import sys
 from src.lexer import Lexer
-from src.parser_ import Parser
+from src.parser import Parser
 from src.interpreter import Interpreter
 from src.global_env import global_env
 

@@ -95,6 +95,7 @@ class Parser:
             
             self.advance()
             return result
+
         else:
             return self.leaf_expr()
    
@@ -112,6 +113,9 @@ class Parser:
         elif token.type == TokenType.LCURLY:
             return self.block_expr()
 
+        elif token.matches(TokenType.KEYWORD, 'if'):
+            return self.if_expr()
+            
         else:
             self.raise_error()
 
@@ -121,11 +125,38 @@ class Parser:
         
         self.advance()
         
-        body = self.statements(TokenType.RCURLY)
+        statements = self.statements(TokenType.RCURLY)
 
         if self.current_token.type != TokenType.RCURLY:
             self.raise_error()
         
         self.advance()
 
-        return ('block', body)
+        return ('block', statements)
+
+    def if_expr(self):
+        self.advance()
+
+        if self.current_token.type != TokenType.LPAREN:
+            self.raise_error()
+        
+        self.advance()
+
+        condition = self.expr()
+
+        if self.current_token.type != TokenType.RPAREN:
+            self.raise_error()
+        
+        self.advance()
+
+        if_body = self.block_expr()
+
+        if self.current_token.matches(TokenType.KEYWORD, 'else'):
+            self.advance()
+
+            else_body = self.block_expr()
+            
+            return ('ifelse', condition, if_body, else_body)   
+
+        return ('if', condition, if_body)
+        

@@ -3,18 +3,18 @@ class Vec3 {
         this.x = x;
         this.y = y;
         this.z = z;
-    };
+    }
 
     function add(other) {
         return new Vec3(this.x + other.x, this.y + other.y, this.z + other.z);
-    };
+    }
     
     function toString() {
         return String.format("({0},{1},{2})", this.x, this.y, this.z);
-    };
-}; 
+    }
+};
 
-var a = new Vec3(1.0, 2.0, 3.0);
-var b = new Vec3(0.1, 0.2, 0.3);
+var a = new Vec3(1.0, 2.0, 3.0)
+var b = new Vec3(0.1, 0.2, 0.3)
 
-Console.println(a + b);
+println(a + b)
