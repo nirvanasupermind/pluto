@@ -1,4 +1,5 @@
 from src.symbol import Symbol
+from src.char import Char
 from src.env import Env
 from src.global_env import global_env
 from src.util import is_true
@@ -22,6 +23,9 @@ class Interpreter:
 
     def visit_number_node(self, node, env):
         return node[1]
+
+    def visit_char_node(self, node, env):
+        return Char(node[1])
 
     def visit_string_node(self, node, env):
         result = Object()

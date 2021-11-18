@@ -37,6 +37,8 @@ class Lexer:
                 self.advance()
             elif self.current_char in (DIGITS + '.'):
                 tokens.append(self.get_number())
+            elif self.current_char == "'":
+                tokens.append(self.get_char())
             elif self.current_char == '"':
                 tokens.append(self.get_string())
             elif self.current_char in (LETTERS + DIGITS):
@@ -98,6 +100,19 @@ class Lexer:
     
         return Token(TokenType.NUMBER, float(value))
     
+    def get_char(self):
+        self.advance()
+
+        char = self.current_char
+
+        self.advance()
+        if self.current_char != "'":
+            self.raise_error()
+        
+        self.advance()
+
+        return Token(TokenType.CHAR, char)
+
     def get_string(self):
         self.advance()
 

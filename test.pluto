@@ -1,7 +1,1 @@
-class Foo {
-    function negate() {
-        System.println("Hello world!")
-    }
-}
-
-System.println(-new Foo())
+System.println('a')

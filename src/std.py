@@ -17,7 +17,6 @@ def string_toString(args, this):
 
     return Symbol('null')
 
-
 def function_constructor(args, this): 
     if this != None:
         this.primitive_value = lambda args, this: Symbol('null')

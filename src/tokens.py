@@ -2,6 +2,7 @@ from enum import Enum, auto
 
 class TokenType(Enum):
     NUMBER = auto()
+    CHAR = auto()
     STRING = auto()
     NAME = auto()
     KEYWORD = auto()
