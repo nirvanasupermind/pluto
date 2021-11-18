@@ -1,5 +1,12 @@
-if(true) {
-    System.println(10)
-} else {
-    System.println(20)
+class Foo {
+    bar = 0
+
+    function baz() {
+        return 1
+    }
 }
+
+foo = new Foo()
+
+System.println(foo.bar)
+System.println(foo.baz())

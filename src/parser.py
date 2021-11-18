@@ -1,3 +1,4 @@
+from typing import Counter
 from src.tokens import TokenType
 
 class Parser:
@@ -33,7 +34,18 @@ class Parser:
         return ('statements', *statements)
 
     def expr(self):
+        if self.current_token.matches(TokenType.KEYWORD, 'return'):
+            return self.return_expr()
+
         return self.assignment_expr()
+
+
+    def return_expr(self):
+        self.advance()
+
+        expr = self.expr()
+
+        return ('return', expr)
 
     def assignment_expr(self):
         result = self.additive_expr()
@@ -83,6 +95,27 @@ class Parser:
             return ('minus', self.unary_expr())
 
         else:
+            return self.new_expr()
+
+    def new_expr(self):
+        if self.current_token.matches(TokenType.KEYWORD, 'new'):
+            self.advance()
+
+            result = self.paren_expr()
+
+
+
+            if self.current_token.type != TokenType.LPAREN:
+                self.raise_error()
+
+
+
+            args = self.arg_list()
+
+            result = ('new', result, args)
+
+            return result    
+        else:
             return self.call_expr()
 
     def call_expr(self):
@@ -99,7 +132,7 @@ class Parser:
             else:   
                 args = self.arg_list()
                 result = ('call', result, args)
-            
+
         return result
 
     def paren_expr(self):
@@ -139,6 +172,9 @@ class Parser:
 
         elif token.matches(TokenType.KEYWORD, 'function'):
             return self.function_expr()
+
+        elif token.matches(TokenType.KEYWORD, 'class'):
+            return self.class_expr()
 
         else:
             self.raise_error()
@@ -223,6 +259,22 @@ class Parser:
 
         return ('anonymous_function', arg_name_tokens, body)
 
+    def class_expr(self):
+        self.advance()
+
+        if self.current_token.type == TokenType.NAME:
+            name = self.current_token.value
+
+            self.advance()
+
+            body = self.block_expr()
+
+            return ('class', name, body)
+
+        body = self.block_expr()
+
+        return ('anonymous_class', body)
+
     # utility parsers
 
     def arg_name_list(self):
@@ -266,6 +318,7 @@ class Parser:
         
         self.advance()
 
+
         result = []
 
 
@@ -274,13 +327,9 @@ class Parser:
 
             if self.current_token.type != TokenType.RPAREN:
                 while self.current_token.type == TokenType.COMMA:
-                    self.advance()
-
-                    if self.current_token.type != TokenType.NAME:
-                        self.raise_error()
-                    
+                    self.advance()                    
                     result.append(self.expr())
-                
+
                 if self.current_token.type != TokenType.RPAREN:
                     self.raise_error()
 

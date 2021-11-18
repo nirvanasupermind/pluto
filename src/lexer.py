@@ -8,7 +8,10 @@ KEYWORDS = [
     'if',
     'else',
     'while',
-    'function'
+    'function',
+    'return',
+    'new',
+    'class'
 ]
 
 class Lexer:

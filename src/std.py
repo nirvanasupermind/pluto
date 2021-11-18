@@ -2,18 +2,26 @@ from src.symbol import Symbol
 from src.env import Env
 from src.object import Object
 
-    
-def system_exit(args):
+def object_constructor(args, this): 
+    return Symbol('null')
+
+def function_constructor(args, this): 
+    if this != None:
+        this.primitive_value = lambda args, this: Symbol('null')
+
+    return Symbol('null')
+
+def system_exit(args, this):
     exit()
     return Symbol('null')
     
-def system_print(args):
+def system_print(args, this):
     arg0 = args[0] if len(args) > 0 else Symbol('null')
 
     print(arg0, end='')
     return Symbol('null')
-
-def system_println(args):
+    
+def system_println(args, this):
     arg0 = args[0] if len(args) > 0 else Symbol('null')
 
     print(arg0)
@@ -24,8 +32,10 @@ true = Symbol('true')
 false = Symbol('false')
 
 object_class = Object()
+object_class.env.set('constructor', Object(object_constructor))
 
 function_class = Object()
+function_class.env.set('constructor', Object(function_constructor))
 
 system_class = Object()
 system_class.env.parent = object_class.env
