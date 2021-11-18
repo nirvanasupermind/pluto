@@ -162,6 +162,9 @@ class Interpreter:
 
             return self.visit(node[3], function_env)
         
+        result =  Object(function)
+        result.env.parent = global_env.get('Function')
+        
         return env.set(node[1], Object(function))
                        
     def visit_statements_node(self, node, env):
