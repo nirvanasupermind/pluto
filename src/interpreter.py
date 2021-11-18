@@ -24,7 +24,11 @@ class Interpreter:
         return node[1]
 
     def visit_string_node(self, node, env):
-        return node[1]
+        result = Object()
+        result.primitive_value = node[1]
+        result.env.parent = global_env.get('String').env
+
+        return result
 
     def visit_name_node(self, node, env):
         result = env.get(node[1])
@@ -115,10 +119,7 @@ class Interpreter:
         return obj
 
     def visit_plus_node(self, node, env):
-        try:
-            return +self.visit(node[1], env)
-        except TypeError:
-            self.raise_error()
+        return self.visit(node[1], env)
 
     def visit_minus_node(self, node, env):
         try:
