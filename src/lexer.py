@@ -1,7 +1,7 @@
 import string
 from src.tokens import Token, TokenType
 
-WHITESPACE = ' \t\r\n;'
+WHITESPACE = ' \t\r\n'
 DIGITS = '0123456789'
 LETTERS = '_' + string.ascii_letters
 KEYWORDS = [

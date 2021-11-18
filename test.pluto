@@ -1,5 +1,5 @@
-function cu(x) {
-    x * x * x 
+if(true) {
+    System.println(10)
+} else {
+    System.println(20)
 }
-
-System.println(cu(2))
