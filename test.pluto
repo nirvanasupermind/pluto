@@ -2,4 +2,4 @@ function cu(x) {
     x * x * x 
 }
 
-System.println(cu(10))
+System.println(cu(2))
