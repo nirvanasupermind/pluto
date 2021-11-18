@@ -1,1 +1,2 @@
-while(false) {}
+function cu(x) { x * x * x }
+System.println(cu(2))

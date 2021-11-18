@@ -1,13 +1,14 @@
 import string
 from src.tokens import Token, TokenType
 
-WHITESPACE = ' \t\r\n'
+WHITESPACE = ' \t\r\n;'
 DIGITS = '0123456789'
 LETTERS = '_' + string.ascii_letters
 KEYWORDS = [
     'if',
     'else',
-    'while'
+    'while',
+    'function'
 ]
 
 class Lexer:
@@ -47,6 +48,9 @@ class Lexer:
             elif self.current_char == '/':
                 self.advance()
                 tokens.append(Token(TokenType.DIVIDE))
+            elif self.current_char == ',':
+                self.advance()
+                tokens.append(Token(TokenType.COMMA))
             elif self.current_char == '(':
                 self.advance()
                 tokens.append(Token(TokenType.LPAREN))

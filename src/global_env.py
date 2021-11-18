@@ -1,7 +1,10 @@
-from src.symbol import Symbol
 from src.env import Env
+from src.std import *
 
 global_env = Env(is_global_env=True)
-global_env.set('null', Symbol('null'))
-global_env.set('true', Symbol('true'))
-global_env.set('false', Symbol('false'))
+global_env.set('null', null)
+global_env.set('true', true)
+global_env.set('false', false)
+global_env.set('Object', object_class)
+global_env.set('Function', function_class)
+global_env.set('System', system_class)

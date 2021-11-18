@@ -6,7 +6,25 @@ from src.parser import Parser
 from src.interpreter import Interpreter
 from src.global_env import global_env
 
-if len(sys.argv) >= 1:
+if len(sys.argv) == 1:
+    while True:
+        path = 'stdin'
+        text = input('> ')
+
+        if text.strip() == '': continue
+
+        lexer = Lexer(path, text)
+        tokens = lexer.get_tokens()
+
+        parser = Parser(path, tokens)
+        tree = parser.parse()
+
+        interpreter = Interpreter(path)
+        result = interpreter.visit(tree, global_env)
+
+        print(result)
+
+elif len(sys.argv) >= 1:
     path = sys.argv[1]
     text = open(path, 'r').read()
       
@@ -17,7 +35,4 @@ if len(sys.argv) >= 1:
     tree = parser.parse()
 
     interpreter = Interpreter(path)
-    result = interpreter.visit(tree, global_env)
-
-    print('result: ')
-    print(result)
+    interpreter.visit(tree, global_env)

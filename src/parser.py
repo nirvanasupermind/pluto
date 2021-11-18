@@ -69,6 +69,7 @@ class Parser:
                 result = ('divide', result, self.unary_expr())
                 
         return result
+              
 
     def unary_expr(self):
         token = self.current_token
@@ -82,7 +83,24 @@ class Parser:
             return ('minus', self.unary_expr())
 
         else:
-            return self.paren_expr()
+            return self.call_expr()
+
+    def call_expr(self):
+        result = self.paren_expr()
+
+        while self.current_token.type == TokenType.LPAREN or self.current_token.type == TokenType.DOT:
+            if self.current_token.type == TokenType.DOT:
+                self.advance()
+                if self.current_token.type != TokenType.NAME:
+                    self.raise_error()
+                
+                result = ('member', result, self.current_token.value)
+                self.advance()
+            else:   
+                args = self.arg_list()
+                result = ('call', result, args)
+            
+        return result
 
     def paren_expr(self):
         
@@ -118,6 +136,9 @@ class Parser:
 
         elif token.matches(TokenType.KEYWORD, 'while'):
             return self.while_expr()
+
+        elif token.matches(TokenType.KEYWORD, 'function'):
+            return self.function_expr()
 
         else:
             self.raise_error()
@@ -159,7 +180,7 @@ class Parser:
 
             else_body = self.block_expr()
             
-            return ('ifelse', condition, if_body, else_body)   
+            return ('if_else', condition, if_body, else_body)   
 
         return ('if', condition, if_body)
 
@@ -180,4 +201,90 @@ class Parser:
 
         body = self.block_expr()
 
-        return ('while', condition, body)
+        return ('while', condition, body) 
+
+    def function_expr(self):
+        self.advance()
+
+        if self.current_token.type == TokenType.NAME:
+            name = self.current_token.value
+
+            self.advance()
+
+            arg_name_tokens = self.arg_name_list()
+            
+            body = self.block_expr()
+
+            return ('function', name, arg_name_tokens, body)
+
+        arg_name_tokens = self.arg_name_list()
+            
+        body = self.block_expr()
+
+        return ('anonymous_function', arg_name_tokens, body)
+
+    # utility parsers
+
+    def arg_name_list(self):
+        if self.current_token.type != TokenType.LPAREN:
+            self.raise_error()
+        
+        self.advance()
+
+        arg_name_tokens = []
+
+
+        if self.current_token.type != TokenType.RPAREN:
+            if self.current_token.type != TokenType.NAME:
+                self.raise_error()
+
+            arg_name_tokens.append(self.current_token)
+
+            self.advance()
+
+            if self.current_token.type != TokenType.RPAREN:
+                while self.current_token.type == TokenType.COMMA:
+                    self.advance()
+
+                    if self.current_token.type != TokenType.NAME:
+                        self.raise_error()
+                    
+                    arg_name_tokens.append(self.current_token)
+                    self.advance()
+                
+                if self.current_token.type != TokenType.RPAREN:
+                    self.raise_error()
+
+            
+        self.advance()
+
+        return arg_name_tokens
+
+    def arg_list(self):
+        if self.current_token.type != TokenType.LPAREN:
+            self.raise_error()
+        
+        self.advance()
+
+        result = []
+
+
+        if self.current_token.type != TokenType.RPAREN:
+            result.append(self.expr())
+
+            if self.current_token.type != TokenType.RPAREN:
+                while self.current_token.type == TokenType.COMMA:
+                    self.advance()
+
+                    if self.current_token.type != TokenType.NAME:
+                        self.raise_error()
+                    
+                    result.append(self.expr())
+                
+                if self.current_token.type != TokenType.RPAREN:
+                    self.raise_error()
+
+            
+        self.advance()
+
+        return result

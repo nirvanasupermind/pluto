@@ -17,4 +17,4 @@ class Vec3 {
 var a = new Vec3(1.0, 2.0, 3.0)
 var b = new Vec3(0.1, 0.2, 0.3)
 
-println(a + b)
+System.println(a + b)

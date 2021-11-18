@@ -16,3 +16,6 @@ class Env:
         self.record[name] = value
 
         return value
+    
+    def has(self, name):
+        return self.get(name) != None
