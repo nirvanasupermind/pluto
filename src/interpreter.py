@@ -9,8 +9,8 @@ class Interpreter:
         self.path = path
         self.should_return = False
 
-    def raise_error(self, msg):
-        raise SystemExit(f'{self.path}: {msg}')
+    def raise_error(self):
+        raise SystemExit(f'{self.path}: runtime error')
 
     def visit(self, node, env):
         method_name = f'visit_{node[0]}_node'
@@ -23,11 +23,14 @@ class Interpreter:
     def visit_number_node(self, node, env):
         return node[1]
 
+    def visit_string_node(self, node, env):
+        return node[1]
+
     def visit_name_node(self, node, env):
         result = env.get(node[1])
 
         if result == None:
-            self.raise_error(f'{node[1]} is not defined')
+            self.raise_error()
         
         return result
 
@@ -37,7 +40,7 @@ class Interpreter:
         result = obj.env.get(node[2])
 
         if result == None:
-            self.raise_error(f'{node[2]} is not defined')
+            self.raise_error()
         
         return result
 
@@ -45,31 +48,31 @@ class Interpreter:
         try:
             return self.visit(node[1], env) + self.visit(node[2], env)
         except TypeError:
-            self.raise_error('invalid operation')
+            self.raise_error()
     
     def visit_subtract_node(self, node, env):
         try:
             return self.visit(node[1], env) - self.visit(node[2], env)
         except TypeError:
-            self.raise_error('invalid operation')
+            self.raise_error()
 
     def visit_multiply_node(self, node, env):
         try:
             return self.visit(node[1], env) * self.visit(node[2], env)
         except TypeError:
-            self.raise_error('invalid operation')
+            self.raise_error()
 
     def visit_divide_node(self, node, env):
         try:
             return self.visit(node[1], env) / self.visit(node[2], env)
         except TypeError:
-            self.raise_error('invalid operation')
+            self.raise_error()
 
     def visit_call_node(self, node, env):
         function = self.visit(node[1], env)
 
         if not isinstance(function, Object): 
-            self.raise_error(f'{function} is not an object')
+            self.raise_error()
 
         args = []
 
@@ -82,13 +85,13 @@ class Interpreter:
 
             return function.primitive_value(args, None)
         except TypeError:
-            self.raise_error('invalid operation')
+            self.raise_error()
 
     def visit_new_node(self, node, env):
         cls = self.visit(node[1], env)
 
         if not isinstance(cls, Object): 
-            self.raise_error(f'{cls} is not an object')
+            self.raise_error()
 
         args = []
 
@@ -102,12 +105,12 @@ class Interpreter:
         if cls.env.has('constructor'):
             constructor = cls.env.get('constructor')
             if not isinstance(constructor, Object): 
-                self.raise_error(f'{constructor} is not an object')
+                self.raise_error()
 
             try:
                 constructor.primitive_value(args, obj)
             except TypeError:
-                self.raise_error('invalid operation')
+                self.raise_error()
         
         return obj
 
@@ -115,20 +118,20 @@ class Interpreter:
         try:
             return +self.visit(node[1], env)
         except TypeError:
-            self.raise_error('invalid operation')
+            self.raise_error()
 
     def visit_minus_node(self, node, env):
         try:
             return -self.visit(node[1], env)
         except TypeError:
-            self.raise_error('invalid operation')
+            self.raise_error()
 
     def visit_assign_node(self, node, env): 
         if node[1][0] == 'member':   
             obj = self.visit(node[1][1], env)
 
             if not isinstance(obj, Object): 
-                self.raise_error(f'{obj} is not an object')
+                self.raise_error()
 
             name = node[1][2]
 
@@ -137,7 +140,7 @@ class Interpreter:
             return obj.env.set(name, value)
         else:     
             if node[1][0] != 'name':
-                self.raise_error('invalid left-hand side in assignment')
+                self.raise_error()
 
             name = node[1][1]
             value = self.visit(node[2], env)

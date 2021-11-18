@@ -1,12 +1,1 @@
-class Foo {
-    bar = 0
-
-    function baz() {
-        return 1
-    }
-}
-
-foo = new Foo()
-
-System.println(foo.bar)
-System.println(foo.baz())
+System.println("Hello world!")

@@ -157,6 +157,10 @@ class Parser:
             self.advance()
             return ('number', token.value)
 
+        elif token.type == TokenType.STRING:
+            self.advance()
+            return ('string', token.value)
+
         elif token.type == TokenType.NAME:
             self.advance()
             return ('name', token.value)

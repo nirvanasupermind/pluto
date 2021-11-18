@@ -5,6 +5,19 @@ from src.object import Object
 def object_constructor(args, this): 
     return Symbol('null')
 
+def string_constructor(args, this): 
+    if this != None:
+        this.primitive_value = ''
+
+    return Symbol('null')
+
+def string_toString(args, this): 
+    if this != None:
+        return this
+
+    return Symbol('null')
+
+
 def function_constructor(args, this): 
     if this != None:
         this.primitive_value = lambda args, this: Symbol('null')
@@ -33,6 +46,10 @@ false = Symbol('false')
 
 object_class = Object()
 object_class.env.set('constructor', Object(object_constructor))
+
+string_class = Object()
+string_class.env.set('constructor', Object(string_constructor))
+string_class.env.set('toString', Object(string_toString))
 
 function_class = Object()
 function_class.env.set('constructor', Object(function_constructor))
