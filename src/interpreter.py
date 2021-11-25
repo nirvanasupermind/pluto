@@ -30,7 +30,7 @@ class Interpreter:
     def visit_string_node(self, node, env):
         result = Object()
         result.primitive_value = node[1]
-        result.env.parent = global_env.get('String').env
+        result.klass = global_env.get('String').env
 
         return result
 
@@ -45,7 +45,10 @@ class Interpreter:
     def visit_member_node(self, node, env):
         obj = self.visit(node[1], env)
 
-        result = obj.env.get(node[2])
+        if not isinstance(obj, Object): 
+            self.raise_error()
+
+        result = obj.get(node[2])
 
         if result == None:
             self.raise_error()
@@ -96,9 +99,9 @@ class Interpreter:
             self.raise_error()
 
     def visit_new_node(self, node, env):
-        cls = self.visit(node[1], env)
+        klass = self.visit(node[1], env)
 
-        if not isinstance(cls, Object): 
+        if not isinstance(klass, Object): 
             self.raise_error()
 
         args = []
@@ -107,11 +110,11 @@ class Interpreter:
             args.append(self.visit(arg_node, env))
 
         obj = Object()
+        obj.klass = klass
     
-        obj.env.parent = cls.env
+        if klass.has('constructor'):
+            constructor = klass.get('constructor')
 
-        if cls.env.has('constructor'):
-            constructor = cls.env.get('constructor')
             if not isinstance(constructor, Object): 
                 self.raise_error()
 
@@ -142,7 +145,7 @@ class Interpreter:
 
             value = self.visit(node[2], env)
 
-            return obj.env.set(name, value)
+            return obj.set(name, value)
         else:     
             if node[1][0] != 'name':
                 self.raise_error()
@@ -220,7 +223,7 @@ class Interpreter:
             return self.visit(node[3], function_env)
         
         result =  Object(function)
-        result.env.parent = global_env.get('Function')
+        result.klass = global_env.get('Function')
         
         return env.set(node[1], Object(function))
 
@@ -243,16 +246,16 @@ class Interpreter:
 
         class_env.record.update(block_env.record)
 
-        cls = Object()
-        cls.env = class_env
+        klass = Object()
+        klass.update(class_env)
 
-        return cls
+        return klass
 
 
     def visit_class_node(self, node, env):
         result = Object()
 
-        class_env = Env(parent=global_env.get('Object').env)
+        class_env = Env()
         
         block_env = Env(parent=env)
 
@@ -268,12 +271,14 @@ class Interpreter:
 
         class_env.record.update(block_env.record)
 
-        cls = Object()
-        cls.env = class_env
+        klass = Object()
+        klass.klass = global_env.get('Class')
+        klass.base = global_env.get('Object')
+        klass.update(class_env)
 
-        env.set(node[1], cls)
+        env.set(node[1], klass)
 
-        return cls
+        return klass
 
     def visit_return_node(self, node, env):
         self.should_return = True

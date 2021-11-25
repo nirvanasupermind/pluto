@@ -1,3 +1,4 @@
+import string
 from src.symbol import Symbol
 from src.env import Env
 from src.object import Object
@@ -44,17 +45,26 @@ true = Symbol('true')
 false = Symbol('false')
 
 object_class = Object()
-object_class.env.set('constructor', Object(object_constructor))
+object_class.set('constructor', Object(object_constructor))
+
+class_class = Object()
+# class_class.klass = class_class
+object_class.klass = class_class
 
 string_class = Object()
-string_class.env.set('constructor', Object(string_constructor))
-string_class.env.set('toString', Object(string_toString))
+string_class.klass = class_class
+string_class.base = object_class
+string_class.set('constructor', Object(string_constructor))
+string_class.set('toString', Object(string_toString))
 
 function_class = Object()
-function_class.env.set('constructor', Object(function_constructor))
+function_class.klass = class_class
+function_class.base = object_class
+function_class.set('constructor', Object(function_constructor))
 
 system_class = Object()
-system_class.env.parent = object_class.env
-system_class.env.set('exit', Object(system_exit))
-system_class.env.set('print', Object(system_print))
-system_class.env.set('println', Object(system_println))
+system_class.klass = class_class
+system_class.base = object_class
+system_class.set('exit', Object(system_exit))
+system_class.set('print', Object(system_print))
+system_class.set('println', Object(system_println))

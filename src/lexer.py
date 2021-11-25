@@ -16,7 +16,8 @@ KEYWORDS = [
 
 ESCAPE_CHARACTERS = {
     'n': '\n',
-    't': '\t'
+    't': '\t',
+    'r': '\r'
 }
 
 class Lexer:

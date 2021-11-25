@@ -1,5 +1,9 @@
 class Foo {
-    bar = 10
+    bar = 5
+    baz = 10
 }
 
-System.println(new Foo())
+o = new Object()
+o.foo = Foo
+
+System.println(o)
