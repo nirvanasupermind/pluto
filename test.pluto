@@ -1,1 +1,5 @@
-System.println("2")
+class Foo {
+    bar = 10
+}
+
+System.println(new Foo())
