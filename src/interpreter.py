@@ -30,7 +30,7 @@ class Interpreter:
     def visit_string_node(self, node, env):
         result = Object()
         result.primitive_value = node[1]
-        result.klass = global_env.get('String').env
+        result.klass = global_env.get('String')
 
         return result
 
@@ -93,6 +93,36 @@ class Interpreter:
             args.append(self.visit(arg_node, env))
 
         try:
+            if function.primitive_value == None:
+                klass = self.visit(node[1], env)
+
+                if not isinstance(klass, Object): 
+                    self.raise_error()
+
+                args = []
+
+                for arg_node in node[2]:
+                    args.append(self.visit(arg_node, env))
+
+                obj = Object()
+                obj.klass = klass
+            
+                if klass.has('constructor'):
+                    constructor = klass.get('constructor')
+
+                    if not isinstance(constructor, Object): 
+                        self.raise_error()
+
+                    try:
+                        constructor.primitive_value(args, obj)
+                    except TypeError:
+                        self.raise_error()
+                
+                if should_return:
+                    self.should_return = True
+
+                return obj
+
             if node[1][0] == 'member':
                 if should_return:
                     self.should_return = True
@@ -105,40 +135,6 @@ class Interpreter:
             return function.primitive_value(args, None)
         except TypeError:
             self.raise_error()
-
-    def visit_new_node(self, node, env):
-        should_return = self.should_return
-
-        # print('!!!!*@398u4y382983u7y82')
-        # print(node)
-        klass = self.visit(node[1], env)
-
-        if not isinstance(klass, Object): 
-            self.raise_error()
-
-        args = []
-
-        for arg_node in node[2]:
-            args.append(self.visit(arg_node, env))
-
-        obj = Object()
-        obj.klass = klass
-    
-        if klass.has('constructor'):
-            constructor = klass.get('constructor')
-
-            if not isinstance(constructor, Object): 
-                self.raise_error()
-
-            try:
-                constructor.primitive_value(args, obj)
-            except TypeError:
-                self.raise_error()
-        
-        if should_return:
-            self.should_return = True
-
-        return obj
 
     def visit_plus_node(self, node, env):
         return self.visit(node[1], env)
@@ -245,27 +241,21 @@ class Interpreter:
     def visit_anonymous_class_node(self, node, env):
         result = Object()
 
-        class_env = Env(parent=global_env.get('Object'))
+        class_env = Env()
         
         block_env = Env(parent=env)
 
-        if len(node) == 0: 
-            return Symbol('null')
-        
-        self.should_return = False
-
         for i in range(1, len(node[1])):
             result = self.visit(node[1][i], block_env)
-            if self.should_return:
-                return result        
 
         class_env.record.update(block_env.record)
 
         klass = Object()
+        klass.klass = global_env.get('Class')
+        klass.base = global_env.get('Object')
         klass.update(class_env)
 
         return klass
-
 
     def visit_class_node(self, node, env):
         result = Object()

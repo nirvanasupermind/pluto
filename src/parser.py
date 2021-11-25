@@ -1,4 +1,3 @@
-from typing import Counter
 from src.tokens import TokenType
 
 class Parser:
@@ -94,27 +93,6 @@ class Parser:
             self.advance()
             return ('minus', self.unary_expr())
 
-        else:
-            return self.new_expr()
-
-    def new_expr(self):
-        if self.current_token.matches(TokenType.KEYWORD, 'new'):
-            self.advance()
-
-            result = self.paren_expr()
-
-
-
-            if self.current_token.type != TokenType.LPAREN:
-                self.raise_error()
-
-
-
-            args = self.arg_list()
-
-            result = ('new', result, args)
-
-            return result    
         else:
             return self.call_expr()
 

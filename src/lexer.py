@@ -10,8 +10,8 @@ KEYWORDS = [
     'while',
     'function',
     'return',
-    'new',
-    'class'
+    'class',
+    'enum'
 ]
 
 ESCAPE_CHARACTERS = {
