@@ -1,9 +1,17 @@
-class Foo {
-    bar = 5
-    baz = 10
+class Vector3 {
+    function constructor(x, y, z) {
+        this.x = x
+        this.y = y
+        this.z = z
+    }
+
+    function add(other) {
+        return new Vector3(this.x + other.x, this.y + other.y, this.z + other.z)
+    }
 }
 
-o = new Object()
-o.foo = Foo
 
-System.println(o)
+v1 = new Vector3(1, 2, 3)
+v2 = new Vector3(0.1, 0.2, 0.3)
+
+System.println(v1 + v2)

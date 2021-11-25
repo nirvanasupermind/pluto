@@ -80,6 +80,8 @@ class Interpreter:
             self.raise_error()
 
     def visit_call_node(self, node, env):
+        should_return = self.should_return
+
         function = self.visit(node[1], env)
 
         if not isinstance(function, Object): 
@@ -92,13 +94,23 @@ class Interpreter:
 
         try:
             if node[1][0] == 'member':
+                if should_return:
+                    self.should_return = True
+
                 return function.primitive_value(args, self.visit(node[1][1], env))
+
+            if should_return:
+                self.should_return = True
 
             return function.primitive_value(args, None)
         except TypeError:
             self.raise_error()
 
     def visit_new_node(self, node, env):
+        should_return = self.should_return
+
+        # print('!!!!*@398u4y382983u7y82')
+        # print(node)
         klass = self.visit(node[1], env)
 
         if not isinstance(klass, Object): 
@@ -123,6 +135,9 @@ class Interpreter:
             except TypeError:
                 self.raise_error()
         
+        if should_return:
+            self.should_return = True
+
         return obj
 
     def visit_plus_node(self, node, env):
@@ -230,7 +245,7 @@ class Interpreter:
     def visit_anonymous_class_node(self, node, env):
         result = Object()
 
-        class_env = Env(parent=global_env.get('Object').env)
+        class_env = Env(parent=global_env.get('Object'))
         
         block_env = Env(parent=env)
 

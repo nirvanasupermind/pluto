@@ -164,12 +164,10 @@ class Lexer:
 
         self.advance()
 
-        while self.current_char != None and self.current_char in LETTERS:            
+        while self.current_char != None and self.current_char in (LETTERS + DIGITS):            
             value += self.current_char
             self.advance()
 
-        if value == '.': 
-            return Token(TokenType.DOT)
 
         if value in KEYWORDS:
             return Token(TokenType.KEYWORD, value)     
