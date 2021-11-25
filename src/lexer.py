@@ -14,6 +14,11 @@ KEYWORDS = [
     'class'
 ]
 
+ESCAPE_CHARACTERS = {
+    'n': '\n',
+    't': '\t'
+}
+
 class Lexer:
     def __init__(self, path, text):
         self.path = path
@@ -101,33 +106,55 @@ class Lexer:
         return Token(TokenType.NUMBER, float(value))
     
     def get_char(self):
-        self.advance()
-
-        char = self.current_char
-
-        self.advance()
-        if self.current_char != "'":
-            self.raise_error()
+        value = ''
+        escape_character = False
         
         self.advance()
 
-        return Token(TokenType.CHAR, char)
+        while self.current_char != "'":
+            if self.current_char == None:
+                self.raise_error()
 
-    def get_string(self):
+            if escape_character:
+                value += ESCAPE_CHARACTERS.get(self.current_char, self.current_char)
+                escape_character = False
+            else:
+                if self.current_char == '\\':
+                    escape_character = True
+                else:
+                    value += self.current_char
+                
+            self.advance()
+        
         self.advance()
 
-        value = self.current_char
-        decimal_point_count = 0
+        if len(value) != 1:
+            self.raise_error()
 
+        return Token(TokenType.CHAR, value)
+
+    def get_string(self):
+        value = ''
+        escape_character = False
+        
         self.advance()
 
         while self.current_char != '"':
             if self.current_char == None:
                 self.raise_error()
+                escape_character = False
 
-            value += self.current_char
+            if escape_character:
+                value += ESCAPE_CHARACTERS.get(self.current_char, self.current_char)
+            else:
+                if self.current_char == '\\':
+                    escape_character = True
+                else:
+                    value += self.current_char
+                
+
             self.advance()
-
+            
         self.advance()
         return Token(TokenType.STRING, value)
 
