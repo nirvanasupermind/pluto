@@ -1,17 +1,20 @@
-class Vector3 {
-    function constructor(x, y, z) {
-        this.x = x
-        this.y = y
-        this.z = z
+class Animal {
+    function sound() {
+        System.println("The animal makes a sound")
     }
 
-    function add(other) {
-        return Vector3(this.x + other.x, this.y + other.y, this.z + other.z)
+    function sleep() {
+        System.println("The animal sleeps")        
     }
 }
 
+class Dog extends Animal {
+    function sound() {
+        System.println("The dog barks")
+    }
+}
 
-v1 = Vector3(1, 2, 3)
-v2 = Vector3(0.1, 0.2, 0.3)
+dog = Dog()
 
-System.println(v1 + v2)
+dog.sound()
+dog.sleep()

@@ -285,6 +285,70 @@ class Interpreter:
 
         return klass
 
+    def visit_anonymous_derived_class_node(self, node, env):
+        base_class = self.visit(node[1], env)
+
+        if not isinstance(base_class, Object):
+            self.raise_error()
+
+        result = Object()
+
+        class_env = Env()
+        
+        block_env = Env(parent=env)
+
+        if len(node) == 0: 
+            return Symbol('null')
+        
+        self.should_return = False
+
+        for i in range(1, len(node[2])):
+            result = self.visit(node[2][i], block_env)
+            if self.should_return:
+                return result        
+
+        class_env.record.update(block_env.record)
+
+        klass = Object()
+        klass.klass = global_env.get('Class')
+        klass.base = base_class
+        klass.update(class_env)
+
+        return klass
+
+    def visit_derived_class_node(self, node, env):
+        base_class = self.visit(node[2], env)
+
+        if not isinstance(base_class, Object):
+            self.raise_error()
+
+        result = Object()
+
+        class_env = Env()
+        
+        block_env = Env(parent=env)
+
+        if len(node) == 0: 
+            return Symbol('null')
+        
+        self.should_return = False
+
+        for i in range(1, len(node[3])):
+            result = self.visit(node[3][i], block_env)
+            if self.should_return:
+                return result        
+
+        class_env.record.update(block_env.record)
+
+        klass = Object()
+        klass.klass = global_env.get('Class')
+        klass.base = base_class
+        klass.update(class_env)
+
+        env.set(node[1], klass)
+
+        return klass
+
     def visit_return_node(self, node, env):
         self.should_return = True
         return self.visit(node[1], env)

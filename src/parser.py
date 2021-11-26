@@ -248,10 +248,28 @@ class Parser:
     def class_expr(self):
         self.advance()
 
+        if self.current_token.matches(TokenType.KEYWORD, 'extends'):
+            self.advance()
+
+            base_class = self.expr()
+
+            body = self.block_expr()
+
+            return ('anonymous_derived_class', base_class, body) 
+
         if self.current_token.type == TokenType.NAME:
             name = self.current_token.value
 
             self.advance()
+
+            if self.current_token.matches(TokenType.KEYWORD, 'extends'):
+                self.advance()
+
+                base_class = self.expr()
+
+                body = self.block_expr()
+
+                return ('derived_class', name, base_class, body) 
 
             body = self.block_expr()
 

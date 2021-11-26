@@ -11,7 +11,8 @@ KEYWORDS = [
     'function',
     'return',
     'class',
-    'enum'
+    'enum',
+    'extends'
 ]
 
 ESCAPE_CHARACTERS = {
