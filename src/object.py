@@ -15,7 +15,6 @@ class Object:
         self.base = base
         self.uuid = f'{uuid.uuid4()}'
 
-
     def update(self, env):
         self.record.update(env.record)
 

@@ -47,13 +47,31 @@ class Parser:
         return ('return', expr)
 
     def assignment_expr(self):
-        result = self.equality_expr()
+        result = self.or_expr()
 
         if self.current_token.type == TokenType.EQ:
             self.advance()
             return ('assign', result, self.expr())
         else:
             return result
+
+    def or_expr(self):
+        result = self.and_expr()
+
+        while self.current_token.type != TokenType.EOF and self.current_token.type == TokenType.OR:
+            self.advance()
+            result = ('or', result, self.and_expr())
+ 
+        return result
+
+    def and_expr(self):
+        result = self.equality_expr()
+
+        while self.current_token.type != TokenType.EOF and self.current_token.type == TokenType.AND:
+            self.advance()
+            result = ('and', result, self.equality_expr())
+ 
+        return result
 
     def equality_expr(self):
         result = self.relational_expr()
@@ -124,6 +142,10 @@ class Parser:
         elif token.type == TokenType.MINUS:
             self.advance()
             return ('minus', self.unary_expr())
+
+        elif token.type == TokenType.NOT:
+            self.advance()
+            return ('not', self.unary_expr())
 
         else:
             return self.call_expr()

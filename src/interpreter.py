@@ -5,11 +5,11 @@ from src.env import Env
 from src.global_env import global_env
 from src.object import Object
 
-def is_true(v):
-    if isinstance(v, Symbol):
-        return v.symbol != 'false' and v.symbol != 'null'
+# def v:
+#     if isinstance(v, Symbol):
+#         return v.symbol != 'false' and v.symbol != 'null'
     
-    return True
+#     return True
 
 class Interpreter:
     def __init__(self, path):
@@ -142,6 +142,24 @@ class Interpreter:
                 return Symbol('false')
         except TypeError:
             self.raise_error()
+        
+    def visit_and_node(self, node, env):
+        try:
+            if self.visit(node[1], env) and self.visit(node[2], env):
+                return Symbol('true')
+            else:
+                return Symbol('false')
+        except TypeError:
+            self.raise_error()
+
+    def visit_or_node(self, node, env):
+        try:
+            if self.visit(node[1], env) or self.visit(node[2], env):
+                return Symbol('true')
+            else:
+                return Symbol('false')
+        except TypeError:
+            self.raise_error()
 
     def visit_call_node(self, node, env):
         should_return = self.should_return
@@ -181,7 +199,9 @@ class Interpreter:
                         constructor.primitive_value(args, obj)
                     except TypeError:
                         self.raise_error()
-                
+                    except SystemExit: # used in standard functions to raise errors
+                        self.raise_error()
+
                 if should_return:
                     self.should_return = True
 
@@ -248,7 +268,7 @@ class Interpreter:
     def visit_if_node(self, node, env):
         condition = self.visit(node[1], env)
 
-        if is_true(condition):
+        if condition:
             return self.visit(node[2], env)
         else:
             return Symbol('null')
@@ -256,7 +276,7 @@ class Interpreter:
     def visit_if_else_node(self, node, env):
         condition = self.visit(node[1], env)
 
-        if is_true(condition):
+        if condition:
             return self.visit(node[2], env)
         else:
             return self.visit(node[3], env)
@@ -264,7 +284,7 @@ class Interpreter:
     def visit_while_node(self, node, env):
         condition = self.visit(node[1], env)
 
-        while is_true(condition):
+        while condition:
             self.visit(node[2], env)
 
         return Symbol('null')
