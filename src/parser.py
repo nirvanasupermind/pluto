@@ -47,14 +47,46 @@ class Parser:
         return ('return', expr)
 
     def assignment_expr(self):
-        result = self.additive_expr()
+        result = self.equality_expr()
 
         if self.current_token.type == TokenType.EQ:
             self.advance()
             return ('assign', result, self.expr())
         else:
             return result
-   
+
+    def equality_expr(self):
+        result = self.relational_expr()
+
+        while self.current_token.type != TokenType.EOF and self.current_token.type in (TokenType.EE, TokenType.NE):
+            if self.current_token.type == TokenType.EE:
+                self.advance()
+                result = ('eq', result, self.relational_expr())
+            elif self.current_token.type == TokenType.NE:
+                self.advance()
+                result = ('ne', result, self.relational_expr())
+
+        return result
+
+    def relational_expr(self):
+        result = self.additive_expr()
+
+        while self.current_token.type != TokenType.EOF and self.current_token.type in (TokenType.LT, TokenType.LE, TokenType.GT, TokenType.GE):
+            if self.current_token.type == TokenType.LT:
+                self.advance()
+                result = ('lt', result, self.additive_expr())
+            elif self.current_token.type == TokenType.LE:
+                self.advance()
+                result = ('le', result, self.additive_expr())
+            elif self.current_token.type == TokenType.GT:
+                self.advance()
+                result = ('gt', result, self.additive_expr())
+            elif self.current_token.type == TokenType.GE:
+                self.advance()
+                result = ('ge', result, self.additive_expr())
+            
+        return result
+
     def additive_expr(self):
         result = self.multiplicative_expr()
 

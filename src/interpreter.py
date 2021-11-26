@@ -41,7 +41,7 @@ class Interpreter:
 
     def visit_name_node(self, node, env):
         result = env.get(node[1])
-
+        
         if result == None:
             self.raise_error()
         
@@ -81,6 +81,60 @@ class Interpreter:
     def visit_divide_node(self, node, env):
         try:
             return self.visit(node[1], env) / self.visit(node[2], env)
+        except TypeError:
+            self.raise_error()
+
+    def visit_lt_node(self, node, env):
+        try:
+            if self.visit(node[1], env) < self.visit(node[2], env):
+                return Symbol('true')
+            else:
+                return Symbol('false')
+        except TypeError:
+            self.raise_error()
+
+    def visit_le_node(self, node, env):
+        try:
+            if self.visit(node[1], env) <= self.visit(node[2], env):
+                return Symbol('true')
+            else:
+                return Symbol('false')
+        except TypeError:
+            self.raise_error()
+
+    def visit_gt_node(self, node, env):
+        try:
+            if self.visit(node[1], env) > self.visit(node[2], env):
+                return Symbol('true')
+            else:
+                return Symbol('false')
+        except TypeError:
+            self.raise_error()
+
+    def visit_ge_node(self, node, env):
+        try:
+            if self.visit(node[1], env) >= self.visit(node[2], env):
+                return Symbol('true')
+            else:
+                return Symbol('false')
+        except TypeError:
+            self.raise_error()
+
+    def visit_eq_node(self, node, env):
+        try:
+            if self.visit(node[1], env) == self.visit(node[2], env):
+                return Symbol('true')
+            else:
+                return Symbol('false')
+        except TypeError:
+            self.raise_error()
+
+    def visit_ne_node(self, node, env):
+        try:
+            if self.visit(node[1], env) != self.visit(node[2], env):
+                return Symbol('true')
+            else:
+                return Symbol('false')
         except TypeError:
             self.raise_error()
 

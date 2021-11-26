@@ -62,6 +62,34 @@ class Lexer:
             elif self.current_char == '/':
                 self.advance()
                 tokens.append(Token(TokenType.DIVIDE))
+            elif self.current_char == '<':
+                self.advance()
+                if self.current_char == '=':
+                    self.advance()
+                    tokens.append(Token(TokenType.LE))
+                else:
+                    tokens.append(Token(TokenType.LT)) 
+            elif self.current_char == '=':
+                self.advance()
+                if self.current_char == '=':
+                    self.advance()
+                    tokens.append(Token(TokenType.EE))
+                else:
+                    tokens.append(Token(TokenType.EQ))
+            elif self.current_char == '>':
+                self.advance()
+                if self.current_char == '=':
+                    self.advance()
+                    tokens.append(Token(TokenType.GE))
+                else:
+                    tokens.append(Token(TokenType.GT)) 
+            elif self.current_char == '!':
+                self.advance()
+                if self.current_char == '=':
+                    self.advance()
+                    tokens.append(Token(TokenType.NE))
+                else:
+                    self.raise_error()   
             elif self.current_char == ',':
                 self.advance()
                 tokens.append(Token(TokenType.COMMA))
@@ -77,9 +105,6 @@ class Lexer:
             elif self.current_char == '}':
                 self.advance()
                 tokens.append(Token(TokenType.RCURLY))
-            elif self.current_char == '=':
-                self.advance()
-                tokens.append(Token(TokenType.EQ))
             else:
                 self.raise_error()
 

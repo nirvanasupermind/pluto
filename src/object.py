@@ -1,6 +1,7 @@
 import textwrap
 import uuid
 from src.env import Env
+from src.symbol import Symbol
 
 DEFAULT_INDENT = 2
 DEFAULT_MAX_DEPTH = 6
@@ -48,32 +49,74 @@ class Object:
         return self.has(method) and isinstance(self.get(method), Object) and callable(self.get(method).primitive_value)
 
     def __add__(self, other):
-        if self.can('add'):
+        if self.can('plus'):
             return self.get('add').primitive_value([other], self)
         else:
             raise TypeError()
 
     def __sub__(self, other):
-        if self.can('subtract'):
-            return self.get('subtract').primitive_value([other], self)
+        if self.can('minus'):
+            return self.get('sub').primitive_value([other], self)
         else:
             raise TypeError()
 
     def __mul__(self, other):
-        if self.can('multiply'):
-            return self.get('multiply').primitive_value([other], self)
+        if self.can('mul'):
+            return self.get('mul').primitive_value([other], self)
         else:
             raise TypeError()
 
     def __truediv__(self, other):
-        if self.can('divide'):
-            return self.get('divide').primitive_value([other], self)
+        if self.can('div'):
+            return self.get('div').primitive_value([other], self)
+        else:
+            raise TypeError()
+
+    def __lt__(self, other):
+        if self.can('lt'):
+            return self.get('lt').primitive_value([other], self)
+        else:
+            raise TypeError()
+
+    def __le__(self, other):
+        if self.can('le'):
+            return self.get('le').primitive_value([other], self)
+        else:
+            raise TypeError()
+
+    def __eq__(self, other):
+        if self.can('eq'):
+            return self.get('eq').primitive_value([other], self)
+        else:
+            if isinstance(other, Object) and self.uuid == other.uuid:
+                return Symbol('true')
+            else:
+                return Symbol('false')
+
+    def __ne__(self, other):
+        if self.can('ne'):
+            return self.get('ne').primitive_value([other], self)
+        else:
+            if isinstance(other, Object) and self.uuid == other.uuid:
+                return Symbol('false')
+            else:
+                return Symbol('true')
+
+    def __gt__(self, other):
+        if self.can('gt'):
+            return self.get('gt').primitive_value([other], self)
+        else:
+            raise TypeError()
+
+    def __ge__(self, other):
+        if self.can('ge'):
+            return self.get('ge').primitive_value([other], self)
         else:
             raise TypeError()
 
     def __neg__(self):
-        if self.can('negate'):
-            return self.get('negate').primitive_value([], self)
+        if self.can('neg'):
+            return self.get('neg').primitive_value([], self)
         else:
             raise TypeError()
 
