@@ -17,7 +17,9 @@ class TokenType(Enum):
     EQ = auto()
     EE = auto()
     NE = auto()
-
+    AND = auto()
+    OR = auto()
+    NOT = auto()
     DOT = auto()
     COMMA = auto()
     LPAREN = auto()

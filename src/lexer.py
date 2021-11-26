@@ -89,7 +89,21 @@ class Lexer:
                     self.advance()
                     tokens.append(Token(TokenType.NE))
                 else:
-                    self.raise_error()   
+                    tokens.append(Token(TokenType.NOT))
+            elif self.current_char == '&':
+                self.advance()
+                if self.current_char == '&':
+                    self.advance()
+                    tokens.append(Token(TokenType.AND))
+                else:
+                    self.raise_error()
+            elif self.current_char == '|':
+                self.advance()
+                if self.current_char == '|':
+                    self.advance()
+                    tokens.append(Token(TokenType.OR))
+                else:
+                    self.raise_error()
             elif self.current_char == ',':
                 self.advance()
                 tokens.append(Token(TokenType.COMMA))
