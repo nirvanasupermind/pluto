@@ -1,9 +1,19 @@
-function fact(n) {
-    if(n == 0) {
-        return 1
-    } else {
-        return n * fact(n - 1)
+class Animal {
+    function sound() {
+        System.println("the animal makes a sound")
+    }
+
+    function sleep() {
+        System.println("the animal sleeps")
     }
 }
 
-System.println(fact(8))
+class Dog extends Animal {
+    function sound() {
+        System.println("the dog barks")
+    }
+}
+
+dog = Dog()
+dog.sound()
+dog.sleep()
