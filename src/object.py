@@ -7,12 +7,13 @@ DEFAULT_MAX_DEPTH = 6
 DEFAULT_PRUNED_VALUE = '...'
 
 class Object:
-    def __init__(self, primitive_value=None):
+    def __init__(self, primitive_value=None, klass=None, base=None):
         self.primitive_value = primitive_value
         self.record = {}
-        self.klass = None
-        self.base = None
+        self.klass = klass
+        self.base = base
         self.uuid = f'{uuid.uuid4()}'
+
 
     def update(self, env):
         self.record.update(env.record)

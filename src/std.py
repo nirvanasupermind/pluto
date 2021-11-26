@@ -2,7 +2,7 @@ import string
 from src.symbol import Symbol
 from src.env import Env
 from src.object import Object
-
+   
 def object_constructor(args, this): 
     return Symbol('null')
 
@@ -15,6 +15,18 @@ def string_constructor(args, this):
 def string_toString(args, this): 
     if this != None:
         return this
+
+    return Symbol('null')
+
+def list_constructor(args, this): 
+    if this != None:
+        this.primitive_value = []
+
+    return Symbol('null')
+
+def list_toString(args, this): 
+    if this != None:
+        return f'[{", ".join(this.primitive_value)}]'
 
     return Symbol('null')
 
@@ -45,26 +57,35 @@ true = Symbol('true')
 false = Symbol('false')
 
 object_class = Object()
-object_class.set('constructor', Object(object_constructor))
-
 class_class = Object()
-# class_class.klass = class_class
 object_class.klass = class_class
 
 string_class = Object()
 string_class.klass = class_class
 string_class.base = object_class
-string_class.set('constructor', Object(string_constructor))
-string_class.set('toString', Object(string_toString))
+
+list_class = Object()
+list_class.klass = class_class
+list_class.base = object_class
 
 function_class = Object()
 function_class.klass = class_class
 function_class.base = object_class
-function_class.set('constructor', Object(function_constructor))
 
 system_class = Object()
 system_class.klass = class_class
 system_class.base = object_class
-system_class.set('exit', Object(system_exit))
-system_class.set('print', Object(system_print))
-system_class.set('println', Object(system_println))
+
+object_class.set('constructor', Object(object_constructor, function_class))
+
+string_class.set('constructor', Object(string_constructor, function_class))
+string_class.set('toString', Object(string_toString, function_class))
+
+list_class.set('constructor', Object(list_constructor, function_class))
+list_class.set('toString', Object(list_toString, function_class))
+
+function_class.set('constructor', Object(function_constructor, function_class))
+
+system_class.set('exit', Object(system_exit, function_class))
+system_class.set('print', Object(system_print, function_class))
+system_class.set('println', Object(system_println, function_class))

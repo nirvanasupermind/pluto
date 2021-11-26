@@ -2,8 +2,13 @@ from src.symbol import Symbol
 from src.char import Char
 from src.env import Env
 from src.global_env import global_env
-from src.util import is_true
 from src.object import Object
+
+def is_true(v):
+    if isinstance(v, Symbol):
+        return v.symbol != 'false' and v.symbol != 'null'
+    
+    return True
 
 class Interpreter:
     def __init__(self, path):
@@ -233,9 +238,8 @@ class Interpreter:
 
             return self.visit(node[3], function_env)
         
-        result =  Object(function)
-        result.klass = global_env.get('Function')
-        
+        result = Object(function, global_env.get('Function'))
+    
         return env.set(node[1], Object(function))
 
     def visit_anonymous_class_node(self, node, env):
@@ -250,9 +254,7 @@ class Interpreter:
 
         class_env.record.update(block_env.record)
 
-        klass = Object()
-        klass.klass = global_env.get('Class')
-        klass.base = global_env.get('Object')
+        klass = Object(None, global_env.get('Class'), global_env.get('Object'))
         klass.update(class_env)
 
         return klass
@@ -276,9 +278,7 @@ class Interpreter:
 
         class_env.record.update(block_env.record)
 
-        klass = Object()
-        klass.klass = global_env.get('Class')
-        klass.base = global_env.get('Object')
+        klass = Object(None, global_env.get('Class'), global_env.get('Object'))
         klass.update(class_env)
 
         env.set(node[1], klass)
@@ -309,9 +309,7 @@ class Interpreter:
 
         class_env.record.update(block_env.record)
 
-        klass = Object()
-        klass.klass = global_env.get('Class')
-        klass.base = base_class
+        klass = Object(None, global_env.get('Class'), base_class)
         klass.update(class_env)
 
         return klass
@@ -340,9 +338,7 @@ class Interpreter:
 
         class_env.record.update(block_env.record)
 
-        klass = Object()
-        klass.klass = global_env.get('Class')
-        klass.base = base_class
+        klass = Object(None, global_env.get('Class'), base_class)
         klass.update(class_env)
 
         env.set(node[1], klass)
