@@ -1,6 +1,6 @@
 import numpy as np
 
-class Char(np.uint16):
+class Char(np.int32):
     def __repr__(self):
         return f'{chr(self)}'
 

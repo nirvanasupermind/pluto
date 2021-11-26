@@ -1,1 +1,1 @@
-System.println("Hello world".charAt(-1))
+System.println('A' + 'B')

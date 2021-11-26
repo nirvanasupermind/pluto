@@ -35,7 +35,7 @@ class Interpreter:
         return float(node[1])
 
     def visit_char_node(self, node, env):
-        return Char(node[1])
+        return Char(ord(node[1]))
 
     def visit_string_node(self, node, env):
         result = Object()
@@ -199,7 +199,7 @@ class Interpreter:
                         constructor.primitive_value(args, obj)
                     except TypeError:
                         self.raise_error()
-                    except SystemExit: # used in standard functions to raise errors
+                    except SystemError: # used in standard functions to raise errors
                         self.raise_error()
 
                 if should_return:
