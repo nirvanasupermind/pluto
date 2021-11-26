@@ -69,13 +69,6 @@ class Lexer:
                     tokens.append(Token(TokenType.LE))
                 else:
                     tokens.append(Token(TokenType.LT)) 
-            elif self.current_char == '=':
-                self.advance()
-                if self.current_char == '=':
-                    self.advance()
-                    tokens.append(Token(TokenType.EE))
-                else:
-                    tokens.append(Token(TokenType.EQ))
             elif self.current_char == '>':
                 self.advance()
                 if self.current_char == '=':
@@ -83,6 +76,13 @@ class Lexer:
                     tokens.append(Token(TokenType.GE))
                 else:
                     tokens.append(Token(TokenType.GT)) 
+            elif self.current_char == '=':
+                self.advance()
+                if self.current_char == '=':
+                    self.advance()
+                    tokens.append(Token(TokenType.EE))
+                else:
+                    tokens.append(Token(TokenType.EQ))
             elif self.current_char == '!':
                 self.advance()
                 if self.current_char == '=':
