@@ -1,3 +1,4 @@
+import numpy as np
 from src.symbol import Symbol
 from src.char import Char
 from src.env import Env
@@ -27,7 +28,11 @@ class Interpreter:
         return Symbol('null')
 
     def visit_number_node(self, node, env):
-        return node[1]
+        if not '.' in node[1]:
+            result = np.clip(int(node[1]), -2**31, 2**31-1)
+            return np.int32(result)
+
+        return float(node[1])
 
     def visit_char_node(self, node, env):
         return Char(node[1])
@@ -400,6 +405,9 @@ class Interpreter:
         return klass
 
     def visit_return_node(self, node, env):
+        if env.is_global_env:
+            self.raise_error()
+
         self.should_return = True
         return self.visit(node[1], env)
 

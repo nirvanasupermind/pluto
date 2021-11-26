@@ -144,7 +144,7 @@ class Lexer:
         if value == '.': 
             return Token(TokenType.DOT)
     
-        return Token(TokenType.NUMBER, float(value))
+        return Token(TokenType.NUMBER, value)
     
     def get_char(self):
         value = ''
