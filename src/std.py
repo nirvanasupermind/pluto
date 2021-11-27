@@ -5,43 +5,23 @@ from src.env import Env
 from src.object import Object
    
 def raise_error():
-    raise SystemExit()
+    raise TypeError()
     
 def object_constructor(args, this): 
     if this == None:
         raise_error()
 
-def string_constructor(args, this): 
+def string_constructor(args, this):
     if this == None:
         raise_error()
 
-    this.primitive_value = ''
+    if len(args) > 0 and not (isinstance(args[0], Object) and isinstance(args[0].primitive_value, str)):
+        raise_error()
+
+    this.primitive_value = args[0].primitive_value if len(args) > 0 else ''
 
     return Symbol('null')
-
-def string_toString(args, this): 
-    if this == None:
-        raise_error()
-
-    return this
-    
-def string_eq(args, this):
-    if this == None:
-        raise_error()
-
-    arg0 = args[0] if len(args) > 0 else Symbol('null')
-
-    if this.primitive_value == arg0.primitive_value:
-        return Symbol('true')
-    else:
-        return Symbol('false')
-    
-def string_length(args, this):
-    if this == None:
-        raise_error()
-
-    return np.int32(len(this.primitive_value))
-        
+ 
 def string_charAt(args, this):
     if this == None:
         raise_error()
@@ -51,11 +31,65 @@ def string_charAt(args, this):
     if not isinstance(arg0, np.int32):
         raise_error()
 
-    if arg0 >= len(this.primitive_value) or arg0 < -len(this.primitive_value):
+    if arg0 >= len(this.primitive_value) or arg0 < 0:
         raise_error()
 
     return Char(ord(this.primitive_value[arg0]))
-        
+
+def string_equals(args, this):
+    if this == None:
+        raise_error()
+
+    arg0 = args[0] if len(args) > 0 else Symbol('null')
+    
+    if arg0.klass != string_class:
+        raise_error()
+
+    if this.primitive_value == arg0.primitive_value:
+        return Symbol('true')
+    else:
+        return Symbol('false')
+   
+def string_indexOf(args, this):
+    if this == None:
+        raise_error()
+    
+    arg0 = args[0] if len(args) > 0 else Symbol('null')
+
+    if not (isinstance(arg0, Object) and isinstance(arg0.primitive_value, str)):
+        raise_error()
+
+    try:
+        return np.int32(this.primitive_value.index(arg0.primitive_value))
+    except ValueError:
+        return np.int32(-1)
+
+def string_lastIndexOf(args, this):
+    if this == None:
+        raise_error()
+    
+    arg0 = args[0] if len(args) > 0 else Symbol('null')
+
+    if not (isinstance(arg0, Object) and isinstance(arg0.primitive_value, str)):
+        raise_error()
+
+    try:
+        return np.int32(this.primitive_value.rindex(arg0.primitive_value))
+    except ValueError:
+        return np.int32(-1)
+
+def string_length(args, this):
+    if this == None:
+        raise_error()
+
+    return np.int32(len(this.primitive_value))
+
+def string_toString(args, this): 
+    if this == None:
+        raise_error()
+
+    return this
+    
 def list_constructor(args, this): 
     if this != None:
         this.primitive_value = []
@@ -81,13 +115,11 @@ def system_print(args, this):
     arg0 = args[0] if len(args) > 0 else Symbol('null')
 
     print(arg0, end='')
-    raise_error()
     
 def system_println(args, this):
     arg0 = args[0] if len(args) > 0 else Symbol('null')
 
     print(arg0)
-    raise_error()
 
 null = Symbol('null')
 true = Symbol('true')
@@ -116,9 +148,12 @@ system_class.base = object_class
 object_class.set('constructor', Object(object_constructor, function_class))
 
 string_class.set('constructor', Object(string_constructor, function_class))
-string_class.set('toString', Object(string_toString, function_class))
-string_class.set('length', Object(string_length, function_class))
 string_class.set('charAt', Object(string_charAt, function_class))
+string_class.set('equals', Object(string_equals, function_class))
+string_class.set('indexOf', Object(string_indexOf, function_class))
+string_class.set('lastIndexOf', Object(string_lastIndexOf, function_class))
+string_class.set('length', Object(string_length, function_class))
+string_class.set('toString', Object(string_toString, function_class))
 
 list_class.set('constructor', Object(list_constructor, function_class))
 list_class.set('toString', Object(list_toString, function_class))

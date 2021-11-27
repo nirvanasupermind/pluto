@@ -1,1 +1,2 @@
-System.println('A' + 'B')
+System.println("foofoo".indexOf("foo"))
+System.println("foofoo".lastIndexOf("foo"))

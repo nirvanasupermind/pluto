@@ -38,10 +38,7 @@ class Interpreter:
         return Char(ord(node[1]))
 
     def visit_string_node(self, node, env):
-        result = Object()
-        result.primitive_value = node[1]
-        result.klass = global_env.get('String')
-
+        result = Object(node[1], global_env.get('String'))
         return result
 
     def visit_name_node(self, node, env):
@@ -302,7 +299,9 @@ class Interpreter:
 
             return self.visit(node[2], function_env)
         
-        return Object(function)
+        result = Object(function, global_env.get('Function'))
+    
+        return result
 
     def visit_function_node(self, node, env):
         def function(args, this):
@@ -319,7 +318,7 @@ class Interpreter:
         
         result = Object(function, global_env.get('Function'))
     
-        return env.set(node[1], Object(function))
+        return env.set(node[1], result)
 
     def visit_anonymous_class_node(self, node, env):
         result = Object()

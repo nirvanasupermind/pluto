@@ -21,19 +21,19 @@ class Object:
     def get(self, name):
         result = self.record.get(name)
 
-        if result != None:
+        if result is not None:
             return result
 
-        if self.klass != None:
+        if self.klass is not None:
             result = self.klass.get(name)
 
-            if result != None:
+            if result is not None:
                 return result
 
-        if self.base != None:
+        if self.base is not None:
             result = self.base.get(name)
 
-            if result != None:
+            if result is not None:
                 return result
     
     def set(self, name, value):
@@ -41,83 +41,33 @@ class Object:
 
         return value
     
-    def has(self, name):
-        return self.get(name) != None
+    def has(self, name):            
+        result = self.record.get(name) is not None
+        if result: return result
+    
+        if self.klass is not None:
+            return self.klass.has(name)
+ 
+        if self.base is not None:
+            return self.base.has(name)
+
+        return False
 
     def can(self, method):
         return self.has(method) and isinstance(self.get(method), Object) and callable(self.get(method).primitive_value)
 
-    def __add__(self, other):
-        if self.can('plus'):
-            return self.get('add').primitive_value([other], self)
-        else:
-            raise TypeError()
-
-    def __sub__(self, other):
-        if self.can('minus'):
-            return self.get('sub').primitive_value([other], self)
-        else:
-            raise TypeError()
-
-    def __mul__(self, other):
-        if self.can('mul'):
-            return self.get('mul').primitive_value([other], self)
-        else:
-            raise TypeError()
-
-    def __truediv__(self, other):
-        if self.can('div'):
-            return self.get('div').primitive_value([other], self)
-        else:
-            raise TypeError()
-
-    def __lt__(self, other):
-        if self.can('lt'):
-            return self.get('lt').primitive_value([other], self)
-        else:
-            raise TypeError()
-
-    def __le__(self, other):
-        if self.can('le'):
-            return self.get('le').primitive_value([other], self)
-        else:
-            raise TypeError()
-
     def __eq__(self, other):
-        if self.can('eq'):
-            return self.get('eq').primitive_value([other], self)
+        # print(self.primitive_value, self.can('eq'))
+        if isinstance(other, Object) and self.uuid == other.uuid:
+            return Symbol('true')
         else:
-            if isinstance(other, Object) and self.uuid == other.uuid:
-                return Symbol('true')
-            else:
-                return Symbol('false')
+            return Symbol('false')
 
     def __ne__(self, other):
-        if self.can('ne'):
-            return self.get('ne').primitive_value([other], self)
+        if isinstance(other, Object) and self.uuid == other.uuid:
+            return Symbol('false')
         else:
-            if isinstance(other, Object) and self.uuid == other.uuid:
-                return Symbol('false')
-            else:
-                return Symbol('true')
-
-    def __gt__(self, other):
-        if self.can('gt'):
-            return self.get('gt').primitive_value([other], self)
-        else:
-            raise TypeError()
-
-    def __ge__(self, other):
-        if self.can('ge'):
-            return self.get('ge').primitive_value([other], self)
-        else:
-            raise TypeError()
-
-    def __neg__(self):
-        if self.can('neg'):
-            return self.get('neg').primitive_value([], self)
-        else:
-            raise TypeError()
+            return Symbol('true')
 
     def __repr__(self, depth=0):        
         if self.can('toString'):

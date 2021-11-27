@@ -34,5 +34,11 @@ elif len(sys.argv) >= 1:
     parser = Parser(path, tokens)
     tree = parser.parse()
 
+    # try:
+    #     interpreter = Interpreter(path)
+    #     interpreter.visit(tree, global_env)
+    # except Exception:
+    #     pass
+
     interpreter = Interpreter(path)
     interpreter.visit(tree, global_env)
