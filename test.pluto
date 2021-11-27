@@ -1,1 +1,1 @@
-System.println(Math.SQRT2)
+System.println(Math.pow(2.0, 3.0))

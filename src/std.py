@@ -1,6 +1,6 @@
 import numpy as np
-import math
 import random
+from datetime import datetime
 from src.char import Char
 from src.symbol import Symbol
 from src.env import Env
@@ -240,10 +240,165 @@ def function_constructor(args, this):
 
     raise_error()
 
+def math_abs(args, this):
+    arg0 = args[0] if len(args) > 0 else Symbol('null')
 
+    if not isinstance(arg0, (np.int32, float)):
+        raise_error()
+    
+    return np.abs(arg0)
+
+def math_acos(args, this):
+    arg0 = args[0] if len(args) > 0 else Symbol('null')
+
+    if not isinstance(arg0, (np.int32, float)):
+        raise_error()
+    
+    return np.arccos(arg0)
+
+def math_asin(args, this):
+    arg0 = args[0] if len(args) > 0 else Symbol('null')
+
+    if not isinstance(arg0, (np.int32, float)):
+        raise_error()
+    
+    return np.arcsin(arg0)
+
+def math_atan(args, this):
+    arg0 = args[0] if len(args) > 0 else Symbol('null')
+
+    if not isinstance(arg0, (np.int32, float)):
+        raise_error()
+    
+    return np.arctan(arg0)
+
+def math_ceil(args, this):
+    arg0 = args[0] if len(args) > 0 else Symbol('null')
+
+    if not isinstance(arg0, (np.int32, float)):
+        raise_error()
+    
+    return np.ceil(arg0)
+
+def math_cos(args, this):
+    arg0 = args[0] if len(args) > 0 else Symbol('null')
+
+    if not isinstance(arg0, (np.int32, float)):
+        raise_error()
+    
+    return np.cos(arg0)
+
+def math_exp(args, this):
+    arg0 = args[0] if len(args) > 0 else Symbol('null')
+
+    if not isinstance(arg0, (np.int32, float)):
+        raise_error()
+    
+    return np.exp(arg0)
+
+def math_floor(args, this):
+    arg0 = args[0] if len(args) > 0 else Symbol('null')
+
+    if not isinstance(arg0, (np.int32, float)):
+        raise_error()
+    
+    return np.floor(arg0)
+    
+def math_log(args, this):
+    arg0 = args[0] if len(args) > 0 else Symbol('null')
+
+    if not isinstance(arg0, (np.int32, float)):
+        raise_error()
+    
+    return np.log(arg0)
+
+def math_max(args, this):
+    arg0 = args[0] if len(args) > 0 else Symbol('null')
+
+    if not isinstance(arg0, (np.int32, float)):
+        raise_error()
+
+    arg1 = args[1] if len(args) > 1 else Symbol('null')
+
+    if not isinstance(arg1, (np.int32, float)):
+        raise_error()
+
+    return arg0 if arg0 > arg1 else arg1
+
+def math_min(args, this):
+    arg0 = args[0] if len(args) > 0 else Symbol('null')
+
+    if not isinstance(arg0, (np.int32, float)):
+        raise_error()
+
+    arg1 = args[1] if len(args) > 1 else Symbol('null')
+
+    if not isinstance(arg1, (np.int32, float)):
+        raise_error()
+
+    return arg0 if arg0 < arg1 else arg1
+
+def math_pow(args, this):
+    arg0 = args[0] if len(args) > 0 else Symbol('null')
+
+    if not isinstance(arg0, (np.int32, float)):
+        raise_error()
+
+    arg1 = args[1] if len(args) > 0 else Symbol('null')
+
+    if not isinstance(arg1, (np.int32, float)):
+        raise_error()
+
+    return arg0 ** arg1
+
+def math_random(args, this):
+    return np.random.random()
+
+def math_round(args, this):
+    arg0 = args[0] if len(args) > 0 else Symbol('null')
+
+    if not isinstance(arg0, (np.int32, float)):
+        raise_error()
+    
+    return np.round(arg0)
+
+def math_sign(args, this):
+    arg0 = args[0] if len(args) > 0 else Symbol('null')
+
+    if not isinstance(arg0, (np.int32, float)):
+        raise_error()
+    
+    return np.sign(arg0)
+
+def math_sin(args, this):
+    arg0 = args[0] if len(args) > 0 else Symbol('null')
+
+    if not isinstance(arg0, (np.int32, float)):
+        raise_error()
+    
+    return np.sin(arg0)
+
+def math_sqrt(args, this):
+    arg0 = args[0] if len(args) > 0 else Symbol('null')
+
+    if not isinstance(arg0, (np.int32, float)):
+        raise_error()
+    
+    return np.sqrt(arg0)
+
+def math_tan(args, this):
+    arg0 = args[0] if len(args) > 0 else Symbol('null')
+
+    if not isinstance(arg0, (np.int32, float)):
+        raise_error()
+    
+    return np.tan(arg0)
 
 def system_exit(args, this):
     exit()
+
+def system_millis(args, this):
+    return np.int32((datetime.utcnow() - datetime(1970, 1, 1)).total_seconds() * 1000)
     
 def system_print(args, this):
     arg0 = args[0] if len(args) > 0 else Symbol('null')
@@ -309,10 +464,27 @@ list_class.set('toString', Object(list_toString, function_class))
 
 function_class.set('constructor', Object(function_constructor, function_class))
 
-math_class.set('E', math.e)
-math_class.set('PI', math.pi)
-math_class.set('SQRT2', math.sqrt(2))
+math_class.set('E', np.e)
+math_class.set('PI', np.pi)
+math_class.set('SQRT2', np.sqrt(2.0))
+math_class.set('abs', Object(math_abs, function_class))
+math_class.set('acos', Object(math_acos, function_class))
+math_class.set('asin', Object(math_asin, function_class))
+math_class.set('atan', Object(math_atan, function_class))
+math_class.set('ceil', Object(math_ceil, function_class))
+math_class.set('cos', Object(math_cos, function_class))
+math_class.set('exp', Object(math_exp, function_class))
+math_class.set('floor', Object(math_floor, function_class))
+math_class.set('log', Object(math_log, function_class))
+math_class.set('max', Object(math_max, function_class))
+math_class.set('min', Object(math_min, function_class))
+math_class.set('pow', Object(math_pow, function_class))
+math_class.set('sin', Object(math_sin, function_class))
+math_class.set('sqrt', Object(math_sqrt, function_class))
+math_class.set('tan', Object(math_tan, function_class))
+
 
 system_class.set('exit', Object(system_exit, function_class))
+system_class.set('millis', Object(system_millis, function_class))
 system_class.set('print', Object(system_print, function_class))
 system_class.set('println', Object(system_println, function_class))

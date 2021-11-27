@@ -1,15 +1,12 @@
 import numpy as np
+from pathlib import Path
+from src.lexer import Lexer
+from src.parser import Parser
 from src.symbol import Symbol
 from src.char import Char
 from src.env import Env
 from src.global_env import global_env
 from src.object import Object
-
-# def v:
-#     if isinstance(v, Symbol):
-#         return v.symbol != 'false' and v.symbol != 'null'
-    
-#     return True
 
 class Interpreter:
     def __init__(self, path):
@@ -82,7 +79,10 @@ class Interpreter:
 
     def visit_divide_node(self, node, env):
         try:
-            return self.visit(node[1], env) / self.visit(node[2], env)
+            try:
+                return self.visit(node[1], env) / self.visit(node[2], env)
+            except ZeroDivisionError:
+                return np.inf
         except TypeError:
             self.raise_error()
 
@@ -438,6 +438,20 @@ class Interpreter:
 
         self.should_return = True
         return self.visit(node[1], env)
+
+    def visit_include_node(self, node, env):
+        path = Path(self.path).parent / Path(str(self.visit(node[1], env)))
+        text = open(path, 'r').read()
+            
+        lexer = Lexer(path, text)
+        tokens = lexer.get_tokens()
+
+        parser = Parser(path, tokens)
+        tree = parser.parse()
+
+        self.visit(tree, env)
+
+        return Symbol('null')
 
     def visit_statements_node(self, node, env):
         if len(node) == 0: 

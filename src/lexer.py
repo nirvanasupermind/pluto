@@ -120,6 +120,9 @@ class Lexer:
             elif self.current_char == '}':
                 self.advance()
                 tokens.append(Token(TokenType.RCURLY))
+            elif self.current_char == '#':
+                while self.current_char != None and self.current_char != '\n':
+                    self.advance()
             else:
                 self.raise_error()
 
