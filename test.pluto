@@ -1,1 +1,1 @@
-System.println("foo".concat("bar"))
+System.println(List())
