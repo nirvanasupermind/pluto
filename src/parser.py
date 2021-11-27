@@ -33,11 +33,21 @@ class Parser:
         return ('statements', *statements)
 
     def expr(self):
+        if self.current_token.matches(TokenType.KEYWORD, 'include'):
+            return self.include_expr()
+
         if self.current_token.matches(TokenType.KEYWORD, 'return'):
             return self.return_expr()
 
         return self.assignment_expr()
 
+
+    def include_expr(self):
+        self.advance()
+
+        expr = self.expr()
+
+        return ('include', expr)
 
     def return_expr(self):
         self.advance()

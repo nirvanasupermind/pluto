@@ -12,7 +12,8 @@ KEYWORDS = [
     'return',
     'class',
     'enum',
-    'extends'
+    'extends',
+    'include'
 ]
 
 ESCAPE_CHARACTERS = {

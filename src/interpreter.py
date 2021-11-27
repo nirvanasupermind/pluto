@@ -226,6 +226,15 @@ class Interpreter:
         except TypeError:
             self.raise_error()
 
+    def visit_not_node(self, node, env):
+        try:
+            if not self.visit(node[1], env):
+                return Symbol('true')
+            else:
+                return Symbol('false')
+        except TypeError:
+            self.raise_error()
+
     def visit_assign_node(self, node, env): 
         if node[1][0] == 'member':   
             obj = self.visit(node[1][1], env)
