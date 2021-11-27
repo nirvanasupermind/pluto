@@ -69,22 +69,27 @@ class Object:
         else:
             return Symbol('true')
 
-    def __repr__(self, depth=0):        
+    def __repr__(self):        
         if self.can('toString'):
             result = self.get('toString').primitive_value([], self)
             if isinstance(result, Object): return f'{result.primitive_value}'
             return f'{result}'
-            
-        if depth > DEFAULT_MAX_DEPTH:
-            return DEFAULT_PRUNED_VALUE
-
-        result = ''
-        for key in self.record:
-            value = self.record[key]
-
-            if isinstance(value, Object) and not value.can('toString'):
-                result += (f'{key}: \n{textwrap.indent(value.__repr__(depth+1), " " * DEFAULT_INDENT)}\n')        
-            else:
-                result += f'{key}: {value}\n'
         
-        return result[0:-1]
+
+        return self.uuid
+
+        # old yaml-like thing
+            
+        # if depth > DEFAULT_MAX_DEPTH:
+        #     return DEFAULT_PRUNED_VALUE
+
+        # result = ''
+        # for key in self.record:
+        #     value = self.record[key]
+
+        #     if isinstance(value, Object) and not value.can('toString'):
+        #         result += (f'{key}: \n{textwrap.indent(value.__repr__(depth+1), " " * DEFAULT_INDENT)}\n')        
+        #     else:
+        #         result += f'{key}: {value}\n'
+        
+        # return result[0:-1]

@@ -11,6 +11,12 @@ def object_constructor(args, this):
     if this == None:
         raise_error()
 
+def object_uuid(args, this): 
+    if this == None:
+        raise_error()
+    
+    return Object(this.uuid, string_class)
+
 def string_constructor(args, this):
     if this == None:
         raise_error()
@@ -36,7 +42,7 @@ def string_charAt(args, this):
 
     return Char(ord(this.primitive_value[arg0]))
 
- 
+
 def string_concat(args, this):
     if this == None:
         raise_error()
@@ -103,16 +109,128 @@ def string_toString(args, this):
     return this
     
 def list_constructor(args, this): 
-    if this != None:
-        this.primitive_value = []
+    if this == None:
+        raise_error()
+    
+    if len(args) > 0 and not (isinstance(args[0], Object) and isinstance(args[0].primitive_value, list)):
+        raise_error()
+
+    this.primitive_value = args[0].primitive_value if len(args) > 0 else []
 
     return Symbol('null')
 
-def list_toString(args, this): 
-    if this != None:
-        return f'[{", ".join(this.primitive_value)}]'
+def list_add(args, this): 
+    if this == None:
+        raise_error()
 
-    raise_error()
+    arg0 = args[0] if len(args) > 0 else Symbol('null')
+
+    this.primitive_value.append(arg0)
+
+    return Symbol('null')
+
+def list_clear(args, this): 
+    if this == None:
+        raise_error()
+
+    this.primitive_value.clear()
+
+    return Symbol('null')
+
+def list_concat(args, this): 
+    if this == None:
+        raise_error()
+
+    arg0 = args[0] if len(args) > 0 else Symbol('null')
+
+    if not (isinstance(args[0], Object) and isinstance(args[0].primitive_value, list)):
+        raise_error()
+
+    return Object(this.primitive_value + arg0.primitive_value, list_class)
+
+def list_first(args, this): 
+    if this == None:
+        raise_error()
+
+    if len(this.primitive_value) == 0:
+        raise_error()
+
+    return this.primitive_value[0]
+
+def list_get(args, this): 
+    if this == None:
+        raise_error()
+
+    arg0 = args[0] if len(args) > 0 else Symbol('null')
+
+    if not isinstance(arg0, np.int32):
+        raise_error()
+
+    if arg0 >= len(this.primitive_value) or arg0 < 0:
+        raise_error()
+
+    return this.primitive_value[arg0]
+
+def list_indexOf(args, this): 
+    if this == None:
+        raise_error()
+
+    arg0 = args[0] if len(args) > 0 else Symbol('null')
+
+    try:
+        return np.int32(this.primitive_value.index(arg0))
+    except ValueError:
+        return np.int32(-1)
+
+def list_last(args, this): 
+    if this == None:
+        raise_error()
+
+    if len(this.primitive_value) == 0:
+        raise_error()
+
+    return this.primitive_value[-1]
+
+def list_lastIndexOf(args, this): 
+    if this == None:
+        raise_error()
+
+    arg0 = args[0] if len(args) > 0 else Symbol('null')
+
+    try:
+        return np.int32(this.primitive_value.rindex(arg0))
+    except ValueError:
+        return np.int32(-1)
+
+def list_remove(args, this): 
+    if this == None:
+        raise_error()
+
+    arg0 = args[0] if len(args) > 0 else Symbol('null')
+
+    if not isinstance(arg0, np.int32):
+        raise_error()
+
+    if arg0 >= len(this.primitive_value) or arg0 < 0:
+        raise_error()
+
+    result = this.primitive_value[arg0]
+
+    del this.primitive_value[arg0]
+
+    return result
+
+def list_size(args, this): 
+    if this == None:
+        raise_error()
+
+    return np.int32(len(this.primitive_value))
+
+def list_toString(args, this): 
+    if this == None:
+        raise_error()
+
+    return f'[{", ".join(map(str, this.primitive_value))}]'
 
 def function_constructor(args, this): 
     if this != None:
@@ -158,6 +276,7 @@ system_class.klass = class_class
 system_class.base = object_class
 
 object_class.set('constructor', Object(object_constructor, function_class))
+object_class.set('uuid', Object(object_uuid, function_class))
 
 string_class.set('constructor', Object(string_constructor, function_class))
 string_class.set('charAt', Object(string_charAt, function_class))
@@ -169,6 +288,15 @@ string_class.set('length', Object(string_length, function_class))
 string_class.set('toString', Object(string_toString, function_class))
 
 list_class.set('constructor', Object(list_constructor, function_class))
+list_class.set('add', Object(list_add, function_class))
+list_class.set('clear', Object(list_clear, function_class))
+list_class.set('concat', Object(list_concat, function_class))
+list_class.set('first', Object(list_first, function_class))
+list_class.set('get', Object(list_get, function_class))
+list_class.set('last', Object(list_last, function_class))
+list_class.set('lastIndexOf', Object(list_lastIndexOf, function_class))
+list_class.set('remove', Object(list_remove, function_class))
+list_class.set('size', Object(list_size, function_class))
 list_class.set('toString', Object(list_toString, function_class))
 
 function_class.set('constructor', Object(function_constructor, function_class))
