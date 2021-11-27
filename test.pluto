@@ -1,1 +1,1 @@
-System.println("a")
+System.println(Math.SQRT2)
