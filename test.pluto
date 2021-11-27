@@ -1,2 +1,1 @@
-System.println("foofoo".indexOf("foo"))
-System.println("foofoo".lastIndexOf("foo"))
+System.println("foo".concat("bar"))

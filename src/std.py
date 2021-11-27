@@ -36,13 +36,25 @@ def string_charAt(args, this):
 
     return Char(ord(this.primitive_value[arg0]))
 
+ 
+def string_concat(args, this):
+    if this == None:
+        raise_error()
+    
+    arg0 = args[0] if len(args) > 0 else Symbol('null')
+
+    if not (isinstance(arg0, Object) and isinstance(arg0.primitive_value, str)):
+        raise_error()
+
+    return Object(this.primitive_value + arg0.primitive_value, string_class)
+
 def string_equals(args, this):
     if this == None:
         raise_error()
 
     arg0 = args[0] if len(args) > 0 else Symbol('null')
     
-    if arg0.klass != string_class:
+    if not (isinstance(arg0, Object) and isinstance(arg0.primitive_value, str)):
         raise_error()
 
     if this.primitive_value == arg0.primitive_value:
@@ -149,6 +161,7 @@ object_class.set('constructor', Object(object_constructor, function_class))
 
 string_class.set('constructor', Object(string_constructor, function_class))
 string_class.set('charAt', Object(string_charAt, function_class))
+string_class.set('concat', Object(string_concat, function_class))
 string_class.set('equals', Object(string_equals, function_class))
 string_class.set('indexOf', Object(string_indexOf, function_class))
 string_class.set('lastIndexOf', Object(string_lastIndexOf, function_class))
