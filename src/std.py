@@ -1,9 +1,11 @@
 import numpy as np
+import math
+import random
 from src.char import Char
 from src.symbol import Symbol
 from src.env import Env
 from src.object import Object
-   
+
 def raise_error():
     raise TypeError()
     
@@ -238,6 +240,8 @@ def function_constructor(args, this):
 
     raise_error()
 
+
+
 def system_exit(args, this):
     exit()
     
@@ -275,6 +279,10 @@ system_class = Object()
 system_class.klass = class_class
 system_class.base = object_class
 
+math_class = Object()
+math_class.klass = class_class
+math_class.base = object_class
+
 object_class.set('constructor', Object(object_constructor, function_class))
 object_class.set('uuid', Object(object_uuid, function_class))
 
@@ -300,6 +308,10 @@ list_class.set('size', Object(list_size, function_class))
 list_class.set('toString', Object(list_toString, function_class))
 
 function_class.set('constructor', Object(function_constructor, function_class))
+
+math_class.set('E', math.e)
+math_class.set('PI', math.pi)
+math_class.set('SQRT2', math.sqrt(2))
 
 system_class.set('exit', Object(system_exit, function_class))
 system_class.set('print', Object(system_print, function_class))
