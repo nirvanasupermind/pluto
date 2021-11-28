@@ -8,6 +8,10 @@ from src.env import Env
 from src.global_env import global_env
 from src.object import Object
 
+STANDARD_MODULES = {
+    'complex': './modules/complex.pluto'
+}
+
 class Interpreter:
     def __init__(self, path):
         self.path = path
@@ -112,6 +116,23 @@ class Interpreter:
                 return Symbol('false')
         except TypeError:
             self.raise_error()
+
+    def visit_instanceof_node(self, node, env):
+        instance = self.visit(node[1], env)
+
+        if not isinstance(instance, Object): 
+            self.raise_error()
+
+        klass = self.visit(node[2], env)
+
+        if not isinstance(klass, Object): 
+            self.raise_error()
+        
+        if instance.klass == klass:
+            return Symbol('true')
+        else:
+            return Symbol('false')
+
 
     def visit_ge_node(self, node, env):
         try:
@@ -439,16 +460,25 @@ class Interpreter:
         self.should_return = True
         return self.visit(node[1], env)
 
-    def visit_include_node(self, node, env):
-        path = Path(self.path).parent / Path(str(self.visit(node[1], env)))
-        text = open(path, 'r').read()
-            
+    def visit_import_node(self, node, env):
+        tmp = str(self.visit(node[1], env))
+        if tmp in STANDARD_MODULES:
+            path = Path(self.path).parent / Path(STANDARD_MODULES[tmp])
+        else:
+            path = Path(self.path).parent / Path(tmp)
+
+        try:
+            text = open(path, 'r').read()
+        except FileNotFoundError:
+            self.raise_error()
+
         lexer = Lexer(path, text)
         tokens = lexer.get_tokens()
 
         parser = Parser(path, tokens)
         tree = parser.parse()
 
+        interpreter = Interpreter(path)
         self.visit(tree, env)
 
         return Symbol('null')

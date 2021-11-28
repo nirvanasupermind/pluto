@@ -3,8 +3,9 @@ from src.tokens import Token, TokenType
 
 WHITESPACE = ' \t\r\n'
 DIGITS = '0123456789'
-LETTERS = '_' + string.ascii_letters
+LETTERS = '$_' + string.ascii_letters
 KEYWORDS = [
+    'instanceof',
     'if',
     'else',
     'while',
@@ -13,7 +14,7 @@ KEYWORDS = [
     'class',
     'enum',
     'extends',
-    'include'
+    'import'
 ]
 
 ESCAPE_CHARACTERS = {

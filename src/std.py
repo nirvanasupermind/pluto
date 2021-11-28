@@ -110,6 +110,11 @@ def string_toString(args, this):
 
     return this
     
+def string_valueOf(args, this): 
+    arg0 = args[0] if len(args) > 0 else Symbol('null')
+
+    return Object(str(arg0), string_class)
+
 def list_constructor(args, this): 
     if this == None:
         raise_error()
@@ -176,7 +181,7 @@ def list_get(args, this):
 def list_indexOf(args, this): 
     if this == None:
         raise_error()
-
+        
     arg0 = args[0] if len(args) > 0 else Symbol('null')
 
     try:
@@ -221,6 +226,24 @@ def list_remove(args, this):
     del this.primitive_value[arg0]
 
     return result
+
+def list_set(args, this): 
+    if this == None:
+        raise_error()
+
+    arg0 = args[0] if len(args) > 0 else Symbol('null')
+
+    if not isinstance(arg0, np.int32):
+        raise_error()
+    
+    if arg0 >= len(this.primitive_value) or arg0 < 0:
+        raise_error()
+
+    arg1 = args[1] if len(args) > 1 else Symbol('null')
+
+    this.primitive_value[arg0] = arg1
+
+    return arg1
 
 def list_size(args, this): 
     if this == None:
@@ -415,6 +438,7 @@ true = Symbol('true')
 false = Symbol('false')
 
 object_class = Object()
+
 class_class = Object()
 object_class.klass = class_class
 
@@ -449,6 +473,7 @@ string_class.set('indexOf', Object(string_indexOf, function_class))
 string_class.set('lastIndexOf', Object(string_lastIndexOf, function_class))
 string_class.set('length', Object(string_length, function_class))
 string_class.set('toString', Object(string_toString, function_class))
+string_class.set('valueOf', Object(string_valueOf, function_class))
 
 list_class.set('constructor', Object(list_constructor, function_class))
 list_class.set('add', Object(list_add, function_class))
@@ -456,9 +481,11 @@ list_class.set('clear', Object(list_clear, function_class))
 list_class.set('concat', Object(list_concat, function_class))
 list_class.set('first', Object(list_first, function_class))
 list_class.set('get', Object(list_get, function_class))
+list_class.set('indexOf', Object(list_indexOf, function_class))
 list_class.set('last', Object(list_last, function_class))
 list_class.set('lastIndexOf', Object(list_lastIndexOf, function_class))
 list_class.set('remove', Object(list_remove, function_class))
+list_class.set('set', Object(list_set, function_class))
 list_class.set('size', Object(list_size, function_class))
 list_class.set('toString', Object(list_toString, function_class))
 

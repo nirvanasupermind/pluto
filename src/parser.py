@@ -33,8 +33,8 @@ class Parser:
         return ('statements', *statements)
 
     def expr(self):
-        if self.current_token.matches(TokenType.KEYWORD, 'include'):
-            return self.include_expr()
+        if self.current_token.matches(TokenType.KEYWORD, 'import'):
+            return self.import_expr()
 
         if self.current_token.matches(TokenType.KEYWORD, 'return'):
             return self.return_expr()
@@ -42,12 +42,12 @@ class Parser:
         return self.assignment_expr()
 
 
-    def include_expr(self):
+    def import_expr(self):
         self.advance()
 
         expr = self.expr()
 
-        return ('include', expr)
+        return ('import', expr)
 
     def return_expr(self):
         self.advance()
@@ -99,7 +99,7 @@ class Parser:
     def relational_expr(self):
         result = self.additive_expr()
 
-        while self.current_token.type != TokenType.EOF and self.current_token.type in (TokenType.LT, TokenType.LE, TokenType.GT, TokenType.GE):
+        while self.current_token.type != TokenType.EOF and (self.current_token.matches(TokenType.KEYWORD, 'instanceof') or self.current_token.type in (TokenType.LT, TokenType.LE, TokenType.GT, TokenType.GE)):
             if self.current_token.type == TokenType.LT:
                 self.advance()
                 result = ('lt', result, self.additive_expr())
@@ -112,7 +112,10 @@ class Parser:
             elif self.current_token.type == TokenType.GE:
                 self.advance()
                 result = ('ge', result, self.additive_expr())
-            
+            elif self.current_token.matches(TokenType.KEYWORD, 'instanceof'):
+                self.advance()
+                result = ('instanceof', result, self.additive_expr())
+                        
         return result
 
     def additive_expr(self):

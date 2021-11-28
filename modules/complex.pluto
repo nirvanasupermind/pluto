@@ -1,0 +1,32 @@
+class Complex {
+    function constructor(x, y) {
+        this.x = x
+        this.y = y
+    }
+
+    function add(other) {
+        return Complex(this.x + other.x, this.y + other.y)
+    }
+
+    function subtract(other) {
+        return Complex(this.x - other.x, this.y - other.y)
+    }
+
+    function multiply(other) {
+        x1 = this.x
+        x2 = other.x
+
+        y1 = this.y
+        y2 = other.y
+
+        return Complex(x1 * x2 - y1 * y2, x1 * y2 + y1 * x2) 
+    }
+
+    function toString() {
+        return "("
+               .concat(String.valueOf(this.x))
+               .concat(", ")
+               .concat(String.valueOf(this.y))
+               .concat(")")
+    }
+}
