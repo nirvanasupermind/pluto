@@ -22,6 +22,20 @@ class Complex {
         return Complex(x1 * x2 - y1 * y2, x1 * y2 + y1 * x2) 
     }
 
+    function divide(other) {
+        x1 = this.x
+        x2 = other.x
+
+        y1 = this.y
+        y2 = other.y
+
+        return Complex((x1 * x2 + y1 * y2)/(x2 * x2 + y2 * y2), (x2 * y1 - x1 * y2)/(x2 * x2 + y2 * y2))
+    }
+
+    function negate() {
+        return Complex(-this.x, -this.y)
+    }
+
     function toString() {
         return "("
                .concat(String.valueOf(this.x))

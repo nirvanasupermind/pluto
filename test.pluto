@@ -1,6 +1,6 @@
 import "complex"
 
 a = Complex(1.0, 1.0)
-b = Complex(1.0, 1.0)
+b = Complex(3.0, 2.0)
 
-System.println(a.multiply(b))
+System.println(a.divide(b))
