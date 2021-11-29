@@ -79,13 +79,13 @@ class Object:
             return Symbol('false')
 
     def __ne__(self, other):
-        if isinstance(other, Object) and self.hashcode() == other.hashcode():
+        if isinstance(other, Object) and self.uuid == other.uuid:
             return Symbol('false')
         else:
             return Symbol('true')
 
     def hashcode(self):
-        if self.can('hashCode'):
+        if self.can('hashCode') and self.base != None:
             result = self.get('hashCode').primitive_value([], self)
             return np.int32(result)
         
@@ -97,8 +97,7 @@ class Object:
             if isinstance(result, Object): return f'{result.primitive_value}'
             return f'{result}'
         
-
-        return self.uuid
+        return '0x%02X' % (self.hashcode() & 0xffffffff)
 
         # old yaml-like thing
             

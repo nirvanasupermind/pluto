@@ -253,7 +253,7 @@ class Interpreter:
             self.illegal_argument()
         except NoThis:
             self.no_this()
-        except:
+        except IndexOutOfRange:
             self.index_out_of_range()
 
     def visit_plus_node(self, node, env):
