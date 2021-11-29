@@ -92,7 +92,7 @@ class Object:
         return java_string_hashcode(self.uuid)
 
     def __repr__(self):        
-        if self.can('toString'):
+        if self.can('toString') and self.base != None:
             result = self.get('toString').primitive_value([], self)
             if isinstance(result, Object): return f'{result.primitive_value}'
             return f'{result}'

@@ -20,6 +20,12 @@ def object_hashCode(args, this):
     
     return this.hashcode()
 
+def object_toString(args, this): 
+    if this == None:
+        raise NoThis()
+    
+    return f'{this}'
+
 def string_constructor(args, this):
     if this == None:
         raise NoThis()
@@ -458,6 +464,7 @@ math_class.base = object_class
 
 object_class.set('constructor', Object(object_constructor, function_class))
 object_class.set('hashCode', Object(object_hashCode, function_class))
+object_class.set('toString', Object(object_toString, function_class))
 
 string_class.set('constructor', Object(string_constructor, function_class))
 string_class.set('charAt', Object(string_charAt, function_class))

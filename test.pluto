@@ -3,4 +3,4 @@ import "map"
 m = Map()
 m.put(m, 2)
 
-System.println(m.get())
+System.println(m)
