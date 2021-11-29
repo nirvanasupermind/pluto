@@ -1,0 +1,30 @@
+class Map {
+    function constructor() {
+        this.keys = List()
+        this.values = List()
+    }
+    
+    function put(key, value) {
+        index = this.keys.indexOf(key)
+
+        if(index == -1) {
+            this.keys.add(key)
+            this.values.add(value)
+        } else {
+           this.values.set(index, value)
+           return value
+        }
+    }
+
+    function get(key) {
+        return this.values.get(this.keys.indexOf(key))
+    }
+
+    function containsKey(key) {
+        return this.keys.indexOf(key) != -1
+    }
+
+    function containsValue(value) {
+        return this.values.indexOf(value) != -1
+    }
+}

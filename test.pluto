@@ -1,6 +1,6 @@
-import "complex"
+import "map"
 
-a = Complex(1.0, 1.0)
-b = Complex(3.0, 2.0)
+m = Map()
+m.put(m, 2)
 
-System.println(a.divide(b))
+System.println(m.get())

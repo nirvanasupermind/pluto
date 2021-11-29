@@ -7,9 +7,10 @@ from src.char import Char
 from src.env import Env
 from src.global_env import global_env
 from src.object import Object
+from src.std import IllegalArgument, IndexOutOfRange, NoThis
 
 STANDARD_MODULES = {
-    'complex': './modules/complex.pluto'
+    'map': './modules/map.pluto'
 }
 
 class Interpreter:
@@ -17,8 +18,26 @@ class Interpreter:
         self.path = path
         self.should_return = False
 
+    def name_does_not_exist(self, name):
+        raise SystemExit(f'{self.path}: name "{name}" does not exist')        
+
+    def member_does_not_exist(self, member):
+        raise SystemExit(f'{self.path}: member "{member}" does not exist')        
+
+    def illegal_operation(self):
+        raise SystemExit(f'{self.path}: illegal operation')
+
     def raise_error(self):
         raise SystemExit(f'{self.path}: runtime error')
+
+    def illegal_argument(self):
+        raise SystemExit(f'{self.path}: illegal argument')
+
+    def no_this(self):
+        self.name_does_not_exist('this')
+
+    def index_out_of_range(self):
+        raise SystemExit(f'{self.path}: index out of range')
 
     def visit(self, node, env):
         method_name = f'visit_{node[0]}_node'
@@ -46,7 +65,7 @@ class Interpreter:
         result = env.get(node[1])
         
         if result == None:
-            self.raise_error()
+            self.name_does_not_exist(node[1])
         
         return result
 
@@ -54,12 +73,12 @@ class Interpreter:
         obj = self.visit(node[1], env)
 
         if not isinstance(obj, Object): 
-            self.raise_error()
+            self.illegal_operation()
 
         result = obj.get(node[2])
 
         if result == None:
-            self.raise_error()
+            self.member_does_not_exist(node[2])
         
         return result
 
@@ -67,19 +86,19 @@ class Interpreter:
         try:
             return self.visit(node[1], env) + self.visit(node[2], env)
         except TypeError:
-            self.raise_error()
+            self.illegal_operation()
     
     def visit_subtract_node(self, node, env):
         try:
             return self.visit(node[1], env) - self.visit(node[2], env)
         except TypeError:
-            self.raise_error()
+            self.illegal_operation()
 
     def visit_multiply_node(self, node, env):
         try:
             return self.visit(node[1], env) * self.visit(node[2], env)
         except TypeError:
-            self.raise_error()
+            self.illegal_operation()
 
     def visit_divide_node(self, node, env):
         try:
@@ -88,7 +107,7 @@ class Interpreter:
             except ZeroDivisionError:
                 return np.inf
         except TypeError:
-            self.raise_error()
+            self.illegal_operation()
 
     def visit_lt_node(self, node, env):
         try:
@@ -97,7 +116,7 @@ class Interpreter:
             else:
                 return Symbol('false')
         except TypeError:
-            self.raise_error()
+            self.illegal_operation()
 
     def visit_le_node(self, node, env):
         try:
@@ -106,7 +125,7 @@ class Interpreter:
             else:
                 return Symbol('false')
         except TypeError:
-            self.raise_error()
+            self.illegal_operation()
 
     def visit_gt_node(self, node, env):
         try:
@@ -115,18 +134,18 @@ class Interpreter:
             else:
                 return Symbol('false')
         except TypeError:
-            self.raise_error()
+            self.illegal_operation()
 
     def visit_instanceof_node(self, node, env):
         instance = self.visit(node[1], env)
 
         if not isinstance(instance, Object): 
-            self.raise_error()
+            self.illegal_operation()
 
         klass = self.visit(node[2], env)
 
         if not isinstance(klass, Object): 
-            self.raise_error()
+            self.illegal_operation()
         
         if instance.klass == klass:
             return Symbol('true')
@@ -141,7 +160,7 @@ class Interpreter:
             else:
                 return Symbol('false')
         except TypeError:
-            self.raise_error()
+            self.illegal_operation()
 
     def visit_eq_node(self, node, env):
         try:
@@ -150,7 +169,7 @@ class Interpreter:
             else:
                 return Symbol('false')
         except TypeError:
-            self.raise_error()
+            self.illegal_operation()
 
     def visit_ne_node(self, node, env):
         try:
@@ -159,7 +178,7 @@ class Interpreter:
             else:
                 return Symbol('false')
         except TypeError:
-            self.raise_error()
+            self.illegal_operation()
         
     def visit_and_node(self, node, env):
         try:
@@ -168,7 +187,7 @@ class Interpreter:
             else:
                 return Symbol('false')
         except TypeError:
-            self.raise_error()
+            self.illegal_operation()
 
     def visit_or_node(self, node, env):
         try:
@@ -177,7 +196,7 @@ class Interpreter:
             else:
                 return Symbol('false')
         except TypeError:
-            self.raise_error()
+            self.illegal_operation()
 
     def visit_call_node(self, node, env):
         should_return = self.should_return
@@ -185,7 +204,7 @@ class Interpreter:
         function = self.visit(node[1], env)
 
         if not isinstance(function, Object): 
-            self.raise_error()
+            self.illegal_operation()
 
         args = []
 
@@ -197,7 +216,7 @@ class Interpreter:
                 klass = self.visit(node[1], env)
 
                 if not isinstance(klass, Object): 
-                    self.raise_error()
+                    self.illegal_operation()
 
                 args = []
 
@@ -210,15 +229,10 @@ class Interpreter:
                 if klass.has('constructor'):
                     constructor = klass.get('constructor')
 
-                    if not isinstance(constructor, Object): 
-                        self.raise_error()
+                    if not (isinstance(constructor, Object) and callable(constructor.primitive_value)): 
+                        self.illegal_operation()
 
-                    try:
-                        constructor.primitive_value(args, obj)
-                    except TypeError:
-                        self.raise_error()
-                    except SystemError: # used in standard functions to raise errors
-                        self.raise_error()
+                    constructor.primitive_value(args, obj)
 
                 if should_return:
                     self.should_return = True
@@ -235,8 +249,12 @@ class Interpreter:
                 self.should_return = True
 
             return function.primitive_value(args, None)
-        except TypeError:
-            self.raise_error()
+        except IllegalArgument:
+            self.illegal_argument()
+        except NoThis:
+            self.no_this()
+        except:
+            self.index_out_of_range()
 
     def visit_plus_node(self, node, env):
         return self.visit(node[1], env)
@@ -245,7 +263,7 @@ class Interpreter:
         try:
             return -self.visit(node[1], env)
         except TypeError:
-            self.raise_error()
+            self.illegal_operation()
 
     def visit_not_node(self, node, env):
         try:
@@ -254,14 +272,14 @@ class Interpreter:
             else:
                 return Symbol('false')
         except TypeError:
-            self.raise_error()
+            self.illegal_operation()
 
     def visit_assign_node(self, node, env): 
         if node[1][0] == 'member':   
             obj = self.visit(node[1][1], env)
 
             if not isinstance(obj, Object): 
-                self.raise_error()
+                self.illegal_operation()
 
             name = node[1][2]
 
@@ -397,7 +415,7 @@ class Interpreter:
         base_class = self.visit(node[1], env)
 
         if not isinstance(base_class, Object):
-            self.raise_error()
+            self.illegal_operation()
 
         result = Object()
 
@@ -426,7 +444,7 @@ class Interpreter:
         base_class = self.visit(node[2], env)
 
         if not isinstance(base_class, Object):
-            self.raise_error()
+            self.illegal_operation()
 
         result = Object()
 

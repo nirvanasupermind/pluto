@@ -1,7 +1,22 @@
+import numpy as np
 import textwrap
 import uuid
 from src.env import Env
 from src.symbol import Symbol
+
+def java_string_hashcode(s):
+    """Mimic Java's hashCode in python 2"""
+    # try:
+    #     s = unicode(s)
+    # except:
+    #     try:
+    #         s = unicode(s.decode('utf8'))
+    #     except:
+    #         raise Exception("Please enter a unicode type string or utf8 bytestring.")
+    h = 0
+    for c in s:
+        h = int((((31 * h + ord(c)) ^ 0x80000000) & 0xFFFFFFFF) - 0x80000000)
+    return h
 
 DEFAULT_INDENT = 2
 DEFAULT_MAX_DEPTH = 6
@@ -58,16 +73,23 @@ class Object:
 
     def __eq__(self, other):
         # print(self.primitive_value, self.can('eq'))
-        if isinstance(other, Object) and self.uuid == other.uuid:
+        if isinstance(other, Object) and self.hashcode() == other.hashcode():
             return Symbol('true')
         else:
             return Symbol('false')
 
     def __ne__(self, other):
-        if isinstance(other, Object) and self.uuid == other.uuid:
+        if isinstance(other, Object) and self.hashcode() == other.hashcode():
             return Symbol('false')
         else:
             return Symbol('true')
+
+    def hashcode(self):
+        if self.can('hashCode'):
+            result = self.get('hashCode').primitive_value([], self)
+            return np.int32(result)
+        
+        return java_string_hashcode(self.uuid)
 
     def __repr__(self):        
         if self.can('toString'):
