@@ -438,6 +438,7 @@ true = Symbol('true')
 false = Symbol('false')
 
 object_class = Object()
+object_class.is_object_class = True
 
 class_class = Object()
 object_class.klass = class_class
