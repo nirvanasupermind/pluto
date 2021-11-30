@@ -1,3 +1,5 @@
+# Represents a collection of keys and values.
+
 class Map {
     function constructor() {
         this.keys = List()

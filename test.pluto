@@ -1,6 +1,6 @@
 import "map"
 
 m = Map()
-m.put(m, 3)
+m.put("key", "val")
 
-System.println(m.get(m))
+System.println(m.get("key"))
