@@ -46,7 +46,7 @@ class Object:
             if result != None:
                 return result
 
-        if self.is_object_class:
+        if self.base != None:
             result = self.base.get(name)
 
             if result != None:
