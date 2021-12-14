@@ -1,8 +1,1 @@
-import "map"
-
-map = Map()
-
-map.put("x", 10.0)
-map.put("y", 20.0)
-
-System.println(map.get("y"))
+8+5
