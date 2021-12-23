@@ -1,42 +1,31 @@
-#include <string> 
-#include <iostream>
+#include <string>
 
 namespace pluto {
-    enum TokenType {
-        NUMBER,
-        PLUS,
-        DOT,
-        EOF_
-    };
-
+    const int EOF_ = -1;
+    const int NUMBER = -2;
+    
     class Token {
         public:
-            int line;
-            TokenType type;
-            double num_val;
+            int ln;
+            int type;
+            double num_value;
 
-            Token(int line, TokenType type) {
-                this->line = line;
+            Token(int ln, int type) {
+                this->ln = ln;
                 this->type = type;
             }
 
-            Token(int line, TokenType type, double num_val) {
-                this->line = line;
+            Token(int ln, int type, double num_value) {
+                this->ln = ln;
                 this->type = type;
-                this->num_val = num_val;  
+                this->num_value = num_value;
             }
 
             operator std::string() const {
-                switch(type) {
-                    case TokenType::NUMBER:
-                        return "NUMBER:"+std::to_string(num_val);
-                    case TokenType::PLUS:
-                        return "PLUS";
-                    case TokenType::DOT:
-                        return "DOT";
-                    default:
-                        return "EOF";
-                }
+                if(type == NUMBER) 
+                    return "(" + std::to_string(ln) + "," + std::to_string(type) + ","+std::to_string(num_value) + ")";
+
+                return "(" + std::to_string(ln) + "," + std::to_string(type) +")";
             }
     };
-};
+}

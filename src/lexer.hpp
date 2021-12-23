@@ -1,66 +1,45 @@
-#include <vector> 
+#include <vector>
 #include "./tokens.hpp"
 
 namespace pluto {
-    const std::string NUMERIC = ".0123456789";
+    const std::string WHITESPACE = " \n\t";
+    const std::string DIGITS = "0123456789";
 
     class Lexer {
         public:
-            std::string input;
-            std::vector<Token> tokens;
-
+            std::string text;
+            int ln;
             int index;
-            int line;
 
-            Lexer(std::string input) {
-                this->input = input + '\0';
+            Lexer(std::string text) {
+                this->text = text + '\0';
+                ln = 1;
                 index = 0;
-                line = 1;
             }
 
             void advance() {
                 if(current_char() == '\n')
-                    line++;
-
+                    ln++;
                 index++;
             }
 
             char current_char() {
-                return input[index];
+                return text[index];
             }
 
-            void tokenizer() {
+            std::vector<Token> get_tokens() {
+                std::vector<Token> tokens;
+
                 while(current_char() != '\0') {
-                    if(NUMERIC.find(current_char()) != std::string::npos) {
-                        tokens.push_back(number());
-                    } else if(current_char() == '+') {
+                    if(WHITESPACE.find(current_char()) != std::string::npos) {
                         advance();
-                        tokens.push_back(Token(line, TokenType::PLUS));
                     } else {
-                        throw "line " + std::to_string(line);
+                        tokens.push_back(Token(ln, (int)current_char()));
+                        advance();
                     }
                 }
-            }
 
-            Token number() {
-                std::string val = "";
-                int decimal_point_count = 0;
-
-                while(current_char() != '\0' 
-                      && NUMERIC.find(current_char()) != std::string::npos) {
-                    if(current_char() == '.')
-                        if(++decimal_point_count >= 2)
-                            break;
-                    
-                    val += current_char();
-            
-                    advance();
-                }
-
-                if(val == ".")
-                    return Token(line, TokenType::DOT);
-                
-                return Token(line, TokenType::NUMBER, std::stod(val));
+                return tokens;
             }
     };
-};
+}
