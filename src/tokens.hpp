@@ -1,8 +1,8 @@
 #include <string>
 
 namespace pluto {
-    const int EOF_ = -1;
-    const int NUMBER = -2;
+    const int type_eof = -1;
+    const int type_number = -2;
     
     class Token {
         public:
@@ -22,7 +22,7 @@ namespace pluto {
             }
 
             operator std::string() const {
-                if(type == NUMBER) 
+                if(type == type_number) 
                     return "(" + std::to_string(ln) + "," + std::to_string(type) + ","+std::to_string(num_value) + ")";
 
                 return "(" + std::to_string(ln) + "," + std::to_string(type) +")";
