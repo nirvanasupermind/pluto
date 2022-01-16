@@ -1,0 +1,12 @@
+class Point {
+    function constructor(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    function norm() {
+        return sqrt(this.x * this.x + this.y * this.y);
+    }
+}
+
+print(Point(2, 2).norm());

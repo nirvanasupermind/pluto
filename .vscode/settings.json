@@ -1,8 +1,0 @@
-{
-    "files.associations": {
-        "*.toml": "ini",
-        "*.pluto": "coffeescript",
-        "*.vml": "xml",
-        "map": "cpp"
-    }
-}

@@ -1,4 +1,2 @@
-# Pluto programming language
-Pluto is a dynamic, class-based programming language.
-
-(this is a very early release)
+# Pluto
+Work-in-progress interpreter for the Pluto programming language.

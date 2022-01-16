@@ -1,0 +1,34 @@
+package com.github.pluto;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+
+public class Pluto {
+    public static void main(String[] args) {
+        if(args.length == 0) {
+            System.err.println("usage: java Pluto [filename]");
+            System.exit(1);
+        }
+
+        String filename = args[0];
+
+        try {
+            File f = new File(filename);
+            
+            Scanner scan = new Scanner(f);
+            scan.useDelimiter("\\Z");  
+
+            String text = scan.next(); 
+            scan.close();
+
+            Lexer lexer = new Lexer(filename, text);
+
+            System.out.println(lexer.getTokens());
+
+        } catch(FileNotFoundException e) {
+            System.err.println("file not found: "+filename);
+            System.exit(1);
+        }
+    }
+}
