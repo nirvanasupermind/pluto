@@ -1,9 +1,10 @@
-package com.github.pluto;
+package com.nirvanaself.pluto;
 
-enum NodeType {
+public enum NodeType {
     EmptyNode,
     IntNode,
     DoubleNode,
+    CharNode,
     AddNode,
     SubtractNode,
     MultiplyNode,

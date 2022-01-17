@@ -1,8 +1,9 @@
-package com.github.pluto;
+package com.nirvanaself.pluto;
 
-enum TokenType {
+public enum TokenType {
     INT,
     DOUBLE,
+    CHAR,
     PLUS,
     MINUS,
     MULTIPLY,

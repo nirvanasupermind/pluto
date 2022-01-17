@@ -1,6 +1,6 @@
-package com.github.pluto;
+package com.nirvanaself.pluto;
 
-class Node {
+public class Node {
     public int line = 0;
     public NodeType type;
     public Node nodeA;
@@ -41,35 +41,35 @@ class Node {
 
     @Override
     public String toString() {
-        String result;
+        String result = "";
 
-        switch(this.type) {
+        switch(type) {
             case IntNode:
-                result = String.format("%s", this.intVal);
+                result = String.valueOf(intVal);
                 break;
             case DoubleNode:
-                result = String.format("%s", this.doubleVal);
+                result = String.valueOf(doubleVal);
                 break;
             case AddNode:
-                result = String.format("(%s + %s)", this.nodeA.toString(), this.nodeB.toString());
+                result = String.format("(%s + %s)", nodeA.toString(), nodeB.toString());
                 break;
             case SubtractNode:
-                result = String.format("(%s - %s)", this.nodeA.toString(), this.nodeB.toString());
+                result = String.format("(%s - %s)", nodeA.toString(), nodeB.toString());
                 break;
             case MultiplyNode:
-                result = String.format("(%s * %s)", this.nodeA.toString(), this.nodeB.toString());
+                result = String.format("(%s * %s)", nodeA.toString(), nodeB.toString());
                 break;
             case DivideNode:
-                result = String.format("(%s / %s)", this.nodeA.toString(), this.nodeB.toString());
+                result = String.format("(%s / %s)", nodeA.toString(), nodeB.toString());
                 break;
             case ModNode:
-                result = String.format("(%s %% %s)", this.nodeA.toString(), this.nodeB.toString());
+                result = String.format("(%s %% %s)", nodeA.toString(), nodeB.toString());
                 break;
             case PlusNode:
-                result = String.format("(+ %s)", this.nodeA.toString());
+                result = String.format("(+ %s)", nodeA.toString());
                 break;
             case MinusNode:
-                result = String.format("(- %s)", this.nodeA.toString());
+                result = String.format("(- %s)", nodeA.toString());
                 break;
             default:
                 result = "()";

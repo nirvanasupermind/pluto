@@ -1,9 +1,9 @@
-package com.github.pluto;
+package com.nirvanaself.pluto;
 
 import java.util.List;
 import java.util.ArrayList;
 
-class Parser {
+public class Parser {
     private String filename;
     private List<Token> tokens = new ArrayList<>();
     private int index = 0;
@@ -18,15 +18,15 @@ class Parser {
     //     index++;
     // }
 
-    public void error() {
+    private void error() {
         Errors.invalidSyntax(filename, current().line);
     }
 
-    public Token current() {
+    private Token current() {
         return tokens.get(index);
     }
     
-    public void eat(TokenType type) {
+    private void eat(TokenType type) {
         if(current().type == type)
             index++;
         else
@@ -34,22 +34,24 @@ class Parser {
     }
 
     public Node parse() {
-        if (current().type == TokenType.EOF)
+        if (current().type == TokenType.EOF) {
             return new Node(current().line, NodeType.EmptyNode);
+        }
     
         Node result = exp();
         
-        if (current().type != TokenType.EOF)
+        if (current().type != TokenType.EOF) {
             error();
+        }
         
         return result;
     }
 
-    public Node exp() {
+    private Node exp() {
         return addExp();
     }
 
-    public Node addExp() {
+    private Node addExp() {
         Node result = multiplyExp();
 
         while((current().type == TokenType.PLUS || current().type == TokenType.MINUS)
@@ -68,8 +70,7 @@ class Parser {
         return result;
     }
 
-
-    public Node multiplyExp() {
+    private Node multiplyExp() {
         Node result = unaryExp();
 
         while((current().type == TokenType.MULTIPLY || current().type == TokenType.DIVIDE 
@@ -92,7 +93,7 @@ class Parser {
         return result;
     }
 
-    public Node unaryExp() {
+    private Node unaryExp() {
         Token token = current();
 
         if (current().type == TokenType.PLUS) {
@@ -110,7 +111,7 @@ class Parser {
         }
     }
 
-    public Node parenExp() {
+    private Node parenExp() {
         if (current().type == TokenType.LPAREN) {
             eat(TokenType.LPAREN);
 
@@ -124,7 +125,7 @@ class Parser {
         }
     }
 
-    public Node basicExp() {
+    private Node basicExp() {
         Token token = current();
 
         if (token.type == TokenType.INT) {
@@ -133,6 +134,9 @@ class Parser {
         } else if(token.type == TokenType.DOUBLE) {
             eat(TokenType.DOUBLE);
             return new Node(token.line, NodeType.DoubleNode, token.doubleVal);
+        }  else if(token.type == TokenType.CHAR) {
+            eat(TokenType.CHAR);
+            return new Node(token.line, NodeType.CharNode, token.intVal);
         } else {
             error();
         }

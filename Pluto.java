@@ -1,4 +1,4 @@
-package com.github.pluto;
+package com.nirvanaself.pluto;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -31,7 +31,9 @@ public class Pluto {
             Parser parser = new Parser(filename, tokens);
             Node tree = parser.parse();
 
-            System.out.println(tree);
+            Interpreter interpreter = new Interpreter(filename);
+            
+            System.out.println(interpreter.visit(tree));
         } catch(FileNotFoundException e) {
             System.err.println("file not found: "+filename);
             System.exit(1);

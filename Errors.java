@@ -1,23 +1,31 @@
-package com.github.pluto;
+package com.nirvanaself.pluto;
 
-class Errors {
+public class Errors {
     public static void illegalCharacter(String filename, int line, char chr) {
-        System.err.println(String.format("%s:%s: illegal character: %s",  filename, line, chr));
-        System.exit(1);
+        throw new PlutoException(String.format("%s:%s: illegal character: %s",  filename, line, chr));
+    }
+
+    public static void emptyCharacterLiteral(String filename, int line) {
+        throw new PlutoException(String.format("%s:%s: empty character literal", filename, line));
+    }
+
+    public static void unclosedCharacterLiteral(String filename, int line) {
+        throw new PlutoException(String.format("%s:%s: unclosed character literal", filename, line));
     }
 
     public static void invalidSyntax(String filename, int line) {
-        System.err.println(String.format("%s:%s: invalid syntax",  filename, line));
-        System.exit(1);
+        throw new PlutoException(String.format("%s:%s: invalid syntax",  filename, line));
+    }
+
+    public static void badOperandType(String filename, int line) {
+        throw new PlutoException(String.format("%s:%s: bad operand type", filename, line));
     }
 
     public static void integerDivisionByZero(String filename, int line) {
-        System.err.println(String.format("%s:%s: integer division by zero",  filename, line));
-        System.exit(1);
+        throw new PlutoException(String.format("%s:%s: integer division by zero",  filename, line));
     }
 
     public static void unboundVariable(String filename, int line, String name) {
-        System.err.println(String.format("%s:%s: unbound variable: %s",  filename, line, name));
-        System.exit(1);
+        throw new PlutoException(String.format("%s:%s: unbound variable: %s",  filename, line, name));
     }
 }

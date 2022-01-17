@@ -1,6 +1,6 @@
-package com.github.pluto;
+package com.nirvanaself.pluto;
 
-class Token {
+public class Token {
     public int line = 0;
     public TokenType type;
     public int intVal = 0;
@@ -31,6 +31,6 @@ class Token {
         if(type == TokenType.DOUBLE)
             return String.format("%s:%s", type, doubleVal);
 
-        return String.format("%s", type);
+        return type.toString();
     }
 }
