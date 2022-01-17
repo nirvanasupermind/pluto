@@ -1,10 +1,10 @@
 package com.github.pluto;
 
 class Token {
-    private int line = 0;
-    private TokenType type;
-    private int intVal = 0;
-    private double doubleVal = 0;
+    public int line = 0;
+    public TokenType type;
+    public int intVal = 0;
+    public double doubleVal = 0.0;
 
     public Token(int line, TokenType type) {
         this.line = line;
@@ -22,23 +22,7 @@ class Token {
         this.type = type;
         this.doubleVal = doubleVal;
     }
-
-    public int getLine() {
-        return line;
-    }
     
-    public TokenType getType() {
-        return type;
-    }
-
-    public int getIntVal() {
-        return intVal;
-    }
-
-    public double getDoubleVal() {
-        return doubleVal;
-    }
-
     @Override
     public String toString() {
         if(type == TokenType.INT)

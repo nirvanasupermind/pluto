@@ -5,8 +5,8 @@ class Point {
     }
 
     function norm() {
-        return sqrt(this.x * this.x + this.y * this.y);
+        return Math.sqrt(this.x * this.x + this.y * this.y);
     }
 }
 
-print(Point(2, 2).norm());
+IO.println(Point(2, 2).norm());

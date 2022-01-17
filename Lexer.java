@@ -41,10 +41,27 @@ class Lexer {
             } else if(current() == '-') {
                 tokens.add(new Token(line, TokenType.MINUS));
                 advance();
+            } else if(current() == '*') {
+                tokens.add(new Token(line, TokenType.MULTIPLY));
+                advance();
+            } else if(current() == '/') {
+                tokens.add(new Token(line, TokenType.DIVIDE));
+                advance();
+            } else if(current() == '%') {
+                tokens.add(new Token(line, TokenType.MOD));
+                advance();
+            } else if(current() == '(') {
+                tokens.add(new Token(line, TokenType.LPAREN));
+                advance();
+            } else if(current() == ')') {
+                tokens.add(new Token(line, TokenType.RPAREN));
+                advance();
             } else {
                 Errors.illegalCharacter(filename, line, current());
             }
         }
+
+        tokens.add(new Token(line, TokenType.EOF));
 
         return tokens;
     }

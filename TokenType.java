@@ -4,5 +4,11 @@ enum TokenType {
     INT,
     DOUBLE,
     PLUS,
-    MINUS
+    MINUS,
+    MULTIPLY,
+    DIVIDE,
+    MOD,
+    LPAREN,
+    RPAREN,
+    EOF;
 }
