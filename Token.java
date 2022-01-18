@@ -3,12 +3,19 @@ package com.nirvanaself.pluto;
 public class Token {
     public int line = 0;
     public TokenType type;
+    public byte byteVal = (byte)0;
     public int intVal = 0;
     public double doubleVal = 0.0;
 
     public Token(int line, TokenType type) {
         this.line = line;
         this.type = type;
+    }
+
+    public Token(int line, TokenType type, byte byteVal) {
+        this.line = line;
+        this.type = type;
+        this.byteVal = byteVal;
     }
 
     public Token(int line, TokenType type, int intVal) {
@@ -25,6 +32,9 @@ public class Token {
     
     @Override
     public String toString() {
+        if(type == TokenType.BYTE)
+            return String.format("%s:%s", type, byteVal);
+
         if(type == TokenType.INT)
             return String.format("%s:%s", type, intVal);
 

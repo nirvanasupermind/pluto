@@ -65,8 +65,6 @@ public class Lexer {
             } else if(current() == ')') {
                 tokens.add(new Token(line, TokenType.RPAREN));
                 advance();
-            } else if(current() == '\'') {
-                tokens.add(getChar());
             } else {
                 Errors.illegalCharacter(filename, line, current());
             }
@@ -80,46 +78,34 @@ public class Lexer {
     private Token getNumber() {
         String val = "";
         int dotCount = 0;
+        int yCount = 0;
 
-        while((DIGITS + '.').indexOf(current()) != -1 && current() != '\0') {
+        while((DIGITS + ".yY").indexOf(current()) != -1 && current() != '\0') {
             if(current() == '.') {
-                if(++dotCount >= 2) {
+                if(yCount >= 1 || ++dotCount >= 2) {
                     break;
                 }
             }
             
+            if(current() == 'y' || current() == 'Y') {
+                if(yCount >= 1 || ++yCount >= 2) {
+                    break;
+                }
+            }
+
             val += current();
             advance();
         }
 
-        if(dotCount == 1)
-            return new Token(line, TokenType.DOUBLE, Double.parseDouble(val));
-        
-        return new Token(line, TokenType.INT, Integer.parseInt(val));
-    }
-
-    private Token getChar() {
-        advance();
-
-        char val = '\0';
-        
-        if(current() == '\'') {
-            Errors.emptyCharacterLiteral(filename, line);
-        } else if(current() == '\\') {
-            advance();
-            val = ESCAPES.getOrDefault(current(), current());
-        } else {
-            val = current();
+        if(yCount == 1) {
+            // advance();
+            return new Token(line, TokenType.BYTE, Byte.parseByte(val.substring(0, val.length()-1)));
         }
 
-        advance();
+        if(dotCount == 1) {
+            return new Token(line, TokenType.DOUBLE, Double.parseDouble(val));
+        }
 
-        if(current() != '\'') {
-            Errors.unclosedCharacterLiteral(filename, line);
-        } 
-
-        advance();
-        
-        return new Token(line, TokenType.CHAR, val);
+        return new Token(line, TokenType.INT, Integer.parseInt(val));
     }
 }

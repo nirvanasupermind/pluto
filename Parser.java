@@ -134,9 +134,9 @@ public class Parser {
         } else if(token.type == TokenType.DOUBLE) {
             eat(TokenType.DOUBLE);
             return new Node(token.line, NodeType.DoubleNode, token.doubleVal);
-        }  else if(token.type == TokenType.CHAR) {
-            eat(TokenType.CHAR);
-            return new Node(token.line, NodeType.CharNode, token.intVal);
+        }  else if(token.type == TokenType.BYTE) {
+            eat(TokenType.BYTE);
+            return new Node(token.line, NodeType.ByteNode, token.byteVal);
         } else {
             error();
         }

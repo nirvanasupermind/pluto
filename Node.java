@@ -5,6 +5,7 @@ public class Node {
     public NodeType type;
     public Node nodeA;
     public Node nodeB;
+    public byte byteVal = (byte)0;
     public int intVal = 0;
     public double doubleVal = 0.0;
 
@@ -14,6 +15,12 @@ public class Node {
         this.type = type;
     }
     
+    public Node(int line, NodeType type, byte byteVal) {
+        this.line = line;
+        this.type = type;
+        this.byteVal = byteVal;
+    }
+
     public Node(int line, NodeType type, int intVal) {
         this.line = line;
         this.type = type;
@@ -44,6 +51,9 @@ public class Node {
         String result = "";
 
         switch(type) {
+            case ByteNode:
+                result = String.valueOf(intVal);
+                break;
             case IntNode:
                 result = String.valueOf(intVal);
                 break;

@@ -1,9 +1,9 @@
 package com.nirvanaself.pluto;
 
 public enum TokenType {
+    BYTE,
     INT,
     DOUBLE,
-    CHAR,
     PLUS,
     MINUS,
     MULTIPLY,

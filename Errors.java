@@ -5,14 +5,6 @@ public class Errors {
         throw new PlutoException(String.format("%s:%s: illegal character: %s",  filename, line, chr));
     }
 
-    public static void emptyCharacterLiteral(String filename, int line) {
-        throw new PlutoException(String.format("%s:%s: empty character literal", filename, line));
-    }
-
-    public static void unclosedCharacterLiteral(String filename, int line) {
-        throw new PlutoException(String.format("%s:%s: unclosed character literal", filename, line));
-    }
-
     public static void invalidSyntax(String filename, int line) {
         throw new PlutoException(String.format("%s:%s: invalid syntax",  filename, line));
     }
