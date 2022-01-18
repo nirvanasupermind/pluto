@@ -5,7 +5,7 @@ public enum TokenType {
     INT,
     DOUBLE,
     IDENTIFIER,
-    LET,
+    VAR,
     PLUS,
     MINUS,
     MULTIPLY,

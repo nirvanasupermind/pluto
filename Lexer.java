@@ -137,8 +137,8 @@ public class Lexer {
             advance();
         }
 
-        if(id == "let") {
-            return new Token(line, TokenType.LET);
+        if(id == "var") {
+            return new Token(line, TokenType.VAR);
         }
 
         return new Token(line, TokenType.IDENTIFIER, id);

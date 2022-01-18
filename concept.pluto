@@ -9,4 +9,4 @@ class Point {
     }
 }
 
-IO.println(Point(2, 2).norm());
+Stdout.writeLine(Point(2, 2).norm());
