@@ -6,11 +6,13 @@ import java.util.ArrayList;
 public class Node {
     public int line = 0;
     public NodeType type;
-    public Node nodeA;
-    public Node nodeB;
     public byte byteVal = (byte)0;
     public int intVal = 0;
     public double doubleVal = 0.0;
+    public Node nodeA;
+    public Node nodeB;    
+    public String name;
+    public Node val;
     public List<Node> stmts = new ArrayList<>();
 
     public Node(int line, NodeType type) {
@@ -36,6 +38,12 @@ public class Node {
         this.doubleVal = doubleVal;
     }
 
+    public Node(int line, NodeType type, String name) {
+        this.line = line;
+        this.type = type;
+        this.name = name;
+    }
+
     public Node(int line, NodeType type, Node nodeA) {
         this.line = line;
         this.type = type;
@@ -53,6 +61,13 @@ public class Node {
         this.line = line;
         this.type = type;
         this.stmts = stmts;
+    }
+
+    public Node(int line, NodeType type, String name, Node val) {
+        this.line = line;
+        this.type = type;
+        this.name = name;
+        this.val = val;
     }
 
     @Override

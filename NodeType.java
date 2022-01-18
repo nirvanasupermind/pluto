@@ -5,6 +5,7 @@ public enum NodeType {
     ByteNode,
     IntNode,
     DoubleNode,
+    NameNode,
     AddNode,
     SubtractNode,
     MultiplyNode,
@@ -12,5 +13,7 @@ public enum NodeType {
     ModNode,
     PlusNode,
     MinusNode,
+    AssignNode,
+    VarStmtNode,
     StmtListNode;
 }

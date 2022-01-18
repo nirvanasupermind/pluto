@@ -7,52 +7,71 @@ public class Interpreter {
         this.filename = filename;
     }
 
-    public Value visit(Node node) {
+    public Value visit(Node node, Env env) {
         switch(node.type) {
             case EmptyNode:
                 return new Value(ValueType.NIL);
             case ByteNode:
-                return visitByteNode(node);
+                return visitByteNode(node, env);
             case IntNode:
-                return visitIntNode(node);
+                return visitIntNode(node, env);
             case DoubleNode:
-                return visitDoubleNode(node);
+                return visitDoubleNode(node, env);
+            case NameNode:
+                return visitNameNode(node, env);
             case AddNode:
-                return visitAddNode(node); 
+                return visitAddNode(node, env); 
             case SubtractNode:
-                return visitSubtractNode(node); 
+                return visitSubtractNode(node, env); 
             case MultiplyNode:
-                return visitMultiplyNode(node);
+                return visitMultiplyNode(node, env);
             case DivideNode:
-                return visitDivideNode(node);
+                return visitDivideNode(node, env);
             case ModNode:
-                return visitModNode(node);
+                return visitModNode(node, env);
+            case AssignNode:
+                return visitAssignNode(node, env);
             case PlusNode:
-                return visitPlusNode(node);
+                return visitPlusNode(node, env);
             case MinusNode:
-                return visitMinusNode(node);
+                return visitMinusNode(node, env);
+            case VarStmtNode:
+                return visitVarStmtNode(node, env);
             case StmtListNode:
-                return visitStmtListNode(node);
+                return visitStmtListNode(node, env);
             default:
-                throw new PlutoException("Unknown node type");
+                throw new RuntimeException("Unknown node type");
         }
     }
 
-    private Value visitByteNode(Node node) {
+    private Value visitByteNode(Node node, Env env) {
         return new Value(ValueType.BYTE, node.byteVal);
     }
     
-    private Value visitIntNode(Node node) {
+    private Value visitIntNode(Node node, Env env) {
         return new Value(ValueType.INT, node.intVal);
     }
 
-    private Value visitDoubleNode(Node node) {
+    private Value visitDoubleNode(Node node, Env env) {
         return new Value(ValueType.DOUBLE, node.doubleVal);       
     }
     
-    private Value visitAddNode(Node node) {
-        Value a = visit(node.nodeA);
-        Value b = visit(node.nodeB);
+    private Value visitNameNode(Node node, Env env) {
+        String name = node.name;
+
+        Value result = env.get(name);
+
+        if(result == null) {
+            Errors.variableIsNotDefined(filename, node.line, name);
+        }
+
+        return env.get(name);
+    }
+    
+
+    private Value visitAddNode(Node node, Env env) {
+        Value a = visit(node.nodeA, env);
+        Value b = visit(node.nodeB, env);
 
         if(a.type == ValueType.BYTE && b.type == ValueType.BYTE) {
             return new Value(ValueType.BYTE, (byte)(a.byteVal + b.byteVal));
@@ -77,9 +96,9 @@ public class Interpreter {
         return null;
     }
 
-    private Value visitSubtractNode(Node node) {
-        Value a = visit(node.nodeA);
-        Value b = visit(node.nodeB);
+    private Value visitSubtractNode(Node node, Env env) {
+        Value a = visit(node.nodeA, env);
+        Value b = visit(node.nodeB, env);
 
         if(a.type == ValueType.BYTE && b.type == ValueType.BYTE) {
             return new Value(ValueType.BYTE, (byte)(a.byteVal - b.byteVal));
@@ -104,9 +123,9 @@ public class Interpreter {
         return null;
     }
 
-    private Value visitMultiplyNode(Node node) {
-        Value a = visit(node.nodeA);
-        Value b = visit(node.nodeB);
+    private Value visitMultiplyNode(Node node, Env env) {
+        Value a = visit(node.nodeA, env);
+        Value b = visit(node.nodeB, env);
 
         if(a.type == ValueType.BYTE && b.type == ValueType.BYTE) {
             return new Value(ValueType.BYTE, (byte)(a.byteVal * b.byteVal));
@@ -131,9 +150,9 @@ public class Interpreter {
         return null;
     }
 
-    private Value visitDivideNode(Node node) {
-        Value a = visit(node.nodeA);
-        Value b = visit(node.nodeB);
+    private Value visitDivideNode(Node node, Env env) {
+        Value a = visit(node.nodeA, env);
+        Value b = visit(node.nodeB, env);
 
         try {
 
@@ -158,15 +177,15 @@ public class Interpreter {
             }
 
         } catch(ArithmeticException e) {
-            Errors.integerDivisionByZero(filename, node.line);            
+            Errors.divideByZero(filename, node.line);            
         }
 
         return null;
     }
 
-    private Value visitModNode(Node node) {
-        Value a = visit(node.nodeA);
-        Value b = visit(node.nodeB);
+    private Value visitModNode(Node node, Env env) {
+        Value a = visit(node.nodeA, env);
+        Value b = visit(node.nodeB, env);
 
         try {
             if(a.type == ValueType.BYTE && b.type == ValueType.BYTE) {
@@ -189,14 +208,31 @@ public class Interpreter {
                 Errors.badOperandType(filename, node.line);
             }
         } catch(ArithmeticException e) {
-            Errors.integerDivisionByZero(filename, node.line);            
+            Errors.modByZero(filename, node.line);            
         }
         
         return null;
     }
 
-    private Value visitPlusNode(Node node) {
-        Value a = visit(node.nodeA);
+    private Value visitAssignNode(Node node, Env env) {
+        if(node.nodeA.type != NodeType.NameNode) {
+            Errors.invaildLeftHandSide(filename, node.line);
+        }
+
+        String name = node.nodeA.name;
+        Value val = visit(node.nodeB, env);
+
+        if(env.record.getOrDefault(name, null) == null) {
+            Errors.variableIsNotDefined(filename, node.line, name);
+        }
+
+        env.put(name, val);
+
+        return val;
+    }
+
+    private Value visitPlusNode(Node node, Env env) {
+        Value a = visit(node.nodeA, env);
 
         if(a.type == ValueType.BYTE) {
             return new Value(ValueType.BYTE, (byte)+a.byteVal);
@@ -211,8 +247,8 @@ public class Interpreter {
         return null;
     }
 
-    private Value visitMinusNode(Node node) {
-        Value a = visit(node.nodeA);
+    private Value visitMinusNode(Node node, Env env) {
+        Value a = visit(node.nodeA, env);
 
         if(a.type == ValueType.BYTE) {
             return new Value(ValueType.BYTE, (byte)-a.byteVal);
@@ -227,11 +263,24 @@ public class Interpreter {
         return null;
     }
 
-    private Value visitStmtListNode(Node node) {    
-        for(int i = 0; i < node.stmts.size() - 1; i++) {
-            visit(node.stmts.get(i));
+    private Value visitVarStmtNode(Node node, Env env) {
+        String name = node.name;
+        Value val = visit(node.val, env);
+
+        if(env.record.getOrDefault(name, null) != null) {
+            Errors.variableIsAlreadyDefined(filename, node.line, name);
         }
 
-        return visit(node.stmts.get(node.stmts.size() - 1));
+        env.put(name, val);
+
+        return val;
+    }
+
+    private Value visitStmtListNode(Node node, Env env) {    
+        for(int i = 0; i < node.stmts.size() - 1; i++) {
+            visit(node.stmts.get(i), env);
+        }
+
+        return visit(node.stmts.get(node.stmts.size() - 1), env);
     }
 }

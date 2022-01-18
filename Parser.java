@@ -27,10 +27,11 @@ public class Parser {
     }
     
     private void eat(TokenType type) {
-        if(current().type == type)
+        if(current().type == type) {
             index++;
-        else
+        } else {
             error();
+        }
     }
 
     public Node parse() {
@@ -57,8 +58,11 @@ public class Parser {
         return new Node(current().line, NodeType.StmtListNode, stmts);
     }
 
-
     private Node stmt() {
+        if(current().type == TokenType.VAR) {
+            return varStmt();
+        }
+
         Node result = exp();
         
         eat(TokenType.SEMICOLON);
@@ -66,8 +70,37 @@ public class Parser {
         return result;
     }
 
+    private Node varStmt() {
+        int line = current().line;
+        eat(TokenType.VAR);
+
+        String name = current().id;
+
+        eat(TokenType.NAME);
+
+        eat(TokenType.EQ);
+
+        Node val = exp();
+
+        eat(TokenType.SEMICOLON);
+
+        return new Node(line, NodeType.VarStmtNode, name, val);
+    }
+
     private Node exp() {
-        return addExp();
+        return assignExp();
+    }
+
+    private Node assignExp() {
+        Node result = addExp();
+
+        if(current().type == TokenType.EQ) {
+            eat(TokenType.EQ);
+
+            result = new Node(result.line, NodeType.AssignNode, result, assignExp());
+        }
+
+        return result;
     }
 
     private Node addExp() {
@@ -106,7 +139,6 @@ public class Parser {
                 eat(TokenType.MOD);
                 result = new Node(result.line, NodeType.ModNode, result, unaryExp());
             }
-
         }
          
         return result;
@@ -147,15 +179,18 @@ public class Parser {
     private Node basicExp() {
         Token token = current();
 
-        if (token.type == TokenType.INT) {
+        if(token.type == TokenType.BYTE) {
+            eat(TokenType.BYTE);
+            return new Node(token.line, NodeType.ByteNode, token.byteVal);
+        } else if (token.type == TokenType.INT) {
             eat(TokenType.INT);
             return new Node(token.line, NodeType.IntNode, token.intVal);
         } else if(token.type == TokenType.DOUBLE) {
             eat(TokenType.DOUBLE);
             return new Node(token.line, NodeType.DoubleNode, token.doubleVal);
-        } else if(token.type == TokenType.BYTE) {
-            eat(TokenType.BYTE);
-            return new Node(token.line, NodeType.ByteNode, token.byteVal);
+        } else if(token.type == TokenType.NAME) {
+            eat(TokenType.NAME);            
+            return new Node(token.line, NodeType.NameNode, token.id);
         } else {
             error();
         }

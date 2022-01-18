@@ -46,7 +46,7 @@ public class Lexer {
             } else if(DIGITS.indexOf(current()) != -1) {
                 tokens.add(getNumber());
             } else if(NONDIGITS.indexOf(current()) != -1) {
-                tokens.add(getIdentifier());
+                tokens.add(getName());
             } else if(current() == '+') {
                 tokens.add(new Token(line, TokenType.PLUS));
                 advance();
@@ -67,6 +67,9 @@ public class Lexer {
                 advance();
             } else if(current() == ')') {
                 tokens.add(new Token(line, TokenType.RPAREN));
+                advance();
+            } else if(current() == '=') {
+                tokens.add(new Token(line, TokenType.EQ));
                 advance();
             } else if(current() == ';') {
                 tokens.add(new Token(line, TokenType.SEMICOLON));
@@ -115,32 +118,18 @@ public class Lexer {
         return new Token(line, TokenType.INT, Integer.parseInt(val));
     }
 
-    private Token getIdentifier() {
-        String id = "";
-        int dotCount = 0;
-        int yCount = 0;
+    private Token getName() {
+        String name = "";
 
         while((DIGITS + NONDIGITS).indexOf(current()) != -1 && current() != '\0') {
-            if(current() == '.') {
-                if(yCount >= 1 || ++dotCount >= 2) {
-                    break;
-                }
-            }
-            
-            if(current() == 'y' || current() == 'Y') {
-                if(yCount >= 1 || ++yCount >= 2) {
-                    break;
-                }
-            }
-
-            id += current();
+            name += current();
             advance();
         }
 
-        if(id == "var") {
+        if(name.equals("var")) {
             return new Token(line, TokenType.VAR);
         }
 
-        return new Token(line, TokenType.IDENTIFIER, id);
+        return new Token(line, TokenType.NAME, name);
     }
 }

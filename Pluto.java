@@ -31,9 +31,11 @@ public class Pluto {
             Parser parser = new Parser(filename, tokens);
             Node tree = parser.parse();
 
+            Env globalEnv = new Env();
+
             Interpreter interpreter = new Interpreter(filename);
             
-            System.out.println(interpreter.visit(tree));
+            System.out.println(interpreter.visit(tree, globalEnv));
         } catch(FileNotFoundException e) {
             System.err.println("file not found: "+filename);
             System.exit(1);
