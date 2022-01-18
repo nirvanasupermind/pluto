@@ -11,5 +11,6 @@ public enum NodeType {
     DivideNode,
     ModNode,
     PlusNode,
-    MinusNode;
+    MinusNode,
+    StmtListNode;
 }

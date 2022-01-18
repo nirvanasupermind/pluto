@@ -1,5 +1,8 @@
 package com.nirvanaself.pluto;
 
+import java.util.List;
+import java.util.ArrayList;
+
 public class Node {
     public int line = 0;
     public NodeType type;
@@ -8,7 +11,7 @@ public class Node {
     public byte byteVal = (byte)0;
     public int intVal = 0;
     public double doubleVal = 0.0;
-
+    public List<Node> stmts = new ArrayList<>();
 
     public Node(int line, NodeType type) {
         this.line = line;
@@ -44,6 +47,12 @@ public class Node {
         this.type = type;
         this.nodeA = nodeA;
         this.nodeB = nodeB;
+    }
+
+    public Node(int line, NodeType type, List<Node> stmts) {
+        this.line = line;
+        this.type = type;
+        this.stmts = stmts;
     }
 
     @Override

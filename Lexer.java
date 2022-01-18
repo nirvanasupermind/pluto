@@ -8,6 +8,7 @@ import java.util.HashMap;
 public class Lexer {
     private static final String WHITESPACE = " \n\t";
     private static final String DIGITS = "0123456789";
+    private static final String NONDIGITS = "_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final Map<Character, Character> ESCAPES = new HashMap<>();
 
     private String filename;
@@ -44,6 +45,8 @@ public class Lexer {
                 advance();
             } else if(DIGITS.indexOf(current()) != -1) {
                 tokens.add(getNumber());
+            } else if(NONDIGITS.indexOf(current()) != -1) {
+                tokens.add(getIdentifier());
             } else if(current() == '+') {
                 tokens.add(new Token(line, TokenType.PLUS));
                 advance();
@@ -64,6 +67,9 @@ public class Lexer {
                 advance();
             } else if(current() == ')') {
                 tokens.add(new Token(line, TokenType.RPAREN));
+                advance();
+            } else if(current() == ';') {
+                tokens.add(new Token(line, TokenType.SEMICOLON));
                 advance();
             } else {
                 Errors.illegalCharacter(filename, line, current());
@@ -107,5 +113,34 @@ public class Lexer {
         }
 
         return new Token(line, TokenType.INT, Integer.parseInt(val));
+    }
+
+    private Token getIdentifier() {
+        String id = "";
+        int dotCount = 0;
+        int yCount = 0;
+
+        while((DIGITS + NONDIGITS).indexOf(current()) != -1 && current() != '\0') {
+            if(current() == '.') {
+                if(yCount >= 1 || ++dotCount >= 2) {
+                    break;
+                }
+            }
+            
+            if(current() == 'y' || current() == 'Y') {
+                if(yCount >= 1 || ++yCount >= 2) {
+                    break;
+                }
+            }
+
+            id += current();
+            advance();
+        }
+
+        if(id == "let") {
+            return new Token(line, TokenType.LET);
+        }
+
+        return new Token(line, TokenType.IDENTIFIER, id);
     }
 }

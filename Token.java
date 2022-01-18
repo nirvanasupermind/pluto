@@ -6,6 +6,7 @@ public class Token {
     public byte byteVal = (byte)0;
     public int intVal = 0;
     public double doubleVal = 0.0;
+    public String id;
 
     public Token(int line, TokenType type) {
         this.line = line;
@@ -28,6 +29,12 @@ public class Token {
         this.line = line;
         this.type = type;
         this.doubleVal = doubleVal;
+    }
+
+    public Token(int line, TokenType type, String id) {
+        this.line = line;
+        this.type = type;
+        this.id = id;
     }
     
     @Override

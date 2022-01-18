@@ -13,7 +13,7 @@ public class Value {
     public Value(ValueType type, byte byteVal) {
         this.type = type;
         this.byteVal = byteVal;
-    } 
+    }
 
     public Value(ValueType type, int intVal) {
         this.type = type;
@@ -23,11 +23,6 @@ public class Value {
     public Value(ValueType type, double doubleVal) {
         this.type = type;
         this.doubleVal = doubleVal;
-    }
-
-    public Value(ValueType type, char chr) {
-        this.type = type;
-        this.intVal = (int)chr;
     }
 
     public String toString() {

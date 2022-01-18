@@ -34,16 +34,35 @@ public class Parser {
     }
 
     public Node parse() {
+        Node result = stmtList();
+        
+        eat(TokenType.EOF);
+        
+        return result;
+    }
+
+    private Node stmtList() {
         if (current().type == TokenType.EOF) {
             return new Node(current().line, NodeType.EmptyNode);
         }
+        
+        int line = current().line;
     
+        List<Node> stmts = new ArrayList<>();
+
+        while(current().type != TokenType.EOF) {
+            stmts.add(stmt());
+        }
+
+        return new Node(current().line, NodeType.StmtListNode, stmts);
+    }
+
+
+    private Node stmt() {
         Node result = exp();
         
-        if (current().type != TokenType.EOF) {
-            error();
-        }
-        
+        eat(TokenType.SEMICOLON);
+
         return result;
     }
 
@@ -134,7 +153,7 @@ public class Parser {
         } else if(token.type == TokenType.DOUBLE) {
             eat(TokenType.DOUBLE);
             return new Node(token.line, NodeType.DoubleNode, token.doubleVal);
-        }  else if(token.type == TokenType.BYTE) {
+        } else if(token.type == TokenType.BYTE) {
             eat(TokenType.BYTE);
             return new Node(token.line, NodeType.ByteNode, token.byteVal);
         } else {

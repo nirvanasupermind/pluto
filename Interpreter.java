@@ -31,6 +31,8 @@ public class Interpreter {
                 return visitPlusNode(node);
             case MinusNode:
                 return visitMinusNode(node);
+            case StmtListNode:
+                return visitStmtListNode(node);
             default:
                 throw new PlutoException("Unknown node type");
         }
@@ -47,14 +49,13 @@ public class Interpreter {
     private Value visitDoubleNode(Node node) {
         return new Value(ValueType.DOUBLE, node.doubleVal);       
     }
-
-
+    
     private Value visitAddNode(Node node) {
         Value a = visit(node.nodeA);
         Value b = visit(node.nodeB);
 
         if(a.type == ValueType.BYTE && b.type == ValueType.BYTE) {
-            return new Value(ValueType.BYTE, a.byteVal + b.byteVal);
+            return new Value(ValueType.BYTE, (byte)(a.byteVal + b.byteVal));
         } else if(a.type == ValueType.BYTE && b.type == ValueType.INT) {
             return new Value(ValueType.INT, a.byteVal + b.intVal);
         } else if(a.type == ValueType.INT && b.type == ValueType.BYTE) {
@@ -81,7 +82,7 @@ public class Interpreter {
         Value b = visit(node.nodeB);
 
         if(a.type == ValueType.BYTE && b.type == ValueType.BYTE) {
-            return new Value(ValueType.BYTE, a.byteVal - b.byteVal);
+            return new Value(ValueType.BYTE, (byte)(a.byteVal - b.byteVal));
         } else if(a.type == ValueType.BYTE && b.type == ValueType.INT) {
             return new Value(ValueType.INT, a.byteVal - b.intVal);
         } else if(a.type == ValueType.INT && b.type == ValueType.BYTE) {
@@ -108,7 +109,7 @@ public class Interpreter {
         Value b = visit(node.nodeB);
 
         if(a.type == ValueType.BYTE && b.type == ValueType.BYTE) {
-            return new Value(ValueType.BYTE, a.byteVal * b.byteVal);
+            return new Value(ValueType.BYTE, (byte)(a.byteVal * b.byteVal));
         } else if(a.type == ValueType.BYTE && b.type == ValueType.INT) {
             return new Value(ValueType.INT, a.byteVal * b.intVal);
         } else if(a.type == ValueType.INT && b.type == ValueType.BYTE) {
@@ -134,24 +135,30 @@ public class Interpreter {
         Value a = visit(node.nodeA);
         Value b = visit(node.nodeB);
 
-        if(a.type == ValueType.BYTE && b.type == ValueType.BYTE) {
-            return new Value(ValueType.BYTE, a.byteVal / b.byteVal);
-        } else if(a.type == ValueType.BYTE && b.type == ValueType.INT) {
-            return new Value(ValueType.INT, a.byteVal / b.intVal);
-        } else if(a.type == ValueType.INT && b.type == ValueType.BYTE) {
-            return new Value(ValueType.INT, a.intVal / b.byteVal);
-        } else if(a.type == ValueType.INT && b.type == ValueType.INT) {
-            return new Value(ValueType.INT, a.intVal / b.intVal);
-        } else if(a.type == ValueType.INT && b.type == ValueType.DOUBLE) {
-            return new Value(ValueType.DOUBLE, a.intVal / b.doubleVal);
-        } else if(a.type == ValueType.DOUBLE && b.type == ValueType.BYTE) {
-            return new Value(ValueType.DOUBLE, a.doubleVal / b.byteVal);
-        } else if(a.type == ValueType.DOUBLE && b.type == ValueType.INT) {
-            return new Value(ValueType.DOUBLE, a.doubleVal / b.intVal);
-        } else if(a.type == ValueType.DOUBLE && b.type == ValueType.DOUBLE) {
-            return new Value(ValueType.DOUBLE, a.doubleVal / b.doubleVal);
-        } else {
-            Errors.badOperandType(filename, node.line);
+        try {
+
+            if(a.type == ValueType.BYTE && b.type == ValueType.BYTE) {
+                return new Value(ValueType.BYTE, (byte)(a.byteVal / b.byteVal));
+            } else if(a.type == ValueType.BYTE && b.type == ValueType.INT) {
+                return new Value(ValueType.INT, a.byteVal / b.intVal);
+            } else if(a.type == ValueType.INT && b.type == ValueType.BYTE) {
+                return new Value(ValueType.INT, a.intVal / b.byteVal);
+            } else if(a.type == ValueType.INT && b.type == ValueType.INT) {
+                return new Value(ValueType.INT, a.intVal / b.intVal);
+            } else if(a.type == ValueType.INT && b.type == ValueType.DOUBLE) {
+                return new Value(ValueType.DOUBLE, a.intVal / b.doubleVal);
+            } else if(a.type == ValueType.DOUBLE && b.type == ValueType.BYTE) {
+                return new Value(ValueType.DOUBLE, a.doubleVal / b.byteVal);
+            } else if(a.type == ValueType.DOUBLE && b.type == ValueType.INT) {
+                return new Value(ValueType.DOUBLE, a.doubleVal / b.intVal);
+            } else if(a.type == ValueType.DOUBLE && b.type == ValueType.DOUBLE) {
+                return new Value(ValueType.DOUBLE, a.doubleVal / b.doubleVal);
+            } else {
+                Errors.badOperandType(filename, node.line);
+            }
+
+        } catch(ArithmeticException e) {
+            Errors.integerDivisionByZero(filename, node.line);            
         }
 
         return null;
@@ -161,24 +168,28 @@ public class Interpreter {
         Value a = visit(node.nodeA);
         Value b = visit(node.nodeB);
 
-        if(a.type == ValueType.BYTE && b.type == ValueType.BYTE) {
-            return new Value(ValueType.BYTE, a.byteVal % b.byteVal);
-        } else if(a.type == ValueType.BYTE && b.type == ValueType.INT) {
-            return new Value(ValueType.INT, a.byteVal % b.intVal);
-        } else if(a.type == ValueType.INT && b.type == ValueType.BYTE) {
-            return new Value(ValueType.INT, a.intVal % b.byteVal);
-        } else if(a.type == ValueType.INT && b.type == ValueType.INT) {
-            return new Value(ValueType.INT, a.intVal % b.intVal);
-        } else if(a.type == ValueType.INT && b.type == ValueType.DOUBLE) {
-            return new Value(ValueType.DOUBLE, a.intVal % b.doubleVal);
-        } else if(a.type == ValueType.DOUBLE && b.type == ValueType.BYTE) {
-            return new Value(ValueType.DOUBLE, a.doubleVal % b.byteVal);
-        } else if(a.type == ValueType.DOUBLE && b.type == ValueType.INT) {
-            return new Value(ValueType.DOUBLE, a.doubleVal % b.intVal);
-        } else if(a.type == ValueType.DOUBLE && b.type == ValueType.DOUBLE) {
-            return new Value(ValueType.DOUBLE, a.doubleVal % b.doubleVal);
-        } else {
-            Errors.badOperandType(filename, node.line);
+        try {
+            if(a.type == ValueType.BYTE && b.type == ValueType.BYTE) {
+                return new Value(ValueType.BYTE, (byte)(a.byteVal % b.byteVal));
+            } else if(a.type == ValueType.BYTE && b.type == ValueType.INT) {
+                return new Value(ValueType.INT, a.byteVal % b.intVal);
+            } else if(a.type == ValueType.INT && b.type == ValueType.BYTE) {
+                return new Value(ValueType.INT, a.intVal % b.byteVal);
+            } else if(a.type == ValueType.INT && b.type == ValueType.INT) {
+                return new Value(ValueType.INT, a.intVal % b.intVal);
+            } else if(a.type == ValueType.INT && b.type == ValueType.DOUBLE) {
+                return new Value(ValueType.DOUBLE, a.intVal % b.doubleVal);
+            } else if(a.type == ValueType.DOUBLE && b.type == ValueType.BYTE) {
+                return new Value(ValueType.DOUBLE, a.doubleVal % b.byteVal);
+            } else if(a.type == ValueType.DOUBLE && b.type == ValueType.INT) {
+                return new Value(ValueType.DOUBLE, a.doubleVal % b.intVal);
+            } else if(a.type == ValueType.DOUBLE && b.type == ValueType.DOUBLE) {
+                return new Value(ValueType.DOUBLE, a.doubleVal % b.doubleVal);
+            } else {
+                Errors.badOperandType(filename, node.line);
+            }
+        } catch(ArithmeticException e) {
+            Errors.integerDivisionByZero(filename, node.line);            
         }
         
         return null;
@@ -188,7 +199,7 @@ public class Interpreter {
         Value a = visit(node.nodeA);
 
         if(a.type == ValueType.BYTE) {
-            return new Value(ValueType.BYTE, +a.byteVal);
+            return new Value(ValueType.BYTE, (byte)+a.byteVal);
         } else if(a.type == ValueType.INT) {
             return new Value(ValueType.INT, +a.intVal);
         } else if(a.type == ValueType.DOUBLE) {
@@ -204,7 +215,7 @@ public class Interpreter {
         Value a = visit(node.nodeA);
 
         if(a.type == ValueType.BYTE) {
-            return new Value(ValueType.BYTE, -a.byteVal);
+            return new Value(ValueType.BYTE, (byte)-a.byteVal);
         } else if(a.type == ValueType.INT) {
             return new Value(ValueType.INT, -a.intVal);
         } else if(a.type == ValueType.DOUBLE) {
@@ -214,5 +225,13 @@ public class Interpreter {
         }
 
         return null;
+    }
+
+    private Value visitStmtListNode(Node node) {    
+        for(int i = 0; i < node.stmts.size() - 1; i++) {
+            visit(node.stmts.get(i));
+        }
+
+        return visit(node.stmts.get(node.stmts.size() - 1));
     }
 }

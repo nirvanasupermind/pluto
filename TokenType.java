@@ -4,6 +4,8 @@ public enum TokenType {
     BYTE,
     INT,
     DOUBLE,
+    IDENTIFIER,
+    LET,
     PLUS,
     MINUS,
     MULTIPLY,
@@ -11,5 +13,6 @@ public enum TokenType {
     MOD,
     LPAREN,
     RPAREN,
+    SEMICOLON,
     EOF;
 }
