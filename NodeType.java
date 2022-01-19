@@ -15,5 +15,6 @@ public enum NodeType {
     MinusNode,
     AssignNode,
     VarStmtNode,
+    BlockStmtNode,
     StmtListNode;
 }

@@ -43,7 +43,11 @@ public class Parser {
     }
 
     private Node stmtList() {
-        if (current().type == TokenType.EOF) {
+        return stmtList(TokenType.EOF);
+    }
+
+    private Node stmtList(TokenType end) {
+        if (current().type == end) {
             return new Node(current().line, NodeType.EmptyNode);
         }
         
@@ -51,7 +55,7 @@ public class Parser {
     
         List<Node> stmts = new ArrayList<>();
 
-        while(current().type != TokenType.EOF) {
+        while(current().type != end) {
             stmts.add(stmt());
         }
 
@@ -63,11 +67,28 @@ public class Parser {
             return varStmt();
         }
 
+        if(current().type == TokenType.LCURLY) {
+            return blockStmt();
+        }
+
         Node result = exp();
         
         eat(TokenType.SEMICOLON);
 
         return result;
+    }
+
+
+    private Node blockStmt() {
+        int line = current().line;
+
+        eat(TokenType.LCURLY);
+
+        Node stmtList = stmtList(TokenType.RCURLY);
+
+        eat(TokenType.RCURLY);
+
+        return new Node(line, NodeType.BlockStmtNode, stmtList);
     }
 
     private Node varStmt() {

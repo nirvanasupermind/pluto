@@ -68,6 +68,12 @@ public class Lexer {
             } else if(current() == ')') {
                 tokens.add(new Token(line, TokenType.RPAREN));
                 advance();
+            } else if(current() == '{') {
+                tokens.add(new Token(line, TokenType.LCURLY));
+                advance();
+            } else if(current() == '}') {
+                tokens.add(new Token(line, TokenType.RCURLY));
+                advance();
             } else if(current() == '=') {
                 tokens.add(new Token(line, TokenType.EQ));
                 advance();

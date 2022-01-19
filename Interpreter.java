@@ -37,6 +37,8 @@ public class Interpreter {
                 return visitMinusNode(node, env);
             case VarStmtNode:
                 return visitVarStmtNode(node, env);
+            case BlockStmtNode:
+                return visitBlockStmtNode(node, env);
             case StmtListNode:
                 return visitStmtListNode(node, env);
             default:
@@ -55,7 +57,7 @@ public class Interpreter {
     private Value visitDoubleNode(Node node, Env env) {
         return new Value(ValueType.DOUBLE, node.doubleVal);       
     }
-    
+
     private Value visitNameNode(Node node, Env env) {
         String name = node.name;
 
@@ -67,8 +69,7 @@ public class Interpreter {
 
         return env.get(name);
     }
-    
-
+            
     private Value visitAddNode(Node node, Env env) {
         Value a = visit(node.nodeA, env);
         Value b = visit(node.nodeB, env);
@@ -274,6 +275,12 @@ public class Interpreter {
         env.put(name, val);
 
         return val;
+    }
+
+    private Value visitBlockStmtNode(Node node, Env env) {
+        Env blockEnv = new Env(env);
+
+        return visit(node.nodeA, blockEnv);
     }
 
     private Value visitStmtListNode(Node node, Env env) {    

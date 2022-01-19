@@ -1,3 +1,5 @@
-var a = 2y;
-a = a + 1y;
-a + 5y;
+var a = 2;
+{
+    var a = a + 1;
+    a;
+}

@@ -13,6 +13,8 @@ public enum TokenType {
     MOD,
     LPAREN,
     RPAREN,
+    LCURLY,
+    RCURLY,
     EQ,
     SEMICOLON,
     EOF;
