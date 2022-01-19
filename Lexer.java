@@ -74,8 +74,21 @@ public class Lexer {
             } else if(current() == '}') {
                 tokens.add(new Token(line, TokenType.RCURLY));
                 advance();
+            } else if(current() == '<') {
+                tokens.add(new Token(line, TokenType.LT));
+                advance();
             } else if(current() == '=') {
-                tokens.add(new Token(line, TokenType.EQ));
+                advance();
+
+                if(current() == '=') {
+                    tokens.add(new Token(line, TokenType.EE));
+                    advance();
+                } else {
+                    tokens.add(new Token(line, TokenType.EQ));
+                    advance();
+                }
+            } else if(current() == '>') {
+                tokens.add(new Token(line, TokenType.GT));
                 advance();
             } else if(current() == ';') {
                 tokens.add(new Token(line, TokenType.SEMICOLON));
@@ -132,8 +145,16 @@ public class Lexer {
             advance();
         }
 
-        if(name.equals("var")) {
+        if(name.equals("nil")) {
+            return new Token(line, TokenType.NIL);
+        } else if(name.equals("true")) {
+            return new Token(line, TokenType.TRUE);
+        } else if(name.equals("false")) {
+            return new Token(line, TokenType.FALSE);
+        } else if(name.equals("var")) {
             return new Token(line, TokenType.VAR);
+        } else if(name.equals("if")) {
+            return new Token(line, TokenType.IF);
         }
 
         return new Token(line, TokenType.NAME, name);

@@ -65,10 +65,10 @@ public class Parser {
     private Node stmt() {
         if(current().type == TokenType.VAR) {
             return varStmt();
-        }
-
-        if(current().type == TokenType.LCURLY) {
+        } else if(current().type == TokenType.LCURLY) {
             return blockStmt();
+        } else if(current().type == TokenType.IF) {
+            return ifStmt();
         }
 
         Node result = exp();
@@ -78,6 +78,22 @@ public class Parser {
         return result;
     }
 
+
+    private Node ifStmt() {
+        int line = current().line;
+
+        eat(TokenType.IF);
+
+        Node cond = parenExp();
+
+        eat(TokenType.LCURLY);
+
+        Node stmtList = stmtList(TokenType.RCURLY);
+
+        eat(TokenType.RCURLY);
+
+        return new Node(line, NodeType.IfStmtNode, cond, stmtList);
+    }
 
     private Node blockStmt() {
         int line = current().line;
@@ -113,7 +129,7 @@ public class Parser {
     }
 
     private Node assignExp() {
-        Node result = addExp();
+        Node result = compExp();
 
         if(current().type == TokenType.EQ) {
             eat(TokenType.EQ);
@@ -121,6 +137,28 @@ public class Parser {
             result = new Node(result.line, NodeType.AssignNode, result, assignExp());
         }
 
+        return result;
+    }
+
+    private Node compExp() {
+        Node result = addExp();
+
+        while((current().type == TokenType.LT || current().type == TokenType.EE 
+               || current().type == TokenType.GT)
+               && current().type != TokenType.EOF) {
+
+            if(current().type == TokenType.LT) {
+                eat(TokenType.LT);
+                result = new Node(result.line, NodeType.LTNode, result, addExp());
+            } else if(current().type == TokenType.EE) {
+                eat(TokenType.EE);
+                result = new Node(result.line, NodeType.EENode, result, addExp());
+            } else {
+                eat(TokenType.GT);
+                result = new Node(result.line, NodeType.GTNode, result, addExp());
+            }
+        }
+         
         return result;
     }
 
@@ -179,28 +217,34 @@ public class Parser {
 
             return new Node(token.line, NodeType.MinusNode, expr);
         } else {
-            return parenExp();
+            if (current().type == TokenType.LPAREN) {
+                return parenExp();
+            } else {
+                return basicExp();
+            }
         }
     }
 
     private Node parenExp() {
-        if (current().type == TokenType.LPAREN) {
-            eat(TokenType.LPAREN);
+        eat(TokenType.LPAREN);
 
-            Node result = exp();
+        Node result = exp();
 
-            eat(TokenType.RPAREN);
+        eat(TokenType.RPAREN);
 
-            return result;
-        } else {
-            return basicExp();
-        }
+        return result;
     }
 
     private Node basicExp() {
         Token token = current();
 
-        if(token.type == TokenType.BYTE) {
+        if(token.type == TokenType.TRUE) {
+            eat(TokenType.TRUE);
+            return new Node(token.line, NodeType.TrueNode);
+        } else if(token.type == TokenType.FALSE) {
+            eat(TokenType.FALSE);
+            return new Node(token.line, NodeType.FalseNode);
+        } else if(token.type == TokenType.BYTE) {
             eat(TokenType.BYTE);
             return new Node(token.line, NodeType.ByteNode, token.byteVal);
         } else if (token.type == TokenType.INT) {

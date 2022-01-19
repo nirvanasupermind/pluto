@@ -15,6 +15,7 @@ public class Pluto {
         }
 
         String filename = args[0];
+        boolean perfMode = true;
 
         try {
             File f = new File(filename);
@@ -25,17 +26,38 @@ public class Pluto {
             String text = scan.next(); 
             scan.close();
 
-            Lexer lexer = new Lexer(filename, text);
-            List<Token> tokens = lexer.getTokens();
+            // performance mode
+            if(perfMode) {
+                long t1 = System.currentTimeMillis();
 
-            Parser parser = new Parser(filename, tokens);
-            Node tree = parser.parse();
+                Lexer lexer = new Lexer(filename, text);
+                List<Token> tokens = lexer.getTokens();
 
-            Env globalEnv = new Env();
+                Parser parser = new Parser(filename, tokens);
+                Node tree = parser.parse();
 
-            Interpreter interpreter = new Interpreter(filename);
-            
-            System.out.println(interpreter.visit(tree, globalEnv));
+                Env globalEnv = new Env();
+
+                Interpreter interpreter = new Interpreter(filename);   
+
+                interpreter.visit(tree, globalEnv);
+
+                long t2 = System.currentTimeMillis();
+
+                System.out.println(t2 - t1);               
+            } else {
+                Lexer lexer = new Lexer(filename, text);
+                List<Token> tokens = lexer.getTokens();
+
+                Parser parser = new Parser(filename, tokens);
+                Node tree = parser.parse();
+
+                Env globalEnv = new Env();
+
+                Interpreter interpreter = new Interpreter(filename);
+                            
+                System.out.println(interpreter.visit(tree, globalEnv));
+            }
         } catch(FileNotFoundException e) {
             System.err.println("file not found: "+filename);
             System.exit(1);

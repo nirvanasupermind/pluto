@@ -4,5 +4,6 @@ public enum ValueType {
     NIL,
     BYTE,
     INT,
-    DOUBLE;
+    DOUBLE,
+    BOOL;
 }

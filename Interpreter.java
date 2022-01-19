@@ -10,7 +10,7 @@ public class Interpreter {
     public Value visit(Node node, Env env) {
         switch(node.type) {
             case EmptyNode:
-                return new Value(ValueType.NIL);
+                return Value.NIL;
             case ByteNode:
                 return visitByteNode(node, env);
             case IntNode:
@@ -19,6 +19,12 @@ public class Interpreter {
                 return visitDoubleNode(node, env);
             case NameNode:
                 return visitNameNode(node, env);
+            case NilNode:
+                return visitNilNode(node, env);
+            case TrueNode:
+                return visitTrueNode(node, env);
+            case FalseNode:
+                return visitFalseNode(node, env);
             case AddNode:
                 return visitAddNode(node, env); 
             case SubtractNode:
@@ -29,6 +35,12 @@ public class Interpreter {
                 return visitDivideNode(node, env);
             case ModNode:
                 return visitModNode(node, env);
+            case LTNode:
+                return visitLTNode(node, env);
+            case EENode:
+                return visitEENode(node, env);
+            case GTNode:
+                return visitGTNode(node, env);
             case AssignNode:
                 return visitAssignNode(node, env);
             case PlusNode:
@@ -37,6 +49,8 @@ public class Interpreter {
                 return visitMinusNode(node, env);
             case VarStmtNode:
                 return visitVarStmtNode(node, env);
+            case IfStmtNode:
+                return visitIfStmtNode(node, env);
             case BlockStmtNode:
                 return visitBlockStmtNode(node, env);
             case StmtListNode:
@@ -57,6 +71,19 @@ public class Interpreter {
     private Value visitDoubleNode(Node node, Env env) {
         return new Value(ValueType.DOUBLE, node.doubleVal);       
     }
+
+    private Value visitNilNode(Node node, Env env) {
+        return Value.NIL;
+    }
+
+    private Value visitTrueNode(Node node, Env env) {
+        return new Value(ValueType.BOOL, true);
+    }
+
+    private Value visitFalseNode(Node node, Env env) {
+        return new Value(ValueType.BOOL, false);
+    }
+
 
     private Value visitNameNode(Node node, Env env) {
         String name = node.name;
@@ -214,6 +241,79 @@ public class Interpreter {
         
         return null;
     }
+     
+    private Value visitLTNode(Node node, Env env) {
+        Value a = visit(node.nodeA, env);
+        Value b = visit(node.nodeB, env);
+
+        if(a.type == ValueType.BYTE && b.type == ValueType.BYTE) {
+            return new Value(ValueType.BOOL, a.byteVal < b.byteVal);
+        } else if(a.type == ValueType.BYTE && b.type == ValueType.INT) {
+            return new Value(ValueType.BOOL, a.byteVal < b.intVal);
+        } else if(a.type == ValueType.INT && b.type == ValueType.BYTE) {
+            return new Value(ValueType.BOOL, a.intVal < b.byteVal);
+        } else if(a.type == ValueType.INT && b.type == ValueType.INT) {
+            return new Value(ValueType.BOOL, a.intVal < b.intVal);
+        } else if(a.type == ValueType.INT && b.type == ValueType.DOUBLE) {
+            return new Value(ValueType.BOOL, a.intVal < b.doubleVal);
+        } else if(a.type == ValueType.DOUBLE && b.type == ValueType.BYTE) {
+            return new Value(ValueType.BOOL, a.doubleVal < b.byteVal);
+        } else if(a.type == ValueType.DOUBLE && b.type == ValueType.INT) {
+            return new Value(ValueType.BOOL, a.doubleVal < b.intVal);
+        } else if(a.type == ValueType.DOUBLE && b.type == ValueType.DOUBLE) {
+            return new Value(ValueType.BOOL, a.doubleVal < b.doubleVal);
+        } else {
+            Errors.badOperandType(filename, node.line);
+        }
+
+        return null;
+    }
+
+    private Value visitEENode(Node node, Env env) {
+        Value a = visit(node.nodeA, env);
+        Value b = visit(node.nodeB, env);
+
+        if(a == Value.NIL || b == Value.NIL) {
+            return new Value(ValueType.BOOL, a == b);
+        }
+        
+        return new Value(
+            ValueType.BOOL,
+            (
+                a.byteVal == b.byteVal
+                && a.intVal == b.intVal
+                && a.doubleVal == b.doubleVal
+                && a.boolVal == b.boolVal
+            )
+        );
+    }
+
+    private Value visitGTNode(Node node, Env env) {
+        Value a = visit(node.nodeA, env);
+        Value b = visit(node.nodeB, env);
+
+        if(a.type == ValueType.BYTE && b.type == ValueType.BYTE) {
+            return new Value(ValueType.BOOL, a.byteVal > b.byteVal);
+        } else if(a.type == ValueType.BYTE && b.type == ValueType.INT) {
+            return new Value(ValueType.BOOL, a.byteVal > b.intVal);
+        } else if(a.type == ValueType.INT && b.type == ValueType.BYTE) {
+            return new Value(ValueType.BOOL, a.intVal > b.byteVal);
+        } else if(a.type == ValueType.INT && b.type == ValueType.INT) {
+            return new Value(ValueType.BOOL, a.intVal > b.intVal);
+        } else if(a.type == ValueType.INT && b.type == ValueType.DOUBLE) {
+            return new Value(ValueType.BOOL, a.intVal > b.doubleVal);
+        } else if(a.type == ValueType.DOUBLE && b.type == ValueType.BYTE) {
+            return new Value(ValueType.BOOL, a.doubleVal > b.byteVal);
+        } else if(a.type == ValueType.DOUBLE && b.type == ValueType.INT) {
+            return new Value(ValueType.BOOL, a.doubleVal > b.intVal);
+        } else if(a.type == ValueType.DOUBLE && b.type == ValueType.DOUBLE) {
+            return new Value(ValueType.BOOL, a.doubleVal > b.doubleVal);
+        } else {
+            Errors.badOperandType(filename, node.line);
+        }
+
+        return null;
+    }
 
     private Value visitAssignNode(Node node, Env env) {
         if(node.nodeA.type != NodeType.NameNode) {
@@ -275,6 +375,16 @@ public class Interpreter {
         env.put(name, val);
 
         return val;
+    }
+
+    private Value visitIfStmtNode(Node node, Env env) {
+        Value cond = visit(node.nodeA, env);
+
+        if(cond.boolVal) {
+            return visit(node.nodeB, env);
+        } else {
+            return Value.NIL;
+        }
     }
 
     private Value visitBlockStmtNode(Node node, Env env) {
