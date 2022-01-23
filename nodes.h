@@ -14,7 +14,8 @@ namespace Nodes {
         SubtractNode,
         MultiplyNode,
         DivideNode,
-        PowerNode
+        PowerNode,
+        FileNode
     };
 
     class Node {
@@ -25,17 +26,18 @@ namespace Nodes {
             double value;
             Node *node_a;
             Node *node_b;
+            std::vector<Node *> stmts;
 
             Node(int, NodeType, signed char byte);
             Node(int, NodeType, double value);
             Node(int, NodeType, Node *, Node *);
             Node(int, NodeType);
             Node(int, NodeType, Node *);
+            Node(int, NodeType, std::vector<Node *>);
 
-            operator std::string const();
+            std::string to_string();
     };
 
-    void print_node(Node *);
     void free_node(Node *);
 }
 

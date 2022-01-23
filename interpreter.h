@@ -21,6 +21,7 @@ namespace Interpreter {
             Values::Value *visit_power_node(Nodes::Node *);
             Values::Value *visit_plus_node(Nodes::Node *);
             Values::Value *visit_minus_node(Nodes::Node *);
+            Values::Value *visit_file_node(Nodes::Node *);
     };
 }
 

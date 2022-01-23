@@ -7,9 +7,12 @@
 namespace Values {
     class Value {
         public:
-            virtual std::string to_string() {
-                return "";
-            }
+            virtual std::string to_string() = 0;
+    };
+
+    class Nil: public Value {
+        public:
+            std::string to_string();
     };
 
     class Byte: public Value {
@@ -29,8 +32,6 @@ namespace Values {
 
             std::string to_string();
     };
-
-    void print_number(Number&);
 }
 
 #endif // VALUES_H

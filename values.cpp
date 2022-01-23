@@ -4,6 +4,10 @@
 #include "values.h"
 
 namespace Values {
+    std::string Nil::to_string() {
+        return std::string("nil");
+    }
+
     Byte::Byte(signed char byte) {
         this->byte = byte;
     }
@@ -19,8 +23,4 @@ namespace Values {
     std::string Number::to_string() {
         return std::to_string(value);
     }
-
-    // void print_number(Number& number) {
-    //     std::cout << static_cast<std::string>(number) << "\n";
-    // }
 }

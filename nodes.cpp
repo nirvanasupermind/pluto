@@ -41,32 +41,52 @@ namespace Nodes {
         node_b = nullptr;
     }
 
-    Node::operator std::string const() {
+    Node::Node(int line, NodeType node_type, std::vector<Node *> stmts) {
+        this->line = line;
+        this->node_type = node_type;
+        this->stmts = stmts;
+    }
+
+    std::string Node::to_string() {
         switch (node_type) {
             case ByteNode: return std::to_string((int)byte);
             case NumberNode: return std::to_string(value);
-            case PlusNode: return "(+" + static_cast<std::string>(*node_a) + ")";
-            case MinusNode: return "(-" + static_cast<std::string>(*node_a) + ")";
-            case AddNode: return "(" + static_cast<std::string>(*node_a) + " + " + static_cast<std::string>(*node_b) + ")";
-            case SubtractNode: return "(" + static_cast<std::string>(*node_a) + " - " + static_cast<std::string>(*node_b) + ")";
-            case MultiplyNode: return "(" + static_cast<std::string>(*node_a) + " * " + static_cast<std::string>(*node_b) + ")";
-            case DivideNode: return "(" + static_cast<std::string>(*node_a) + " / " + static_cast<std::string>(*node_b) + ")";
-            case PowerNode: return "(" + static_cast<std::string>(*node_a) + " ** " + static_cast<std::string>(*node_b) + ")";
+            case PlusNode: return "(+" + (*node_a).to_string() + ")";
+            case MinusNode: return "(-" + (*node_a).to_string() + ")";
+            case AddNode: return "(" + (*node_a).to_string() + " + " + (*node_b).to_string() + ")";
+            case SubtractNode: return "(" + (*node_a).to_string() + " - " + (*node_b).to_string() + ")";
+            case MultiplyNode: return "(" + (*node_a).to_string() + " * " + (*node_b).to_string() + ")";
+            case DivideNode: return "(" + (*node_a).to_string() + " / " + (*node_b).to_string() + ")";
+            case PowerNode: return "(" + (*node_a).to_string() + " ** " + (*node_b).to_string() + ")";
+            case FileNode: return "(file)";
             default: return "()";
         }
     }
 
-    void print_node(Node *node) {
-        std::cout << static_cast<std::string>(*node) << '\n';
-    }
-
     void free_node(Node *node) {
+        // if (node == nullptr) {
+        //     std::cout << "node is null" << '\n';
+
+        //     return;
+
+        // }
+
+
+        for (int i = 0; i < node->stmts.size(); i++) {
+            free_node(node->stmts[i]);
+        }       
+
         if (node->node_a != nullptr) {
+            // std::cout << "FREEING  A" << '\n';
+
             free_node(node->node_a);
+
             node->node_a = nullptr;
         }
 
         if (node->node_b != nullptr) {
+            std::cout << "FREEING  B" << '\n';
+
             free_node(node->node_b);
             node->node_b = nullptr;
         }

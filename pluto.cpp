@@ -38,11 +38,11 @@ int main(int argc, char **argv) {
                 Parser::Parser parser(filename, tokens);
                 Nodes::Node *tree = parser.parse();
                 //Nodes::print_node(tree);
-                if (tree->node_type != Nodes::EmptyNode) {
-                    Interpreter::Interpreter interpreter(filename);
-                    Values::Value *result = interpreter.visit(tree);
-                    std::cout << result->to_string() << '\n';
-                }
+
+                Interpreter::Interpreter interpreter(filename);
+                Values::Value *result = interpreter.visit(tree);
+                std::cout << result->to_string() << '\n';
+                delete result;
             } catch (std::string e) {
                 std::cerr << e << '\n';
             }
@@ -64,14 +64,17 @@ int main(int argc, char **argv) {
             Parser::Parser parser(filename, tokens);
             Nodes::Node *tree = parser.parse();
             // Nodes::print_node(tree);
-            if (tree->node_type != Nodes::EmptyNode) {
-                Interpreter::Interpreter interpreter(filename);
-                Values::Value *result = interpreter.visit(tree);
-                std::cout << result->to_string() << '\n';
-            }
+
+            Interpreter::Interpreter interpreter(filename);
+             // std::cout << "hi" << '\n';
+            Values::Value *result = interpreter.visit(tree);
+            std::cout <<  result->to_string() << '\n';                
+            std::exit(0);
         } catch (std::string e) {
             std::cerr << e << '\n';
-            return 1;
+            std::exit(1);
         }
+
+        return 0;
     }
 }

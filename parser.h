@@ -23,6 +23,7 @@ namespace Parser {
             void advance();
             Tokens::Token current();
             Nodes::Node *parse();
+            Nodes::Node *file(Tokens::TokenType end);
             Nodes::Node *stmt();
             Nodes::Node *expr();
             Nodes::Node *term();

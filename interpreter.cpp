@@ -11,7 +11,11 @@ namespace Interpreter {
     }
 
     Values::Value *Interpreter::visit(Nodes::Node *node) {
+        // std::cout << node->to_string() << '\n';
+
         switch (node->node_type) {
+            case Nodes::EmptyNode:
+                return new Values::Nil();
             case Nodes::ByteNode:
                 return new Values::Byte(node->byte);
             case Nodes::NumberNode:
@@ -30,6 +34,8 @@ namespace Interpreter {
                 return visit_plus_node(node);
             case Nodes::MinusNode:
                 return visit_minus_node(node);
+            case Nodes::FileNode:
+                return visit_file_node(node);
             default:
                 throw std::string(filename + ":" + std::to_string(node->line) + ": invalid node");
         }
@@ -120,5 +126,13 @@ namespace Interpreter {
         } else {
             throw std::string(filename + ":" + std::to_string(node->line) + ": bad operand types for binary operator '**'");
         }
+    }
+
+    Values::Value *Interpreter::visit_file_node(Nodes::Node *node) {
+        for(int i = 0; i < node->stmts.size() - 1; i++) {
+            visit(node->stmts[i]);
+        }
+
+        return visit(node->stmts.back());
     }
 }

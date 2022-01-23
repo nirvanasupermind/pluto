@@ -20,7 +20,7 @@ namespace Parser {
 
     void Parser::error() {
         PARSER_EMPTY_NODE;
-        throw std::string(filename + ":" + std::to_string(node->line) + ": " + std::to_string(current().line) + ": syntax error");
+        throw std::string(filename + ":" + std::to_string(current().line) + ": syntax error");
     }
 
     void Parser::advance() {
@@ -32,17 +32,31 @@ namespace Parser {
     }
 
     Nodes::Node *Parser::parse() {
-        if (current().type == Tokens::EOF_) {
+        Nodes::Node *result = file(Tokens::EOF_);
+        return result;
+    }
+
+    Nodes::Node *Parser::file(Tokens::TokenType end) {
+        int line = current().line;
+
+        if (current().type == end) {
             PARSER_EMPTY_NODE;
             return node;
         }
-        
-        node = stmt();
 
-        if (current().type != Tokens::EOF_)
+        std::vector<Nodes::Node *> stmts;
+
+        while (current().type != end) {
+            stmts.push_back(stmt());
+        }
+
+        
+        if (current().type != end)
             error();
-                        
-        return node;
+
+        Nodes::Node *result = new Nodes::Node(line, Nodes::FileNode, stmts);
+        
+        return result;
     }
 
     Nodes::Node *Parser::stmt() {
