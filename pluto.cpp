@@ -13,14 +13,18 @@
 
 int main(int argc, char **argv) {
     if(argc <= 1) {
+        // CODE FOR REPL/SHELL
+
         std::string filename("stdin");
 
         std::string text;
         std::vector<Tokens::Token> tokens;
+
+        std::cout << "Pluto 0.0" << '\n';
         
         while (true) {
             try {
-                std::cout << "pluto > " << std::flush;
+                std::cout << "> " << std::flush;
                 std::getline(std::cin, text);
                 if (std::cin.bad()) {
                     std::cerr << "IO error\n";
@@ -30,7 +34,7 @@ int main(int argc, char **argv) {
                     break;
                 }
 
-                if(text == "exit") { return 0;}
+                if(text == "exit") { return 0; }
 
                 Lexer::Lexer lexer(filename, text);
                 tokens = lexer.get_tokens();
@@ -41,13 +45,17 @@ int main(int argc, char **argv) {
 
                 Interpreter::Interpreter interpreter(filename);
                 Values::Value *result = interpreter.visit(tree);
+
                 std::cout << result->to_string() << '\n';
-                delete result;
             } catch (std::string e) {
                 std::cerr << e << '\n';
             }
         }
+
+        return 0;
     } else {
+        // CODE FOR FILE
+
         std::string filename(argv[1]);
         std::ifstream inFile;
         inFile.open(filename); //open the input file
@@ -68,11 +76,10 @@ int main(int argc, char **argv) {
             Interpreter::Interpreter interpreter(filename);
              // std::cout << "hi" << '\n';
             Values::Value *result = interpreter.visit(tree);
-            std::cout <<  result->to_string() << '\n';                
-            std::exit(0);
+            std::cout <<  result->to_string() << '\n'; 
         } catch (std::string e) {
             std::cerr << e << '\n';
-            std::exit(1);
+            return 1;
         }
 
         return 0;

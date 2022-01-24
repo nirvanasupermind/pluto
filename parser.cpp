@@ -32,8 +32,8 @@ namespace Parser {
     }
 
     Nodes::Node *Parser::parse() {
-        Nodes::Node *result = file(Tokens::EOF_);
-        return result;
+        node = file(Tokens::EOF_);
+        return node;
     }
 
     Nodes::Node *Parser::file(Tokens::TokenType end) {

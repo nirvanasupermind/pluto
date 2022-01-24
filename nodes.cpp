@@ -64,12 +64,12 @@ namespace Nodes {
     }
 
     void free_node(Node *node) {
-        // if (node == nullptr) {
-        //     std::cout << "node is null" << '\n';
+        if (node == nullptr) {
+            // std::cout << "node inside free_node null" << '\n';
 
-        //     return;
+            return;
 
-        // }
+        }
 
 
         for (int i = 0; i < node->stmts.size(); i++) {
@@ -77,8 +77,6 @@ namespace Nodes {
         }       
 
         if (node->node_a != nullptr) {
-            // std::cout << "FREEING  A" << '\n';
-
             free_node(node->node_a);
 
             node->node_a = nullptr;
