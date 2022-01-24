@@ -1,7 +1,7 @@
 # Pluto
 Work-in-progress interpreter for the Pluto programming language.
 
-# Compile from source
+# Compile from source (Unix)
 ```
 $ cd ~
 $ git clone https://github.com/nirvanasupermind/pluto.git
