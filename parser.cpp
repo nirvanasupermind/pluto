@@ -136,9 +136,15 @@ namespace Parser {
         } else if (current_token.type == Tokens::NUMBER) {
             advance();
             return new Nodes::Node(current_token.line, Nodes::NumberNode, current_token.value);
-        } else if (current_token.type == Tokens::TRUE || current_token.type == Tokens::FALSE) {
+        } else if (current_token.type == Tokens::TRUE) {
             advance();
-            return new Nodes::Node(current_token.line, Nodes::BoolNode, (current_token.type == Tokens::TRUE));
+            return new Nodes::Node(current_token.line, Nodes::TrueNode);
+        } else if (current_token.type == Tokens::TRUE) {
+            advance();
+            return new Nodes::Node(current_token.line, Nodes::FalseNode);
+        } else if (current_token.type == Tokens::NAME) {
+            advance();
+            return new Nodes::Node(current_token.line, Nodes::NameNode, current_token.name);
         } else if (current_token.type == Tokens::PLUS) {
             advance();
             return new Nodes::Node(current_token.line, Nodes::PlusNode, factor());

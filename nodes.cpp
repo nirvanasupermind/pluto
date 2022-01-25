@@ -59,7 +59,9 @@ namespace Nodes {
         switch (node_type) {
             case ByteNode: return std::to_string((int)byte);
             case NumberNode: return std::to_string(value);
-            case BoolNode: return (bool_ ? "true" : "false");
+            case TrueNode: return "true";
+            case FalseNode: return "false";
+            case NameNode: return name;
             case PlusNode: return "(+" + (*node_a).to_string() + ")";
             case MinusNode: return "(-" + (*node_a).to_string() + ")";
             case AddNode: return "(" + (*node_a).to_string() + " + " + (*node_b).to_string() + ")";
@@ -67,7 +69,7 @@ namespace Nodes {
             case MultiplyNode: return "(" + (*node_a).to_string() + " * " + (*node_b).to_string() + ")";
             case DivideNode: return "(" + (*node_a).to_string() + " / " + (*node_b).to_string() + ")";
             case PowerNode: return "(" + (*node_a).to_string() + " ** " + (*node_b).to_string() + ")";
-            case FileNode: return "(file)";
+            case FileNode: return "(file )";
             default: return "()";
         }
     }

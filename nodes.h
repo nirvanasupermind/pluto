@@ -10,7 +10,8 @@ namespace Nodes {
         EmptyNode,
         ByteNode,
         NumberNode,
-        BoolNode,
+        TrueNode,
+        FalseNode,
         AddNode,
         SubtractNode,
         MultiplyNode,
@@ -25,14 +26,12 @@ namespace Nodes {
             NodeType node_type;
             signed char byte;
             double value;
-            bool bool_;
             Node *node_a;
             Node *node_b;
             std::vector<Node *> stmts;
 
             Node(int, NodeType, signed char byte);
             Node(int, NodeType, double value);
-            Node(int, NodeType, bool bool_);
             Node(int, NodeType, Node *, Node *);
             Node(int, NodeType);
             Node(int, NodeType, Node *);
