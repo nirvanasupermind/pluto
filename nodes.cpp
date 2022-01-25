@@ -20,14 +20,6 @@ namespace Nodes {
         node_b = nullptr;
     }
 
-    Node::Node(int line, NodeType node_type, bool bool_) {
-        this->line = line;
-        this->node_type = node_type;
-        this->bool_ = bool_;
-        node_a = nullptr;
-        node_b = nullptr;
-    }
-
     Node::Node(int line, NodeType node_type, Node *node_a, Node *node_b) {
         this->line = line;
         this->node_type = node_type;
@@ -47,6 +39,12 @@ namespace Nodes {
         this->node_type = node_type;
         this->node_a = node_a;
         node_b = nullptr;
+    }
+
+    Node::Node(int line, NodeType node_type, std::string name) {
+        this->line = line;
+        this->node_type = node_type;
+        this->name = name;
     }
 
     Node::Node(int line, NodeType node_type, std::vector<Node *> stmts) {
