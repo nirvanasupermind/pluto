@@ -32,6 +32,15 @@ namespace Values {
 
             std::string to_string();
     };
+
+    class Bool: public Value {
+        public:
+            bool bool_;
+            
+            Bool(bool);
+
+            std::string to_string();
+    };
 }
 
 #endif // VALUES_H

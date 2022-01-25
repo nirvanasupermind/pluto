@@ -119,6 +119,7 @@ namespace Parser {
     Nodes::Node *Parser::factor() {
         Tokens::Token current_token = current();
 
+
         if (current_token.type == Tokens::LPAREN) {
             advance();
             Nodes::Node *result = expr();
@@ -135,6 +136,9 @@ namespace Parser {
         } else if (current_token.type == Tokens::NUMBER) {
             advance();
             return new Nodes::Node(current_token.line, Nodes::NumberNode, current_token.value);
+        } else if (current_token.type == Tokens::TRUE || current_token.type == Tokens::FALSE) {
+            advance();
+            return new Nodes::Node(current_token.line, Nodes::BoolNode, (current_token.type == Tokens::TRUE));
         } else if (current_token.type == Tokens::PLUS) {
             advance();
             return new Nodes::Node(current_token.line, Nodes::PlusNode, factor());

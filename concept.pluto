@@ -9,4 +9,4 @@ class Point {
     }
 }
 
-Stdout.writeLine(Point(2, 2).norm());
+System.writeLine(Point(2, 2).norm());

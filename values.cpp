@@ -23,4 +23,12 @@ namespace Values {
     std::string Number::to_string() {
         return std::to_string(value);
     }
+
+    Bool::Bool(bool bool_) {
+        this->bool_ = bool_;
+    }
+
+    std::string Bool::to_string() {
+        return (bool_ ? "true" : "false");
+    }
 }

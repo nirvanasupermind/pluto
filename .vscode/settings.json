@@ -1,7 +1,7 @@
 {
     "files.associations": {
         "*.lispy": "lisp",
-        "*.pluto": "csharp",
+        "*.pluto": "lua",
         "*.bnf": "bnf",
         "iostream": "cpp",
         "__bit_reference": "cpp",

@@ -20,6 +20,14 @@ namespace Nodes {
         node_b = nullptr;
     }
 
+    Node::Node(int line, NodeType node_type, bool bool_) {
+        this->line = line;
+        this->node_type = node_type;
+        this->bool_ = bool_;
+        node_a = nullptr;
+        node_b = nullptr;
+    }
+
     Node::Node(int line, NodeType node_type, Node *node_a, Node *node_b) {
         this->line = line;
         this->node_type = node_type;
@@ -51,6 +59,7 @@ namespace Nodes {
         switch (node_type) {
             case ByteNode: return std::to_string((int)byte);
             case NumberNode: return std::to_string(value);
+            case BoolNode: return (bool_ ? "true" : "false");
             case PlusNode: return "(+" + (*node_a).to_string() + ")";
             case MinusNode: return "(-" + (*node_a).to_string() + ")";
             case AddNode: return "(" + (*node_a).to_string() + " + " + (*node_b).to_string() + ")";
@@ -83,8 +92,6 @@ namespace Nodes {
         }
 
         if (node->node_b != nullptr) {
-            std::cout << "FREEING  B" << '\n';
-
             free_node(node->node_b);
             node->node_b = nullptr;
         }

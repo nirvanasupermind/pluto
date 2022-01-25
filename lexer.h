@@ -5,8 +5,9 @@
 #include <vector>
 #include <cstddef>
 
-#define WHITESPACE " \n\t"
-#define DIGITS "0123456789"
+#define WHITESPACE std::string(" \n\t")
+#define DIGITS std::string("0123456789")
+#define NONDIGITS std::string("_abcdefghijklmnopqrstuvwxyz")
 
 namespace Lexer {
     class Lexer {
@@ -22,6 +23,7 @@ namespace Lexer {
             void advance();
             std::vector<Tokens::Token> get_tokens();
             Tokens::Token get_number();
+            Tokens::Token get_name();
     };
 
     void print_tokens(std::vector<Tokens::Token>&);

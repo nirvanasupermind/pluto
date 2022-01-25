@@ -20,6 +20,8 @@ namespace Interpreter {
                 return new Values::Byte(node->byte);
             case Nodes::NumberNode:
                 return new Values::Number(node->value);
+            case Nodes::BoolNode:
+                return new Values::Bool(node->bool_);
             case Nodes::AddNode:
                 return visit_add_node(node);
             case Nodes::SubtractNode:

@@ -28,6 +28,8 @@ namespace Lexer {
                 advance();
             } else if (current_char == "." || current_char.find_first_of(DIGITS) != std::string::npos) {
                 tokens.push_back(get_number());
+            } else if (current_char.find_first_of(NONDIGITS) != std::string::npos) {
+                tokens.push_back(get_name());
             } else if (current_char == "+") {
                 advance();
                 tokens.push_back(Tokens::Token(line, Tokens::PLUS));
@@ -90,6 +92,25 @@ namespace Lexer {
         }
 
         return Tokens::Token(line, Tokens::NUMBER, std::stod(number_str));
+    }
+
+    Tokens::Token Lexer::get_name() {
+        std::string name_str = "";
+
+        while (index <= text.length() && current_char.find_first_of(DIGITS + NONDIGITS) != std::string::npos) {
+            name_str += current_char;
+            advance();
+        }
+
+        // advance();
+
+        if(name_str == "true") {
+            return Tokens::Token(line, Tokens::TRUE);
+        } else if(name_str == "false") {
+            return Tokens::Token(line, Tokens::FALSE);
+        } else {
+            return Tokens::Token(line, Tokens::NAME, name_str);
+        }
     }
 
     void print_tokens(std::vector<Tokens::Token>& tokens) {

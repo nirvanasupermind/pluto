@@ -7,6 +7,7 @@ namespace Tokens {
     enum TokenType {
         BYTE,
         NUMBER,
+        NAME,
         PLUS,
         MINUS,
         MULTIPLY,
@@ -14,6 +15,8 @@ namespace Tokens {
         LPAREN,
         RPAREN,
         POWER,
+        TRUE,
+        FALSE,
         SEMICOLON,
         EOF_
     };
@@ -24,9 +27,11 @@ namespace Tokens {
             TokenType type;
             signed char byte;
             double value;
+            std::string name;
 
             Token(int, TokenType, signed char);
             Token(int, TokenType, double = 0);
+            Token(int, TokenType, std::string);
 
             std::string to_string();
     };
