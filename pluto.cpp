@@ -10,6 +10,7 @@
 #include "parser.cpp"
 #include "interpreter.cpp"
 #include "values.cpp"
+#include "scopes.cpp"
 
 int main(int argc, char **argv) {
     if(argc <= 1) {
@@ -44,7 +45,8 @@ int main(int argc, char **argv) {
                 //Nodes::print_node(tree);
 
                 Interpreter::Interpreter interpreter(filename);
-                Values::Value *result = interpreter.visit(tree);
+                Scopes::Scope *global_scope = new Scopes::Scope();
+                Values::Value *result = interpreter.visit(tree, global_scope);
 
                 std::cout << result->to_string() << '\n';
             } catch (std::string e) {
@@ -75,7 +77,8 @@ int main(int argc, char **argv) {
 
             Interpreter::Interpreter interpreter(filename);
              // std::cout << "hi" << '\n';
-            Values::Value *result = interpreter.visit(tree);
+            Scopes::Scope *global_scope = new Scopes::Scope();
+            Values::Value *result = interpreter.visit(tree, global_scope);
             std::cout <<  result->to_string() << '\n'; 
         } catch (std::string e) {
             std::cerr << e << '\n';

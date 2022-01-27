@@ -2,7 +2,6 @@
 #define VALUES_H
 
 #include <string>
-#include <cstdint>
 
 namespace Values {
     class Value {

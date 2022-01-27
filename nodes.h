@@ -12,7 +12,8 @@ namespace Nodes {
         NumberNode,
         TrueNode,
         FalseNode,
-        NameNode,
+        NilNode,
+        SymbolNode,
         AddNode,
         SubtractNode,
         MultiplyNode,
@@ -27,7 +28,7 @@ namespace Nodes {
             NodeType node_type;
             signed char byte;
             double value;
-            std::string name;
+            std::string symbol;
             Node *node_a;
             Node *node_b;
             std::vector<Node *> stmts;

@@ -41,10 +41,12 @@ namespace Nodes {
         node_b = nullptr;
     }
 
-    Node::Node(int line, NodeType node_type, std::string name) {
+    Node::Node(int line, NodeType node_type, std::string symbol) {
         this->line = line;
         this->node_type = node_type;
-        this->name = name;
+        this->symbol = symbol;
+        node_a = nullptr;
+        node_b = nullptr;
     }
 
     Node::Node(int line, NodeType node_type, std::vector<Node *> stmts) {
@@ -59,27 +61,34 @@ namespace Nodes {
             case NumberNode: return std::to_string(value);
             case TrueNode: return "true";
             case FalseNode: return "false";
-            case NameNode: return name;
-            case PlusNode: return "(+" + (*node_a).to_string() + ")";
-            case MinusNode: return "(-" + (*node_a).to_string() + ")";
-            case AddNode: return "(" + (*node_a).to_string() + " + " + (*node_b).to_string() + ")";
-            case SubtractNode: return "(" + (*node_a).to_string() + " - " + (*node_b).to_string() + ")";
-            case MultiplyNode: return "(" + (*node_a).to_string() + " * " + (*node_b).to_string() + ")";
-            case DivideNode: return "(" + (*node_a).to_string() + " / " + (*node_b).to_string() + ")";
-            case PowerNode: return "(" + (*node_a).to_string() + " ** " + (*node_b).to_string() + ")";
-            case FileNode: return "(file )";
+            case NilNode: return "nil";
+            case SymbolNode: return symbol;
+            case PlusNode: return "(+ " + node_a->to_string() + ")";
+            case MinusNode: return "(-" + node_a->to_string() + ")";
+            case AddNode: return "(" + node_a->to_string() + " + " + node_b->to_string() + ")";
+            case SubtractNode: return "(" + node_a->to_string() + " - " + node_b->to_string() + ")";
+            case MultiplyNode: return "(" + node_a->to_string() + " * " + node_b->to_string() + ")";
+            case DivideNode: return "(" + node_a->to_string() + " / " + node_b->to_string() + ")";
+            case PowerNode: return "(" + node_a->to_string() + " ** " + node_b->to_string() + ")";
+            case FileNode: { 
+                std::string result("(");
+                for(int i = 0; i < stmts.size(); i++) {
+                    result = result + stmts[i]->to_string();
+                }
+
+                result = result + ")";
+                
+                return "(file)";
+            }
             default: return "()";
         }
     }
 
     void free_node(Node *node) {
         if (node == nullptr) {
-            // std::cout << "node inside free_node null" << '\n';
-
             return;
 
         }
-
 
         for (int i = 0; i < node->stmts.size(); i++) {
             free_node(node->stmts[i]);

@@ -7,17 +7,17 @@
 #include "nodes.h"
 #include "values.h"
 
-namespace Interpreter {
+namespace Scopes {
     class Scope {
         public:
             Scope *parent;
-            std::map<std::string, Value *> map;
+            std::map<std::string, Values::Value *> map;
 
             Scope();
             Scope(Scope *parent);
 
-            Value *get(std::string name);
-            void set(std::string name, std::string value);
+            Values::Value *get(std::string name);
+            void set(std::string name, Values::Value *value);
     };
 }
 

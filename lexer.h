@@ -23,7 +23,7 @@ namespace Lexer {
             void advance();
             std::vector<Tokens::Token> get_tokens();
             Tokens::Token get_number();
-            Tokens::Token get_name();
+            Tokens::Token get_symbol();
     };
 
     void print_tokens(std::vector<Tokens::Token>&);

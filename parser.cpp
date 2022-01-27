@@ -1,7 +1,6 @@
 #include <string>
 #include <vector>
 #include <iostream>
-#include <cstdint>
 
 #include "parser.h"
 #include "tokens.h"
@@ -139,12 +138,15 @@ namespace Parser {
         } else if (current_token.type == Tokens::TRUE) {
             advance();
             return new Nodes::Node(current_token.line, Nodes::TrueNode);
-        } else if (current_token.type == Tokens::TRUE) {
+        } else if (current_token.type == Tokens::FALSE) {
             advance();
             return new Nodes::Node(current_token.line, Nodes::FalseNode);
-        } else if (current_token.type == Tokens::NAME) {
+        } else if (current_token.type == Tokens::NIL) {
             advance();
-            return new Nodes::Node(current_token.line, Nodes::NameNode, current_token.name);
+            return new Nodes::Node(current_token.line, Nodes::NilNode);
+        } else if (current_token.type == Tokens::SYMBOL) {
+            advance();
+            return new Nodes::Node(current_token.line, Nodes::SymbolNode, current_token.symbol);
         } else if (current_token.type == Tokens::PLUS) {
             advance();
             return new Nodes::Node(current_token.line, Nodes::PlusNode, factor());

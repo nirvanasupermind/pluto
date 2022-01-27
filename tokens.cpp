@@ -16,10 +16,10 @@ namespace Tokens {
         this->value = value;
     }
 
-    Token::Token(int line, TokenType type, std::string name) {
+    Token::Token(int line, TokenType type, std::string symbol) {
         this->line = line;
         this->type = type;
-        this->value = value;
+        this->symbol = symbol;
     }
 
     std::string Token::to_string() {
@@ -28,7 +28,10 @@ namespace Tokens {
         switch (type) {
             case BYTE: s += "BYTE"; break;
             case NUMBER: s += "NUMBER"; break;
-            case NAME: s += "NAME"; break;
+            case TRUE: s += "TRUE"; break;
+            case FALSE: s += "FALSE"; break;
+            case NIL: s += "NIL"; break;
+            case SYMBOL: s += "SYMBOL"; break;
             case PLUS: s += "PLUS"; break;
             case MINUS: s += "MINUS"; break;
             case MULTIPLY: s += "MULTIPLY"; break;
@@ -36,8 +39,6 @@ namespace Tokens {
             case LPAREN: s += "LPAREN"; break;
             case RPAREN: s += "RPAREN"; break;
             case POWER: s += "POWER"; break;
-            case TRUE: s += "TRUE"; break;
-            case FALSE: s += "FALSE"; break;
             case SEMICOLON: s += "SEMICOLON"; break;
             case EOF_: s += "EOF"; break;
         }
