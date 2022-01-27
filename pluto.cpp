@@ -21,7 +21,7 @@ int main(int argc, char **argv) {
         std::string text;
         std::vector<Tokens::Token> tokens;
 
-        std::cout << "Pluto 0.0" << '\n';
+        std::cout << "Welcome to Pluto 0.0"  << '\n';
         
         while (true) {
             try {
