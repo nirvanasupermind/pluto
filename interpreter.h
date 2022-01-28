@@ -23,6 +23,8 @@ namespace Interpreter {
             Values::Value *visit_power_node(Nodes::Node *, Scopes::Scope *);
             Values::Value *visit_plus_node(Nodes::Node *, Scopes::Scope *);
             Values::Value *visit_minus_node(Nodes::Node *, Scopes::Scope *);
+            Values::Value *visit_eq_node(Nodes::Node *, Scopes::Scope *);
+            Values::Value *visit_var_node(Nodes::Node *, Scopes::Scope *);
             Values::Value *visit_file_node(Nodes::Node *, Scopes::Scope *);
     };
 }

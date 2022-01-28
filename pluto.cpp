@@ -20,6 +20,7 @@ int main(int argc, char **argv) {
 
         std::string text;
         std::vector<Tokens::Token> tokens;
+        Scopes::Scope *global_scope = new Scopes::Scope();
 
         std::cout << "Welcome to Pluto 0.0"  << '\n';
         
@@ -45,7 +46,6 @@ int main(int argc, char **argv) {
                 //Nodes::print_node(tree);
 
                 Interpreter::Interpreter interpreter(filename);
-                Scopes::Scope *global_scope = new Scopes::Scope();
                 Values::Value *result = interpreter.visit(tree, global_scope);
 
                 std::cout << result->to_string() << '\n';
@@ -66,6 +66,7 @@ int main(int argc, char **argv) {
         strStream << inFile.rdbuf(); //read the file
         std::string text = strStream.str(); //text holds the content of the file
         std::vector<Tokens::Token> tokens;
+        Scopes::Scope *global_scope = new Scopes::Scope();
 
         try {
             Lexer::Lexer lexer(filename, text);
@@ -77,7 +78,6 @@ int main(int argc, char **argv) {
 
             Interpreter::Interpreter interpreter(filename);
              // std::cout << "hi" << '\n';
-            Scopes::Scope *global_scope = new Scopes::Scope();
             Values::Value *result = interpreter.visit(tree, global_scope);
             std::cout <<  result->to_string() << '\n'; 
         } catch (std::string e) {

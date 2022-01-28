@@ -49,6 +49,15 @@ namespace Nodes {
         node_b = nullptr;
     }
 
+    Node::Node(int line, NodeType node_type, std::string name, Nodes::Node *val) {
+        this->line = line;
+        this->node_type = node_type;
+        this->name = name;
+        this->val = val;
+        node_a = nullptr;
+        node_b = nullptr;
+    }
+
     Node::Node(int line, NodeType node_type, std::vector<Node *> stmts) {
         this->line = line;
         this->node_type = node_type;
@@ -87,7 +96,6 @@ namespace Nodes {
     void free_node(Node *node) {
         if (node == nullptr) {
             return;
-
         }
 
         for (int i = 0; i < node->stmts.size(); i++) {

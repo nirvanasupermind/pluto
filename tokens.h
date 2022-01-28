@@ -7,6 +7,10 @@ namespace Tokens {
     enum TokenType {
         BYTE,
         NUMBER,
+        TRUE,
+        FALSE,
+        NIL,
+        VAR,
         SYMBOL,
         PLUS,
         MINUS,
@@ -15,9 +19,7 @@ namespace Tokens {
         LPAREN,
         RPAREN,
         POWER,
-        TRUE,
-        FALSE,
-        NIL,
+        EQ,
         SEMICOLON,
         EOF_
     };

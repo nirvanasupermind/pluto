@@ -71,7 +71,8 @@
         "__bits": "cpp",
         "variant": "cpp",
         "__tree": "cpp",
-        "map": "cpp"
+        "map": "cpp",
+        "filesystem": "cpp"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }

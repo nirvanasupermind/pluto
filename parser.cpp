@@ -59,6 +59,9 @@ namespace Parser {
     }
 
     Nodes::Node *Parser::stmt() {
+        if (current().type == Tokens::VAR)
+            return var();
+
         Nodes::Node *result = expr();
 
         if (current().type != Tokens::SEMICOLON)
@@ -70,7 +73,49 @@ namespace Parser {
     }
 
 
+    Nodes::Node *Parser::var() {        
+        int line = current().line;
+
+        advance();
+        
+        if (current().type != Tokens::SYMBOL)
+            error();
+
+        std::string name = current().symbol;
+
+        advance();
+
+        if (current().type != Tokens::EQ)
+            error();
+        
+        advance();
+
+        Nodes::Node *val = expr();
+
+        if (current().type != Tokens::SEMICOLON)
+            error();
+        
+        advance();
+
+        return new Nodes::Node(line, Nodes::VarNode, name, val);
+    }
+
     Nodes::Node *Parser::expr() {
+        return eq();
+    }
+
+    Nodes::Node *Parser::eq() {
+        Nodes::Node *result = add();
+
+        if (current().type == Tokens::EQ) {
+            advance();
+            return new Nodes::Node(result->line, Nodes::EQNode, result, expr());
+        }
+
+        return result;
+    }
+
+    Nodes::Node *Parser::add() {
         Nodes::Node *result = term();
 
         while (current().type != Tokens::EOF_ && (current().type == Tokens::PLUS || current().type == Tokens::MINUS)) {

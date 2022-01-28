@@ -1,1 +1,5 @@
-true;
+var a = nil;
+var b = nil;
+
+a = b = 4;
+a * b;

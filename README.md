@@ -1,11 +1,12 @@
 # Pluto
-Work-in-progress interpreter for the Pluto programming language.
+Work-in-progress C++ interpreter for the Pluto programming language.
 
-# Compile from source
+# Compile on Unix
 ```
 $ git clone https://github.com/nirvanasupermind/pluto.git
 $ cd pluto
-$ clang++ pluto.cpp -o pluto -w
+$ clang++ pluto.cpp -o pluto -w 
+$ # may want to copy the executable to PATH after this
 ```
 
 # Usage

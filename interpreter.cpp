@@ -39,10 +39,14 @@ namespace Interpreter {
                 return visit_divide_node(node, scope);
             case Nodes::PowerNode:
                 return visit_power_node(node, scope);
+            case Nodes::EQNode:
+                return visit_eq_node(node, scope);
             case Nodes::PlusNode:
                 return visit_plus_node(node, scope);
             case Nodes::MinusNode:
                 return visit_minus_node(node, scope);
+            case Nodes::VarNode:
+                return visit_var_node(node, scope);
             case Nodes::FileNode:
                 return visit_file_node(node, scope);
             default:
@@ -54,7 +58,7 @@ namespace Interpreter {
         Values::Value *result = scope->get(node->symbol);
 
         if(result == nullptr)
-            throw std::string(filename + ":" + std::to_string(node->line) + ": cannot find symbol '"+node->symbol+"'");
+            throw std::string(filename + ":" + std::to_string(node->line) + ": cannot find variable '"+node->symbol+"'");
         
         return result;
     }
@@ -146,6 +150,39 @@ namespace Interpreter {
         }
     }
 
+
+    Values::Value *Interpreter::visit_eq_node(Nodes::Node *node, Scopes::Scope *scope) {
+        if(node->node_a->node_type != Nodes::SymbolNode)
+            throw std::string(filename + ":" + std::to_string(node->line) + ": invalid left-hand side in assignment");
+        
+        std::string name = node->node_a->symbol;
+
+        if(scope->map.count(name) == 0) {
+            throw std::string(filename + ":" + std::to_string(node->line) + ": cannot find variable '" + name + "'");
+        }
+        
+        Values::Value *val = visit(node->node_b, scope);
+
+        scope->set(name, val);
+
+        return val;
+    }
+
+    Values::Value *Interpreter::visit_var_node(Nodes::Node *node, Scopes::Scope *scope) {
+
+        std::string name = node->name;
+
+        if(scope->map.count(name) != 0) {
+            throw std::string(filename + ":" + std::to_string(node->line) + ": variable '" + name + "' is already defined");
+        }
+        
+        Values::Value *val = visit(node->val, scope);
+
+        scope->set(name, val);
+
+        return val;
+    }
+    
     Values::Value *Interpreter::visit_file_node(Nodes::Node *node, Scopes::Scope *scope) {
         for(int i = 0; i < node->stmts.size() - 1; i++) {
             visit(node->stmts[i], scope);

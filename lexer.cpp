@@ -52,6 +52,9 @@ namespace Lexer {
             } else if (current_char == ")") {
                 advance();
                 tokens.push_back(Tokens::Token(line, Tokens::RPAREN));
+            } else if (current_char == "=") {
+                advance();
+                tokens.push_back(Tokens::Token(line, Tokens::EQ));
             } else if (current_char == ";") {
                 advance();
                 tokens.push_back(Tokens::Token(line, Tokens::SEMICOLON));
@@ -110,6 +113,8 @@ namespace Lexer {
             return Tokens::Token(line, Tokens::FALSE);
         } else if(symbol_str == "nil") {
             return Tokens::Token(line, Tokens::NIL);
+        } else if(symbol_str == "var") {
+            return Tokens::Token(line, Tokens::VAR);
         } else {
             return Tokens::Token(line, Tokens::SYMBOL, symbol_str);
         }

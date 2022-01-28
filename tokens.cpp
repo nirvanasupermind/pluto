@@ -31,6 +31,7 @@ namespace Tokens {
             case TRUE: s += "TRUE"; break;
             case FALSE: s += "FALSE"; break;
             case NIL: s += "NIL"; break;
+            case VAR: s += "VAR"; break;
             case SYMBOL: s += "SYMBOL"; break;
             case PLUS: s += "PLUS"; break;
             case MINUS: s += "MINUS"; break;
@@ -39,6 +40,7 @@ namespace Tokens {
             case LPAREN: s += "LPAREN"; break;
             case RPAREN: s += "RPAREN"; break;
             case POWER: s += "POWER"; break;
+            case EQ: s += "EQ"; break;
             case SEMICOLON: s += "SEMICOLON"; break;
             case EOF_: s += "EOF"; break;
         }

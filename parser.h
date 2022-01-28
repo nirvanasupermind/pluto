@@ -25,7 +25,10 @@ namespace Parser {
             Nodes::Node *parse();
             Nodes::Node *file(Tokens::TokenType end);
             Nodes::Node *stmt();
+            Nodes::Node *var();
             Nodes::Node *expr();
+            Nodes::Node *eq();
+            Nodes::Node *add();
             Nodes::Node *term();
             Nodes::Node *exponent();
             Nodes::Node *factor();
