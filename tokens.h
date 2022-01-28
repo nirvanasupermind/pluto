@@ -18,6 +18,8 @@ namespace Tokens {
         DIVIDE,
         LPAREN,
         RPAREN,
+        LCURLY,
+        RCURLY,
         POWER,
         EQ,
         SEMICOLON,

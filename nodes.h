@@ -20,6 +20,7 @@ namespace Nodes {
         DivideNode,
         PowerNode,
         EQNode,
+        BlockNode,
         VarNode,
         FileNode
     };

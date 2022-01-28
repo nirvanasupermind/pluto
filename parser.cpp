@@ -53,6 +53,8 @@ namespace Parser {
         if (current().type != end)
             error();
 
+        advance();
+
         Nodes::Node *result = new Nodes::Node(line, Nodes::FileNode, stmts);
         
         return result;
@@ -61,6 +63,9 @@ namespace Parser {
     Nodes::Node *Parser::stmt() {
         if (current().type == Tokens::VAR)
             return var();
+
+        if (current().type == Tokens::LCURLY)
+            return block();
 
         Nodes::Node *result = expr();
 
@@ -72,6 +77,18 @@ namespace Parser {
         return result;
     }
 
+    Nodes::Node *Parser::block() {
+        if (current().type != Tokens::LCURLY)
+            error();
+
+        int line = current().line;
+
+        advance();
+
+        std::vector<Nodes::Node *> stmts = file(Tokens::RCURLY)->stmts;
+
+        return new Nodes::Node(line, Nodes::BlockNode, stmts);
+    }
 
     Nodes::Node *Parser::var() {        
         int line = current().line;

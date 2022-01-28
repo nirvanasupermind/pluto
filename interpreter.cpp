@@ -47,6 +47,8 @@ namespace Interpreter {
                 return visit_minus_node(node, scope);
             case Nodes::VarNode:
                 return visit_var_node(node, scope);
+            case Nodes::BlockNode:
+                return visit_block_node(node, scope);
             case Nodes::FileNode:
                 return visit_file_node(node, scope);
             default:
@@ -157,7 +159,7 @@ namespace Interpreter {
         
         std::string name = node->node_a->symbol;
 
-        if(scope->map.count(name) == 0) {
+        if(scope->get(name) == nullptr) {
             throw std::string(filename + ":" + std::to_string(node->line) + ": cannot find variable '" + name + "'");
         }
         
@@ -181,6 +183,17 @@ namespace Interpreter {
         scope->set(name, val);
 
         return val;
+    }
+    
+
+    Values::Value *Interpreter::visit_block_node(Nodes::Node *node, Scopes::Scope *scope) {
+        Scopes::Scope *block_scope = new Scopes::Scope(scope);
+
+        for(int i = 0; i < node->stmts.size() - 1; i++) {
+            visit(node->stmts[i], block_scope);
+        }
+
+        return visit(node->stmts.back(), block_scope);
     }
     
     Values::Value *Interpreter::visit_file_node(Nodes::Node *node, Scopes::Scope *scope) {

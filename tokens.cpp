@@ -39,6 +39,8 @@ namespace Tokens {
             case DIVIDE: s += "DIVIDE"; break;
             case LPAREN: s += "LPAREN"; break;
             case RPAREN: s += "RPAREN"; break;
+            case LCURLY: s += "LCURLY"; break;
+            case RCURLY: s += "RCURLY"; break;
             case POWER: s += "POWER"; break;
             case EQ: s += "EQ"; break;
             case SEMICOLON: s += "SEMICOLON"; break;

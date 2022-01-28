@@ -1,5 +1,7 @@
-var a = nil;
-var b = nil;
+var x = 5;
 
-a = b = 4;
-a * b;
+{
+    var x = 7;
+}
+
+x;

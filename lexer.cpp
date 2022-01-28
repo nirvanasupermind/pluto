@@ -52,6 +52,12 @@ namespace Lexer {
             } else if (current_char == ")") {
                 advance();
                 tokens.push_back(Tokens::Token(line, Tokens::RPAREN));
+            } else if (current_char == "{") {
+                advance();
+                tokens.push_back(Tokens::Token(line, Tokens::LCURLY));
+            } else if (current_char == "}") {
+                advance();
+                tokens.push_back(Tokens::Token(line, Tokens::RCURLY));
             } else if (current_char == "=") {
                 advance();
                 tokens.push_back(Tokens::Token(line, Tokens::EQ));
