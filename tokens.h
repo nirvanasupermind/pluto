@@ -11,6 +11,8 @@ namespace Tokens {
         FALSE,
         NIL,
         VAR,
+        IF,
+        WHILE,
         SYMBOL,
         PLUS,
         MINUS,
@@ -21,7 +23,14 @@ namespace Tokens {
         LCURLY,
         RCURLY,
         POWER,
+        LT,
+        GT,
+        LE,
+        GE,
+        EE,
+        NE,
         EQ,
+        NOT,
         SEMICOLON,
         EOF_
     };

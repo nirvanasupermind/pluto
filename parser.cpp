@@ -67,6 +67,12 @@ namespace Parser {
         if (current().type == Tokens::LCURLY)
             return block();
 
+        if (current().type == Tokens::IF)
+            return if_();
+
+        if (current().type == Tokens::WHILE)
+            return while_();
+
         Nodes::Node *result = expr();
 
         if (current().type != Tokens::SEMICOLON)
@@ -75,6 +81,56 @@ namespace Parser {
         advance();
 
         return result;
+    }
+
+    Nodes::Node *Parser::while_() {
+        int line = current().line;
+
+        if (current().type != Tokens::WHILE)
+            error();
+
+        advance();
+
+        if (current().type != Tokens::LPAREN) 
+            error();
+
+        advance();
+
+        Nodes::Node *cond = expr();
+
+        if (current().type != Tokens::RPAREN) 
+            error();
+
+        advance();
+        
+        Nodes::Node *body = block();
+        
+        return new Nodes::Node(line, Nodes::WhileNode, cond, body);
+    }
+
+    Nodes::Node *Parser::if_() {
+        int line = current().line;
+
+        if (current().type != Tokens::IF)
+            error();
+
+        advance();
+
+        if (current().type != Tokens::LPAREN) 
+            error();
+
+        advance();
+
+        Nodes::Node *cond = expr();
+
+        if (current().type != Tokens::RPAREN) 
+            error();
+
+        advance();
+        
+        Nodes::Node *body = block();
+        
+        return new Nodes::Node(line, Nodes::IfNode, cond, body);
     }
 
     Nodes::Node *Parser::block() {
@@ -121,12 +177,52 @@ namespace Parser {
         return eq();
     }
 
+    Nodes::Node *Parser::ret() {
+        int line = current().line;
+
+        advance();
+
+        Nodes::Node *result = expr();
+
+        return new Nodes::Node(line, Nodes::ReturnNode, result);
+    }
+
+
     Nodes::Node *Parser::eq() {
-        Nodes::Node *result = add();
+        Nodes::Node *result = comp();
 
         if (current().type == Tokens::EQ) {
             advance();
             return new Nodes::Node(result->line, Nodes::EQNode, result, expr());
+        }
+
+        return result;
+    }
+
+
+    Nodes::Node *Parser::comp() {
+        Nodes::Node *result = add();
+
+        while (current().type != Tokens::EOF_ && (current().type == Tokens::LT || current().type == Tokens::GT || current().type == Tokens::LE || current().type == Tokens::GE || current().type == Tokens::EE || current().type == Tokens::NE)) {
+            if (current().type == Tokens::LT) {
+                advance();
+                result = new Nodes::Node(result->line, Nodes::LTNode, result, add());
+            } else if (current().type == Tokens::GT) {
+                advance();
+                result = new Nodes::Node(result->line, Nodes::GTNode, result, add());
+            } else if (current().type == Tokens::LE) {
+                advance();
+                result = new Nodes::Node(result->line, Nodes::LENode, result, add());
+            } else if (current().type == Tokens::GE) {
+                advance();
+                result = new Nodes::Node(result->line, Nodes::GENode, result, add());
+            } else if (current().type == Tokens::EE) {
+                advance();
+                result = new Nodes::Node(result->line, Nodes::EENode, result, add());
+            } else if (current().type == Tokens::NE) {
+                advance();
+                result = new Nodes::Node(result->line, Nodes::NENode, result, add());
+            }
         }
 
         return result;
@@ -185,9 +281,8 @@ namespace Parser {
             advance();
             Nodes::Node *result = expr();
 
-            if (current().type != Tokens::RPAREN) {
+            if (current().type != Tokens::RPAREN) 
                 error();
-            }
 
             advance();
             return result;

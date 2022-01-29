@@ -7,7 +7,7 @@
 
 #define WHITESPACE std::string(" \n\t")
 #define DIGITS std::string("0123456789")
-#define NONDIGITS std::string("_abcdefghijklmnopqrstuvwxyz")
+#define NONDIGITS std::string("_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
 namespace Lexer {
     class Lexer {

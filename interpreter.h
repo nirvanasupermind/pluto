@@ -23,9 +23,17 @@ namespace Interpreter {
             Values::Value *visit_power_node(Nodes::Node *, Scopes::Scope *);
             Values::Value *visit_plus_node(Nodes::Node *, Scopes::Scope *);
             Values::Value *visit_minus_node(Nodes::Node *, Scopes::Scope *);
+            Values::Value *visit_lt_node(Nodes::Node *, Scopes::Scope *);
+            Values::Value *visit_gt_node(Nodes::Node *, Scopes::Scope *);
+            Values::Value *visit_le_node(Nodes::Node *, Scopes::Scope *);
+            Values::Value *visit_ge_node(Nodes::Node *, Scopes::Scope *);
+            Values::Value *visit_ee_node(Nodes::Node *, Scopes::Scope *);
+            Values::Value *visit_ne_node(Nodes::Node *, Scopes::Scope *);
             Values::Value *visit_eq_node(Nodes::Node *, Scopes::Scope *);
             Values::Value *visit_var_node(Nodes::Node *, Scopes::Scope *);
             Values::Value *visit_block_node(Nodes::Node *, Scopes::Scope *);
+            Values::Value *visit_if_node(Nodes::Node *, Scopes::Scope *);
+            Values::Value *visit_while_node(Nodes::Node *, Scopes::Scope *);
             Values::Value *visit_file_node(Nodes::Node *, Scopes::Scope *);
     };
 }

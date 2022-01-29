@@ -19,9 +19,18 @@ namespace Nodes {
         MultiplyNode,
         DivideNode,
         PowerNode,
+        LTNode,
+        GTNode,
+        LENode,
+        GENode,
+        EENode,
+        NENode,
         EQNode,
-        BlockNode,
+        ReturnNode,
         VarNode,
+        BlockNode,
+        IfNode,
+        WhileNode,
         FileNode
     };
 

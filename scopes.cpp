@@ -28,4 +28,14 @@ namespace Scopes {
     void Scope::set(std::string name, Values::Value *value) {
         map[name] = value;
     }
+
+    Scopes::Scope *Scope::resolve(std::string name) {
+        if(map.count(name) != 0)
+            return this;
+        
+        if(parent == nullptr)
+            return nullptr;
+
+        return parent->resolve(name);
+    }
 }

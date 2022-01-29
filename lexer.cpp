@@ -58,9 +58,37 @@ namespace Lexer {
             } else if (current_char == "}") {
                 advance();
                 tokens.push_back(Tokens::Token(line, Tokens::RCURLY));
+            } else if (current_char == "<") {
+                advance();
+                if (current_char == "=") {
+                    advance();
+                    tokens.push_back(Tokens::Token(line, Tokens::LE));
+                } else
+                    tokens.push_back(Tokens::Token(line, Tokens::LT));
+            } else if (current_char == ">") {
+                advance();
+                if (current_char == "=") {
+                    advance();
+                    tokens.push_back(Tokens::Token(line, Tokens::GE));
+                } else
+                    tokens.push_back(Tokens::Token(line, Tokens::GT));
             } else if (current_char == "=") {
                 advance();
-                tokens.push_back(Tokens::Token(line, Tokens::EQ));
+                if (current_char == "=") {
+                    advance();
+                    tokens.push_back(Tokens::Token(line, Tokens::EE));
+                } else
+                    tokens.push_back(Tokens::Token(line, Tokens::EQ));
+            } else if (current_char == "!") {
+                advance();
+                if (current_char == "=") {
+                    advance();
+                    tokens.push_back(Tokens::Token(line, Tokens::NE));
+                } else
+                    tokens.push_back(Tokens::Token(line, Tokens::NOT));
+            } else if (current_char == ";") {
+                advance();
+                tokens.push_back(Tokens::Token(line, Tokens::SEMICOLON));
             } else if (current_char == ";") {
                 advance();
                 tokens.push_back(Tokens::Token(line, Tokens::SEMICOLON));
@@ -121,6 +149,10 @@ namespace Lexer {
             return Tokens::Token(line, Tokens::NIL);
         } else if(symbol_str == "var") {
             return Tokens::Token(line, Tokens::VAR);
+        } else if(symbol_str == "if") {
+            return Tokens::Token(line, Tokens::IF);
+        } else if(symbol_str == "while") {
+            return Tokens::Token(line, Tokens::WHILE);
         } else {
             return Tokens::Token(line, Tokens::SYMBOL, symbol_str);
         }

@@ -39,16 +39,32 @@ namespace Interpreter {
                 return visit_divide_node(node, scope);
             case Nodes::PowerNode:
                 return visit_power_node(node, scope);
-            case Nodes::EQNode:
-                return visit_eq_node(node, scope);
             case Nodes::PlusNode:
                 return visit_plus_node(node, scope);
             case Nodes::MinusNode:
                 return visit_minus_node(node, scope);
+            case Nodes::LTNode:
+                return visit_lt_node(node, scope);
+            case Nodes::GTNode:
+                return visit_gt_node(node, scope);
+            case Nodes::LENode:
+                return visit_le_node(node, scope);
+            case Nodes::GENode:
+                return visit_ge_node(node, scope);
+            case Nodes::EENode:
+                return visit_ee_node(node, scope);
+            case Nodes::NENode:
+                return visit_ne_node(node, scope);
+            case Nodes::EQNode:
+                return visit_eq_node(node, scope);
             case Nodes::VarNode:
                 return visit_var_node(node, scope);
             case Nodes::BlockNode:
                 return visit_block_node(node, scope);
+            case Nodes::IfNode:
+                return visit_if_node(node, scope);
+            case Nodes::WhileNode:
+                return visit_while_node(node, scope);
             case Nodes::FileNode:
                 return visit_file_node(node, scope);
             default:
@@ -152,7 +168,6 @@ namespace Interpreter {
         }
     }
 
-
     Values::Value *Interpreter::visit_eq_node(Nodes::Node *node, Scopes::Scope *scope) {
         if(node->node_a->node_type != Nodes::SymbolNode)
             throw std::string(filename + ":" + std::to_string(node->line) + ": invalid left-hand side in assignment");
@@ -165,18 +180,96 @@ namespace Interpreter {
         
         Values::Value *val = visit(node->node_b, scope);
 
-        scope->set(name, val);
+        scope->resolve(name)->set(name, val);
 
         return val;
     }
+
+    Values::Value *Interpreter::visit_lt_node(Nodes::Node *node, Scopes::Scope *scope) {
+        Values::Value *a = visit(node->node_a, scope);
+        Values::Value *b = visit(node->node_b, scope);
+
+        if(INSTANCEOF(a, Values::Byte) && INSTANCEOF(b, Values::Byte)) {
+            return new Values::Bool(((Values::Byte*)a)->byte < ((Values::Byte*)b)->byte);            
+        } else if(INSTANCEOF(a, Values::Number) && INSTANCEOF(b, Values::Number)) {
+            return new Values::Bool(((Values::Number*)a)->value < ((Values::Number*)b)->value);
+        } else {
+            throw std::string(filename + ":" + std::to_string(node->line) + ": bad operand types for binary operator '<'");
+        }
+    }
+
+    Values::Value *Interpreter::visit_gt_node(Nodes::Node *node, Scopes::Scope *scope) {
+        Values::Value *a = visit(node->node_a, scope);
+        Values::Value *b = visit(node->node_b, scope);
+
+        if(INSTANCEOF(a, Values::Byte) && INSTANCEOF(b, Values::Byte)) {
+            return new Values::Bool(((Values::Byte*)a)->byte > ((Values::Byte*)b)->byte);            
+        } else if(INSTANCEOF(a, Values::Number) && INSTANCEOF(b, Values::Number)) {
+            return new Values::Bool(((Values::Number*)a)->value > ((Values::Number*)b)->value);
+        } else {
+            throw std::string(filename + ":" + std::to_string(node->line) + ": bad operand types for binary operator '>'");
+        }
+    }
+
+    Values::Value *Interpreter::visit_le_node(Nodes::Node *node, Scopes::Scope *scope) {
+        Values::Value *a = visit(node->node_a, scope);
+        Values::Value *b = visit(node->node_b, scope);
+
+        if(INSTANCEOF(a, Values::Byte) && INSTANCEOF(b, Values::Byte)) {
+            return new Values::Bool(((Values::Byte*)a)->byte <= ((Values::Byte*)b)->byte);            
+        } else if(INSTANCEOF(a, Values::Number) && INSTANCEOF(b, Values::Number)) {
+            return new Values::Bool(((Values::Number*)a)->value <= ((Values::Number*)b)->value);
+        } else {
+            throw std::string(filename + ":" + std::to_string(node->line) + ": bad operand types for binary operator '<='");
+        }
+    }
+
+    Values::Value *Interpreter::visit_ge_node(Nodes::Node *node, Scopes::Scope *scope) {
+        Values::Value *a = visit(node->node_a, scope);
+        Values::Value *b = visit(node->node_b, scope);
+
+        if(INSTANCEOF(a, Values::Byte) && INSTANCEOF(b, Values::Byte)) {
+            return new Values::Bool(((Values::Byte*)a)->byte >= ((Values::Byte*)b)->byte);            
+        } else if(INSTANCEOF(a, Values::Number) && INSTANCEOF(b, Values::Number)) {
+            return new Values::Bool(((Values::Number*)a)->value >= ((Values::Number*)b)->value);
+        } else {
+            throw std::string(filename + ":" + std::to_string(node->line) + ": bad operand types for binary operator '>='");
+        }
+    }
+
+    Values::Value *Interpreter::visit_ee_node(Nodes::Node *node, Scopes::Scope *scope) {
+        Values::Value *a = visit(node->node_a, scope);
+        Values::Value *b = visit(node->node_b, scope);
+
+        if(INSTANCEOF(a, Values::Byte) && INSTANCEOF(b, Values::Byte)) {
+            return new Values::Bool(((Values::Byte*)a)->byte == ((Values::Byte*)b)->byte);            
+        } else if(INSTANCEOF(a, Values::Number) && INSTANCEOF(b, Values::Number)) {
+            return new Values::Bool(((Values::Number*)a)->value == ((Values::Number*)b)->value);
+        } else {
+            throw std::string(filename + ":" + std::to_string(node->line) + ": bad operand types for binary operator '=='");
+        }
+    }
+
+    Values::Value *Interpreter::visit_ne_node(Nodes::Node *node, Scopes::Scope *scope) {
+        Values::Value *a = visit(node->node_a, scope);
+        Values::Value *b = visit(node->node_b, scope);
+
+        if(INSTANCEOF(a, Values::Byte) && INSTANCEOF(b, Values::Byte)) {
+            return new Values::Bool(((Values::Byte*)a)->byte != ((Values::Byte*)b)->byte);            
+        } else if(INSTANCEOF(a, Values::Number) && INSTANCEOF(b, Values::Number)) {
+            return new Values::Bool(((Values::Number*)a)->value != ((Values::Number*)b)->value);
+        } else {
+            throw std::string(filename + ":" + std::to_string(node->line) + ": bad operand types for binary operator '!='");
+        }
+    }
+
 
     Values::Value *Interpreter::visit_var_node(Nodes::Node *node, Scopes::Scope *scope) {
 
         std::string name = node->name;
 
-        if(scope->map.count(name) != 0) {
+        if(scope->map.count(name) != 0)
             throw std::string(filename + ":" + std::to_string(node->line) + ": variable '" + name + "' is already defined");
-        }
         
         Values::Value *val = visit(node->val, scope);
 
@@ -184,7 +277,6 @@ namespace Interpreter {
 
         return val;
     }
-    
 
     Values::Value *Interpreter::visit_block_node(Nodes::Node *node, Scopes::Scope *scope) {
         Scopes::Scope *block_scope = new Scopes::Scope(scope);
@@ -196,11 +288,39 @@ namespace Interpreter {
         return visit(node->stmts.back(), block_scope);
     }
     
+    Values::Value *Interpreter::visit_if_node(Nodes::Node *node, Scopes::Scope *scope) {
+        Values::Value *cond = visit(node->node_a, scope);
+
+        if(!(INSTANCEOF(cond, Values::Nil) || (INSTANCEOF(cond, Values::Bool) && !((Values::Bool*)cond)->bool_))) {
+            visit(node->node_b, scope);
+            cond = visit(node->node_a, scope);
+        }
+        
+        return new Values::Nil();
+    }
+
+    Values::Value *Interpreter::visit_while_node(Nodes::Node *node, Scopes::Scope *scope) {
+        Values::Value *cond = visit(node->node_a, scope);
+
+        while(!(INSTANCEOF(cond, Values::Nil) || (INSTANCEOF(cond, Values::Bool) && !((Values::Bool*)cond)->bool_))) {
+            visit(node->node_b, scope);
+            cond = visit(node->node_a, scope);
+        }
+        
+        return new Values::Nil();
+    }
+
     Values::Value *Interpreter::visit_file_node(Nodes::Node *node, Scopes::Scope *scope) {
-        for(int i = 0; i < node->stmts.size() - 1; i++) {
+        for(int i = 0; i < node->stmts.size(); i++) {
             visit(node->stmts[i], scope);
         }
 
         return visit(node->stmts.back(), scope);
+
+        // for(int i = 0; i < node->stmts.size(); i++) {
+        //     visit(node->stmts[i], scope);
+        // }
+
+        // return new Values::Nil();
     }
 }

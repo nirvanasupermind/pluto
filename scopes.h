@@ -18,6 +18,7 @@ namespace Scopes {
 
             Values::Value *get(std::string name);
             void set(std::string name, Values::Value *value);
+            Scopes::Scope *resolve(std::string name);
     };
 }
 
