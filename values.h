@@ -1,12 +1,15 @@
 #ifndef VALUES_H
 #define VALUES_H
 
+#define INSTANCEOF(x, t) dynamic_cast<t*>(x) != nullptr 
+
 #include <string>
 
 namespace Values {
     class Value {
         public:
             virtual std::string to_string() = 0;
+            bool truthy();
     };
 
     class Nil: public Value {

@@ -35,21 +35,28 @@ namespace Parser {
         return node;
     }
 
-    Nodes::Node *Parser::file(Tokens::TokenType end) {
+    Nodes::Node *Parser::file /* bad name */ (Tokens::TokenType end) {
         int line = current().line;
 
+        // <LCURLY, RCURLY, EOF>
+        // LCURLY
+        // RCURLY
+        // EOF
+            
         if (current().type == end) {
+            advance();
             PARSER_EMPTY_NODE;
+            std::cout << node->to_string() << '\n';
             return node;
         }
 
         std::vector<Nodes::Node *> stmts;
 
+
         while (current().type != end) {
             stmts.push_back(stmt());
         }
 
-        
         if (current().type != end)
             error();
 
@@ -109,6 +116,7 @@ namespace Parser {
     }
 
     Nodes::Node *Parser::if_() {
+
         int line = current().line;
 
         if (current().type != Tokens::IF)
@@ -129,11 +137,23 @@ namespace Parser {
         advance();
         
         Nodes::Node *body = block();
+
+        advance();
         
+        if (current().type == Tokens::ELSE) {
+            advance();
+
+            Nodes::Node *else_body = block();
+
+
+            return new Nodes::Node(line, Nodes::IfElseNode, cond, body, else_body);
+        }
+            
         return new Nodes::Node(line, Nodes::IfNode, cond, body);
     }
 
     Nodes::Node *Parser::block() {
+        // std::cout << current().to_string() << '\n';
         if (current().type != Tokens::LCURLY)
             error();
 

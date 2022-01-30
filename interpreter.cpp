@@ -63,6 +63,8 @@ namespace Interpreter {
                 return visit_block_node(node, scope);
             case Nodes::IfNode:
                 return visit_if_node(node, scope);
+            case Nodes::IfElseNode:
+                return visit_if_else_node(node, scope);
             case Nodes::WhileNode:
                 return visit_while_node(node, scope);
             case Nodes::FileNode:
@@ -291,9 +293,20 @@ namespace Interpreter {
     Values::Value *Interpreter::visit_if_node(Nodes::Node *node, Scopes::Scope *scope) {
         Values::Value *cond = visit(node->node_a, scope);
 
-        if(!(INSTANCEOF(cond, Values::Nil) || (INSTANCEOF(cond, Values::Bool) && !((Values::Bool*)cond)->bool_))) {
+        if(cond->truthy()) {
             visit(node->node_b, scope);
-            cond = visit(node->node_a, scope);
+        }
+        
+        return new Values::Nil();
+    }
+
+    Values::Value *Interpreter::visit_if_else_node(Nodes::Node *node, Scopes::Scope *scope) {
+        Values::Value *cond = visit(node->node_a, scope);
+
+        if(cond->truthy()) {
+            visit(node->node_b, scope);
+        } else {
+            visit(node->node_c, scope);
         }
         
         return new Values::Nil();
@@ -302,7 +315,7 @@ namespace Interpreter {
     Values::Value *Interpreter::visit_while_node(Nodes::Node *node, Scopes::Scope *scope) {
         Values::Value *cond = visit(node->node_a, scope);
 
-        while(!(INSTANCEOF(cond, Values::Nil) || (INSTANCEOF(cond, Values::Bool) && !((Values::Bool*)cond)->bool_))) {
+        while(cond->truthy()) {
             visit(node->node_b, scope);
             cond = visit(node->node_a, scope);
         }
@@ -311,11 +324,17 @@ namespace Interpreter {
     }
 
     Values::Value *Interpreter::visit_file_node(Nodes::Node *node, Scopes::Scope *scope) {
+        if(node->stmts.size() == 0)
+            return new Values::Nil();
+
         for(int i = 0; i < node->stmts.size(); i++) {
             visit(node->stmts[i], scope);
         }
 
         return visit(node->stmts.back(), scope);
+
+        // if(node->stmts.size() == 0)
+        //     return new Values::Nil();
 
         // for(int i = 0; i < node->stmts.size(); i++) {
         //     visit(node->stmts[i], scope);

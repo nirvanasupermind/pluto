@@ -1,8 +1,6 @@
 #ifndef INTERPRETER_H
 #define INTERPRETER_H
 
-#define INSTANCEOF(x, t) dynamic_cast<t*>(x) != nullptr 
-
 #include <string>
 
 #include "nodes.h"
@@ -33,6 +31,7 @@ namespace Interpreter {
             Values::Value *visit_var_node(Nodes::Node *, Scopes::Scope *);
             Values::Value *visit_block_node(Nodes::Node *, Scopes::Scope *);
             Values::Value *visit_if_node(Nodes::Node *, Scopes::Scope *);
+            Values::Value *visit_if_else_node(Nodes::Node *, Scopes::Scope *);
             Values::Value *visit_while_node(Nodes::Node *, Scopes::Scope *);
             Values::Value *visit_file_node(Nodes::Node *, Scopes::Scope *);
     };

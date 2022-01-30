@@ -3,6 +3,9 @@
 #include "values.h"
 
 namespace Values {
+    bool Value::truthy() {
+        return !(INSTANCEOF(this, Nil) || (INSTANCEOF(this, Bool) && ((Bool*)this)->bool_ == false));
+    }
     std::string Nil::to_string() {
         return std::string("nil");
     }

@@ -45,7 +45,13 @@ namespace Lexer {
                     tokens.push_back(Tokens::Token(line, Tokens::MULTIPLY));
             } else if (current_char == "/") {
                 advance();
-                tokens.push_back(Tokens::Token(line, Tokens::DIVIDE));
+                if (current_char == "/") {
+                    advance();
+                    while(current_char != "\n") {
+                        advance();
+                    }
+                } else
+                    tokens.push_back(Tokens::Token(line, Tokens::DIVIDE));
             } else if (current_char == "(") {
                 advance();
                 tokens.push_back(Tokens::Token(line, Tokens::LPAREN));
@@ -86,6 +92,9 @@ namespace Lexer {
                     tokens.push_back(Tokens::Token(line, Tokens::NE));
                 } else
                     tokens.push_back(Tokens::Token(line, Tokens::NOT));
+            } else if (current_char == ";") {
+                advance();
+                tokens.push_back(Tokens::Token(line, Tokens::SEMICOLON));
             } else if (current_char == ";") {
                 advance();
                 tokens.push_back(Tokens::Token(line, Tokens::SEMICOLON));
@@ -151,6 +160,8 @@ namespace Lexer {
             return Tokens::Token(line, Tokens::VAR);
         } else if(symbol_str == "if") {
             return Tokens::Token(line, Tokens::IF);
+        } else if(symbol_str == "else") {
+            return Tokens::Token(line, Tokens::ELSE);
         } else if(symbol_str == "while") {
             return Tokens::Token(line, Tokens::WHILE);
         } else {

@@ -18,6 +18,7 @@ namespace Nodes {
         this->value = value;
         node_a = nullptr;
         node_b = nullptr;
+        node_c = nullptr;
     }
 
     Node::Node(int line, NodeType node_type, Node *node_a, Node *node_b) {
@@ -25,6 +26,15 @@ namespace Nodes {
         this->node_type = node_type;
         this->node_a = node_a;
         this->node_b = node_b;
+        node_c = nullptr;
+    }
+
+    Node::Node(int line, NodeType node_type, Node *node_a, Node *node_b, Node *node_c) {
+        this->line = line;
+        this->node_type = node_type;
+        this->node_a = node_a;
+        this->node_b = node_b;
+        this->node_c = node_c;
     }
 
     Node::Node(int line, NodeType node_type) {
@@ -32,6 +42,7 @@ namespace Nodes {
         this->node_type = node_type;
         node_a = nullptr;
         node_b = nullptr;
+        node_c = nullptr;
     }
 
     Node::Node(int line, NodeType node_type, Node *node_a) {
@@ -39,6 +50,7 @@ namespace Nodes {
         this->node_type = node_type;
         this->node_a = node_a;
         node_b = nullptr;
+        node_c = nullptr;
     }
 
     Node::Node(int line, NodeType node_type, std::string symbol) {
@@ -47,6 +59,7 @@ namespace Nodes {
         this->symbol = symbol;
         node_a = nullptr;
         node_b = nullptr;
+        node_c = nullptr;
     }
 
     Node::Node(int line, NodeType node_type, std::string name, Nodes::Node *val) {
@@ -56,12 +69,16 @@ namespace Nodes {
         this->val = val;
         node_a = nullptr;
         node_b = nullptr;
+        node_c = nullptr;
     }
 
     Node::Node(int line, NodeType node_type, std::vector<Node *> stmts) {
         this->line = line;
         this->node_type = node_type;
         this->stmts = stmts;
+        node_a = nullptr;
+        node_b = nullptr;
+        node_c = nullptr;
     }
 
     std::string Node::to_string() {
@@ -111,6 +128,11 @@ namespace Nodes {
         if (node->node_b != nullptr) {
             free_node(node->node_b);
             node->node_b = nullptr;
+        }
+
+        if (node->node_c != nullptr) {
+            free_node(node->node_c);
+            node->node_c = nullptr;
         }
 
         delete node;
