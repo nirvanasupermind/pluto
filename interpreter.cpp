@@ -306,11 +306,11 @@ namespace Interpreter {
     Values::Value *Interpreter::visit_if_else_node(Nodes::Node *node, Scopes::Scope *scope) {
         Values::Value *cond = visit(node->node_a, scope);
 
-        if(cond->truthy()) {
+        if(cond->truthy())
             visit(node->node_b, scope);
-        } else {
+        else
             visit(node->node_c, scope);
-        }
+        
         
         return new Values::Nil();
     }
