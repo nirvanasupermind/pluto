@@ -46,7 +46,7 @@ namespace Parser {
         if (current().type == end) {
             advance();
             PARSER_EMPTY_NODE;
-            std::cout << node->to_string() << '\n';
+            // std::cout << node->to_string() << '\n';
             return node;
         }
 

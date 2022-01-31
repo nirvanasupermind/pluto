@@ -12,7 +12,7 @@ namespace Interpreter {
     }
 
     Values::Value *Interpreter::visit(Nodes::Node *node, Scopes::Scope *scope) {
-        // std::cout << node->to_string() << '\n';
+        // std::cout << node->node_type << '\n';
 
         switch (node->node_type) {
             case Nodes::EmptyNode:
@@ -282,6 +282,9 @@ namespace Interpreter {
 
     Values::Value *Interpreter::visit_block_node(Nodes::Node *node, Scopes::Scope *scope) {
         Scopes::Scope *block_scope = new Scopes::Scope(scope);
+
+        if(node->stmts.size() == 0)
+            return new Values::Nil();
 
         for(int i = 0; i < node->stmts.size() - 1; i++) {
             visit(node->stmts[i], block_scope);
