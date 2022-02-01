@@ -162,6 +162,8 @@ namespace Lexer {
             return Tokens::Token(line, Tokens::IF);
         } else if(symbol_str == "else") {
             return Tokens::Token(line, Tokens::ELSE);
+        } else if(symbol_str == "for") {
+            return Tokens::Token(line, Tokens::FOR);
         } else if(symbol_str == "while") {
             return Tokens::Token(line, Tokens::WHILE);
         } else {

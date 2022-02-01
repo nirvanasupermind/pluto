@@ -34,6 +34,8 @@ namespace Tokens {
             case VAR: s += "VAR"; break;
             case IF: s += "IF"; break;
             case ELSE: s += "ELSE"; break;
+            case FOR: s += "FOR"; break;
+            case WHILE: s += "WHILE"; break;
             case SYMBOL: s += "SYMBOL"; break;
             case PLUS: s += "PLUS"; break;
             case MINUS: s += "MINUS"; break;

@@ -31,6 +31,7 @@ namespace Nodes {
         BlockNode,
         IfNode,
         IfElseNode,
+        ForNode,
         WhileNode,
         FileNode
     };
@@ -46,9 +47,10 @@ namespace Nodes {
             std::string name;
             Node *val;
 
-            Node *node_a;
-            Node *node_b;
-            Node *node_c;
+            Node *node_a = nullptr;
+            Node *node_b = nullptr;
+            Node *node_c = nullptr;
+            Node *node_d = nullptr;
             std::vector<Node *> stmts;
 
             Node(int, NodeType, signed char byte);
@@ -56,6 +58,7 @@ namespace Nodes {
             Node(int, NodeType, std::string);
             Node(int, NodeType, Node *, Node *);
             Node(int, NodeType, Node *, Node *, Node *);
+            Node(int, NodeType, Node *, Node *, Node *, Node *);
             Node(int, NodeType);
             Node(int, NodeType, Node *);
             Node(int, NodeType, std::string, Node *);

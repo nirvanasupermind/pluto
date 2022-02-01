@@ -25,8 +25,9 @@ namespace Parser {
             Nodes::Node *parse();
             Nodes::Node *file(Tokens::TokenType end);
             Nodes::Node *stmt();
-            Nodes::Node *while_();
             Nodes::Node *if_();
+            Nodes::Node *for_();
+            Nodes::Node *while_();
             Nodes::Node *block();
             Nodes::Node *var();
             Nodes::Node *expr();

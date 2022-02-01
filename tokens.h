@@ -13,6 +13,7 @@ namespace Tokens {
         VAR,
         IF,
         ELSE,
+        FOR,
         WHILE,
         SYMBOL,
         PLUS,

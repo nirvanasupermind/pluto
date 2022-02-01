@@ -65,6 +65,8 @@ namespace Interpreter {
                 return visit_if_node(node, scope);
             case Nodes::IfElseNode:
                 return visit_if_else_node(node, scope);
+            case Nodes::ForNode:
+                return visit_for_node(node, scope);
             case Nodes::WhileNode:
                 return visit_while_node(node, scope);
             case Nodes::FileNode:
@@ -315,12 +317,27 @@ namespace Interpreter {
         return new Values::Nil();
     }
 
-    Values::Value *Interpreter::visit_while_node(Nodes::Node *node, Scopes::Scope *scope) {
-        Values::Value *cond = visit(node->node_a, scope);
+    Values::Value *Interpreter::visit_for_node(Nodes::Node *node, Scopes::Scope *scope) {
+         Scopes::Scope *for_scope = new Scopes::Scope(scope);
 
-        while(cond->truthy()) {
+        visit(node->node_a, for_scope);
+
+        while(true) {
+            if(!(visit(node->node_b, for_scope)->truthy()))
+                break;
+
+            visit(node->node_c, for_scope);
+            visit(node->node_d, for_scope);
+        }
+        
+        return new Values::Nil();
+    }
+
+    Values::Value *Interpreter::visit_while_node(Nodes::Node *node, Scopes::Scope *scope) {
+        while(true) {
+            if(!(visit(node->node_a, scope)->truthy()))
+                break;
             visit(node->node_b, scope);
-            cond = visit(node->node_a, scope);
         }
         
         return new Values::Nil();
@@ -335,14 +352,5 @@ namespace Interpreter {
         }
 
         return visit(node->stmts.back(), scope);
-
-        // if(node->stmts.size() == 0)
-        //     return new Values::Nil();
-
-        // for(int i = 0; i < node->stmts.size(); i++) {
-        //     visit(node->stmts[i], scope);
-        // }
-
-        // return new Values::Nil();
     }
 }

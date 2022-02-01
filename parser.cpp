@@ -35,18 +35,12 @@ namespace Parser {
         return node;
     }
 
-    Nodes::Node *Parser::file /* bad name */ (Tokens::TokenType end) {
+    Nodes::Node *Parser::file(Tokens::TokenType end) {
         int line = current().line;
 
-        // <LCURLY, RCURLY, EOF>
-        // LCURLY
-        // RCURLY
-        // EOF
-            
         if (current().type == end) {
             advance();
             PARSER_EMPTY_NODE;
-            // std::cout << node->to_string() << '\n';
             return node;
         }
 
@@ -76,6 +70,9 @@ namespace Parser {
 
         if (current().type == Tokens::IF)
             return if_();
+
+        if (current().type == Tokens::FOR)
+            return for_();
 
         if (current().type == Tokens::WHILE)
             return while_();
@@ -115,6 +112,34 @@ namespace Parser {
         return new Nodes::Node(line, Nodes::WhileNode, cond, body);
     }
 
+    Nodes::Node *Parser::for_() {
+        if (current().type != Tokens::FOR)
+            error();
+
+        int line = current().line;
+
+        advance();
+
+        if (current().type != Tokens::LPAREN) 
+            error();
+
+        advance();
+
+        Nodes::Node *node_a = stmt();
+        Nodes::Node *node_b = stmt();
+        Nodes::Node *node_c = stmt();
+
+        if (current().type != Tokens::RPAREN) 
+            error();
+
+        advance();
+        
+        Nodes::Node *body = block();
+        
+        return new Nodes::Node(line, Nodes::ForNode, node_a, node_b, node_c, body);
+    }
+
+
     Nodes::Node *Parser::if_() {
 
         int line = current().line;
@@ -153,7 +178,6 @@ namespace Parser {
     }
 
     Nodes::Node *Parser::block() {
-        // std::cout << current().to_string() << '\n';
         if (current().type != Tokens::LCURLY)
             error();
 
@@ -166,7 +190,10 @@ namespace Parser {
         return new Nodes::Node(line, Nodes::BlockNode, stmts);
     }
 
-    Nodes::Node *Parser::var() {        
+    Nodes::Node *Parser::var() {  
+        if (current().type != Tokens::VAR)
+            error();
+
         int line = current().line;
 
         advance();
