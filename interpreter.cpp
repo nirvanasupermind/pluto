@@ -55,6 +55,26 @@ namespace Interpreter {
                 return visit_ee_node(node, scope);
             case Nodes::NENode:
                 return visit_ne_node(node, scope);
+            case Nodes::OrNode:
+                return visit_or_node(node, scope);
+            case Nodes::AndNode:
+                return visit_and_node(node, scope);
+            case Nodes::XorNode:
+                return visit_xor_node(node, scope);
+            case Nodes::NotNode:
+                return visit_not_node(node, scope);
+            case Nodes::BitOrNode:
+                return visit_bitor_node(node, scope);
+            case Nodes::BitAndNode:
+                return visit_bitand_node(node, scope);
+            case Nodes::BitXorNode:
+                return visit_bitxor_node(node, scope);
+            case Nodes::BitNotNode:
+                return visit_bitnot_node(node, scope);
+            case Nodes::LshiftNode:
+                return visit_lshift_node(node, scope);
+            case Nodes::RshiftNode:
+                return visit_rshift_node(node, scope);
             case Nodes::EQNode:
                 return visit_eq_node(node, scope);
             case Nodes::VarNode:
@@ -267,6 +287,108 @@ namespace Interpreter {
         }
     }
 
+    Values::Value *Interpreter::visit_or_node(Nodes::Node *node, Scopes::Scope *scope) {
+        Values::Value *a = visit(node->node_a, scope);
+        Values::Value *b = visit(node->node_b, scope);
+
+        return new Values::Bool(a->truthy() || b->truthy());            
+    }
+
+    Values::Value *Interpreter::visit_and_node(Nodes::Node *node, Scopes::Scope *scope) {
+        Values::Value *a = visit(node->node_a, scope);
+        Values::Value *b = visit(node->node_b, scope);
+
+        return new Values::Bool(a->truthy() && b->truthy());
+    }
+
+    Values::Value *Interpreter::visit_xor_node(Nodes::Node *node, Scopes::Scope *scope) {
+        Values::Value *a = visit(node->node_a, scope);
+        Values::Value *b = visit(node->node_b, scope);
+
+        return new Values::Bool(a->truthy() != b->truthy());
+    }
+
+    Values::Value *Interpreter::visit_not_node(Nodes::Node *node, Scopes::Scope *scope) {
+        Values::Value *a = visit(node->node_a, scope);
+
+        return new Values::Bool(!a->truthy());
+    }
+
+    Values::Value *Interpreter::visit_bitor_node(Nodes::Node *node, Scopes::Scope *scope) {
+        Values::Value *a = visit(node->node_a, scope);
+        Values::Value *b = visit(node->node_b, scope);
+
+        if(INSTANCEOF(a, Values::Byte) && INSTANCEOF(b, Values::Byte)) {
+            return new Values::Byte(((Values::Byte*)a)->byte | ((Values::Byte*)b)->byte);            
+        } else if(INSTANCEOF(a, Values::Number) && INSTANCEOF(b, Values::Number)) {
+            return new Values::Number((int)(((Values::Number*)a)->value) | (int)(((Values::Number*)b)->value));
+        } else {
+            throw std::string(filename + ":" + std::to_string(node->line) + ": bad operand types for binary operator '|'");
+        }
+    }
+    
+    Values::Value *Interpreter::visit_bitand_node(Nodes::Node *node, Scopes::Scope *scope) {
+        Values::Value *a = visit(node->node_a, scope);
+        Values::Value *b = visit(node->node_b, scope);
+
+        if(INSTANCEOF(a, Values::Byte) && INSTANCEOF(b, Values::Byte)) {
+            return new Values::Byte(((Values::Byte*)a)->byte & ((Values::Byte*)b)->byte);            
+        } else if(INSTANCEOF(a, Values::Number) && INSTANCEOF(b, Values::Number)) {
+            return new Values::Number((int)(((Values::Number*)a)->value) & (int)(((Values::Number*)b)->value));
+        } else {
+            throw std::string(filename + ":" + std::to_string(node->line) + ": bad operand types for binary operator '&'");
+        }
+    }
+        
+    Values::Value *Interpreter::visit_bitxor_node(Nodes::Node *node, Scopes::Scope *scope) {
+        Values::Value *a = visit(node->node_a, scope);
+        Values::Value *b = visit(node->node_b, scope);
+
+        if(INSTANCEOF(a, Values::Byte) && INSTANCEOF(b, Values::Byte)) {
+            return new Values::Byte(((Values::Byte*)a)->byte ^ ((Values::Byte*)b)->byte);            
+        } else if(INSTANCEOF(a, Values::Number) && INSTANCEOF(b, Values::Number)) {
+            return new Values::Number((int)(((Values::Number*)a)->value) ^ (int)(((Values::Number*)b)->value));
+        } else {
+            throw std::string(filename + ":" + std::to_string(node->line) + ": bad operand types for binary operator '^'");
+        }
+    }
+    
+    Values::Value *Interpreter::visit_bitnot_node(Nodes::Node *node, Scopes::Scope *scope) {
+        Values::Value *a = visit(node->node_a, scope);
+        if(INSTANCEOF(a, Values::Byte)) {
+            return new Values::Byte(~(((Values::Byte*)a)->byte));
+        } else if(INSTANCEOF(a, Values::Number)) {
+            return new Values::Number(~((int)(((Values::Number*)a)->value)));
+        } else {
+            throw std::string(filename + ":" + std::to_string(node->line) + ": bad operand types for unary operator '~'");
+        }
+    }
+    
+    Values::Value *Interpreter::visit_lshift_node(Nodes::Node *node, Scopes::Scope *scope) {
+        Values::Value *a = visit(node->node_a, scope);
+        Values::Value *b = visit(node->node_b, scope);
+
+        if(INSTANCEOF(a, Values::Byte) && INSTANCEOF(b, Values::Byte)) {
+            return new Values::Byte(((Values::Byte*)a)->byte << ((Values::Byte*)b)->byte);            
+        } else if(INSTANCEOF(a, Values::Number) && INSTANCEOF(b, Values::Number)) {
+            return new Values::Number((int)(((Values::Number*)a)->value) << (int)(((Values::Number*)b)->value));
+        } else {
+            throw std::string(filename + ":" + std::to_string(node->line) + ": bad operand types for binary operator '^'");
+        }
+    }
+
+    Values::Value *Interpreter::visit_rshift_node(Nodes::Node *node, Scopes::Scope *scope) {
+        Values::Value *a = visit(node->node_a, scope);
+        Values::Value *b = visit(node->node_b, scope);
+
+        if(INSTANCEOF(a, Values::Byte) && INSTANCEOF(b, Values::Byte)) {
+            return new Values::Byte(((Values::Byte*)a)->byte >> ((Values::Byte*)b)->byte);            
+        } else if(INSTANCEOF(a, Values::Number) && INSTANCEOF(b, Values::Number)) {
+            return new Values::Number((int)(((Values::Number*)a)->value) >> (int)(((Values::Number*)b)->value));
+        } else {
+            throw std::string(filename + ":" + std::to_string(node->line) + ": bad operand types for binary operator '^'");
+        }
+    }
 
     Values::Value *Interpreter::visit_var_node(Nodes::Node *node, Scopes::Scope *scope) {
 

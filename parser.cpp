@@ -262,7 +262,7 @@ namespace Parser {
     Nodes::Node *Parser::and_() {
         Nodes::Node *result = or_();
 
-        while(current().type != Tokens::EOF_ && current().type == Tokens::OR) {
+        while(current().type != Tokens::EOF_ && current().type == Tokens::AND) {
             if (current().type == Tokens::AND) {
                 advance();
                 result = new Nodes::Node(result->line, Nodes::AndNode, result, or_());
@@ -461,6 +461,12 @@ namespace Parser {
         } else if (current_token.type == Tokens::MINUS) {
             advance();
             return new Nodes::Node(current_token.line, Nodes::MinusNode, factor());
+        } else if (current_token.type == Tokens::NOT) {
+            advance();
+            return new Nodes::Node(current_token.line, Nodes::NotNode, factor());
+        } else if (current_token.type == Tokens::BITNOT) {
+            advance();
+            return new Nodes::Node(current_token.line, Nodes::BitNotNode, factor());
         }
 
         error();

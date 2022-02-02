@@ -119,12 +119,9 @@ namespace Lexer {
                     tokens.push_back(Tokens::Token(line, Tokens::XOR));
                 } else
                     tokens.push_back(Tokens::Token(line, Tokens::BITXOR));
-            } else if (current_char == ";") {
+            } else if (current_char == "~") {
                 advance();
-                tokens.push_back(Tokens::Token(line, Tokens::SEMICOLON));
-            } else if (current_char == ";") {
-                advance();
-                tokens.push_back(Tokens::Token(line, Tokens::SEMICOLON));
+                tokens.push_back(Tokens::Token(line, Tokens::BITNOT));
             } else if (current_char == ";") {
                 advance();
                 tokens.push_back(Tokens::Token(line, Tokens::SEMICOLON));

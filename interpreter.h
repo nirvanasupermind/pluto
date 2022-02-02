@@ -27,6 +27,16 @@ namespace Interpreter {
             Values::Value *visit_ge_node(Nodes::Node *, Scopes::Scope *);
             Values::Value *visit_ee_node(Nodes::Node *, Scopes::Scope *);
             Values::Value *visit_ne_node(Nodes::Node *, Scopes::Scope *);
+            Values::Value *visit_or_node(Nodes::Node *, Scopes::Scope *);
+            Values::Value *visit_and_node(Nodes::Node *, Scopes::Scope *);
+            Values::Value *visit_xor_node(Nodes::Node *, Scopes::Scope *);
+            Values::Value *visit_not_node(Nodes::Node *, Scopes::Scope *);
+            Values::Value *visit_bitor_node(Nodes::Node *, Scopes::Scope *);
+            Values::Value *visit_bitand_node(Nodes::Node *, Scopes::Scope *);
+            Values::Value *visit_bitxor_node(Nodes::Node *, Scopes::Scope *);
+            Values::Value *visit_bitnot_node(Nodes::Node *, Scopes::Scope *);
+            Values::Value *visit_lshift_node(Nodes::Node *, Scopes::Scope *);
+            Values::Value *visit_rshift_node(Nodes::Node *, Scopes::Scope *);
             Values::Value *visit_eq_node(Nodes::Node *, Scopes::Scope *);
             Values::Value *visit_var_node(Nodes::Node *, Scopes::Scope *);
             Values::Value *visit_block_node(Nodes::Node *, Scopes::Scope *);
