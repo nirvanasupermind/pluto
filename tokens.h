@@ -32,7 +32,16 @@ namespace Tokens {
         EE,
         NE,
         EQ,
+        OR,
+        AND,
+        XOR,
         NOT,
+        BITOR,
+        BITAND,
+        BITXOR,
+        BITNOT,
+        LSHIFT,
+        RSHIFT,
         SEMICOLON,
         EOF_
     };

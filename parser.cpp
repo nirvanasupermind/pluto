@@ -224,19 +224,19 @@ namespace Parser {
         return eq();
     }
 
-    Nodes::Node *Parser::ret() {
-        int line = current().line;
+    // Nodes::Node *Parser::ret() {
+    //     int line = current().line;
 
-        advance();
+    //     advance();
 
-        Nodes::Node *result = expr();
+    //     Nodes::Node *result = expr();
 
-        return new Nodes::Node(line, Nodes::ReturnNode, result);
-    }
+    //     return new Nodes::Node(line, Nodes::ReturnNode, result);
+    // }
 
 
     Nodes::Node *Parser::eq() {
-        Nodes::Node *result = comp();
+        Nodes::Node *result = xor_();
 
         if (current().type == Tokens::EQ) {
             advance();
@@ -246,29 +246,133 @@ namespace Parser {
         return result;
     }
 
+    Nodes::Node *Parser::xor_() {
+        Nodes::Node *result = and_();
 
-    Nodes::Node *Parser::comp() {
-        Nodes::Node *result = add();
+        while(current().type != Tokens::EOF_ && current().type == Tokens::XOR) {
+            if (current().type == Tokens::XOR) {
+                advance();
+                result = new Nodes::Node(result->line, Nodes::XorNode, result, and_());
+            }
+        }
 
-        while (current().type != Tokens::EOF_ && (current().type == Tokens::LT || current().type == Tokens::GT || current().type == Tokens::LE || current().type == Tokens::GE || current().type == Tokens::EE || current().type == Tokens::NE)) {
-            if (current().type == Tokens::LT) {
+        return result;
+    }
+
+    Nodes::Node *Parser::and_() {
+        Nodes::Node *result = or_();
+
+        while(current().type != Tokens::EOF_ && current().type == Tokens::OR) {
+            if (current().type == Tokens::AND) {
                 advance();
-                result = new Nodes::Node(result->line, Nodes::LTNode, result, add());
-            } else if (current().type == Tokens::GT) {
+                result = new Nodes::Node(result->line, Nodes::AndNode, result, or_());
+            }
+        }
+
+        return result;
+    }
+
+    Nodes::Node *Parser::or_() {
+        Nodes::Node *result = bitxor_();
+
+        while(current().type != Tokens::EOF_ && current().type == Tokens::OR) {
+            if (current().type == Tokens::OR) {
                 advance();
-                result = new Nodes::Node(result->line, Nodes::GTNode, result, add());
-            } else if (current().type == Tokens::LE) {
+                result = new Nodes::Node(result->line, Nodes::OrNode, result, bitxor_());
+            }
+        }
+
+        return result;
+    }
+
+    Nodes::Node *Parser::bitxor_() {
+        Nodes::Node *result = bitand_();
+
+        while(current().type != Tokens::EOF_ && current().type == Tokens::BITXOR) {
+            if (current().type == Tokens::BITXOR) {
                 advance();
-                result = new Nodes::Node(result->line, Nodes::LENode, result, add());
-            } else if (current().type == Tokens::GE) {
+                result = new Nodes::Node(result->line, Nodes::BitXorNode, result, bitand_());
+            }
+        }
+
+        return result;
+    }
+
+    Nodes::Node *Parser::bitand_() {
+        Nodes::Node *result = bitor_();
+
+        while(current().type != Tokens::EOF_ && current().type == Tokens::BITAND) {
+            if (current().type == Tokens::BITAND) {
                 advance();
-                result = new Nodes::Node(result->line, Nodes::GENode, result, add());
-            } else if (current().type == Tokens::EE) {
+                result = new Nodes::Node(result->line, Nodes::BitAndNode, result, bitor_());
+            }
+        }
+
+        return result;
+    }
+
+    Nodes::Node *Parser::bitor_() {
+        Nodes::Node *result = ee();
+
+        while(current().type != Tokens::EOF_ && current().type == Tokens::BITOR) {
+            if (current().type == Tokens::BITOR) {
                 advance();
-                result = new Nodes::Node(result->line, Nodes::EENode, result, add());
+                result = new Nodes::Node(result->line, Nodes::BitOrNode, result, ee());
+            }
+        }
+
+        return result;
+    }
+
+    Nodes::Node *Parser::ee() {
+        Nodes::Node *result = comp();
+
+        while(current().type != Tokens::EOF_ && (current().type == Tokens::EE || current().type == Tokens::NE)) {
+            if (current().type == Tokens::EE) {
+                advance();
+                result = new Nodes::Node(result->line, Nodes::EENode, result, comp());
             } else if (current().type == Tokens::NE) {
                 advance();
-                result = new Nodes::Node(result->line, Nodes::NENode, result, add());
+                result = new Nodes::Node(result->line, Nodes::NENode, result, comp());
+            }
+        }
+
+        return result;
+    }
+
+    Nodes::Node *Parser::comp() {
+        Nodes::Node *result = shift();
+
+        while (current().type != Tokens::EOF_ && (current().type == Tokens::LT || current().type == Tokens::GT || current().type == Tokens::LE || current().type == Tokens::GE)) {
+            if (current().type == Tokens::LT) {
+                advance();
+                result = new Nodes::Node(result->line, Nodes::LTNode, result, shift());
+            } else if (current().type == Tokens::GT) {
+                advance();
+                result = new Nodes::Node(result->line, Nodes::GTNode, result, shift());
+            } else if (current().type == Tokens::LE) {
+                advance();
+                result = new Nodes::Node(result->line, Nodes::LENode, result, shift());
+            } else if (current().type == Tokens::GE) {
+                advance();
+                result = new Nodes::Node(result->line, Nodes::GENode, result, shift());
+            }
+        }
+
+        return result;
+    }
+
+
+    Nodes::Node *Parser::shift() {
+        Nodes::Node *result = add();
+
+        while (current().type != Tokens::EOF_ && (current().type == Tokens::LSHIFT || current().type == Tokens::RSHIFT)) {
+            if (current().type == Tokens::LSHIFT) {
+                advance();
+                result = new Nodes::Node(result->line, Nodes::LshiftNode, result, add());
+            } else if (current().type == Tokens::RSHIFT) {
+                advance();
+                result = new Nodes::Node(result->line, Nodes::RshiftNode, result, add());
             }
         }
 

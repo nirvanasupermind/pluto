@@ -53,6 +53,16 @@ namespace Tokens {
             case EE: s += "EE"; break;
             case NE: s += "NE"; break;
             case EQ: s += "EQ"; break;
+            case OR: s += "OR"; break;
+            case AND: s += "AND"; break;
+            case XOR: s += "XOR"; break;
+            case NOT: s += "NOT"; break;
+            case BITOR: s += "OR"; break;
+            case BITAND: s += "AND"; break;
+            case BITXOR: s += "XOR"; break;
+            case BITNOT: s += "NOT"; break;
+            case LSHIFT: s += "LSHIFT"; break;
+            case RSHIFT: s += "LSHIFT"; break;
             case SEMICOLON: s += "SEMICOLON"; break;
             case EOF_: s += "EOF"; break;
         }

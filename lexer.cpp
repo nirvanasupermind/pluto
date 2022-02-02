@@ -69,6 +69,9 @@ namespace Lexer {
                 if (current_char == "=") {
                     advance();
                     tokens.push_back(Tokens::Token(line, Tokens::LE));
+                } else if(current_char == "<") {
+                    advance();
+                    tokens.push_back(Tokens::Token(line, Tokens::LSHIFT));
                 } else
                     tokens.push_back(Tokens::Token(line, Tokens::LT));
             } else if (current_char == ">") {
@@ -76,6 +79,9 @@ namespace Lexer {
                 if (current_char == "=") {
                     advance();
                     tokens.push_back(Tokens::Token(line, Tokens::GE));
+                } else if(current_char == ">") {
+                    advance();
+                    tokens.push_back(Tokens::Token(line, Tokens::RSHIFT));
                 } else
                     tokens.push_back(Tokens::Token(line, Tokens::GT));
             } else if (current_char == "=") {
@@ -92,6 +98,27 @@ namespace Lexer {
                     tokens.push_back(Tokens::Token(line, Tokens::NE));
                 } else
                     tokens.push_back(Tokens::Token(line, Tokens::NOT));
+            } else if (current_char == "|") {
+                advance();
+                if (current_char == "|") {
+                    advance();
+                    tokens.push_back(Tokens::Token(line, Tokens::OR));
+                } else
+                    tokens.push_back(Tokens::Token(line, Tokens::BITOR));
+            } else if (current_char == "&") {
+                advance();
+                if (current_char == "&") {
+                    advance();
+                    tokens.push_back(Tokens::Token(line, Tokens::AND));
+                } else
+                    tokens.push_back(Tokens::Token(line, Tokens::BITAND));
+            } else if (current_char == "^") {
+                advance();
+                if (current_char == "^") {
+                    advance();
+                    tokens.push_back(Tokens::Token(line, Tokens::XOR));
+                } else
+                    tokens.push_back(Tokens::Token(line, Tokens::BITXOR));
             } else if (current_char == ";") {
                 advance();
                 tokens.push_back(Tokens::Token(line, Tokens::SEMICOLON));

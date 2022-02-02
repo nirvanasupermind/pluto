@@ -31,9 +31,17 @@ namespace Parser {
             Nodes::Node *block();
             Nodes::Node *var();
             Nodes::Node *expr();
-            Nodes::Node *ret();
+            // Nodes::Node *ret();
             Nodes::Node *eq();
+            Nodes::Node *ee();
+            Nodes::Node *or_();
+            Nodes::Node *and_();
+            Nodes::Node *xor_();
+            Nodes::Node *bitor_();
+            Nodes::Node *bitand_();
+            Nodes::Node *bitxor_();
             Nodes::Node *comp();
+            Nodes::Node *shift();
             Nodes::Node *add();
             Nodes::Node *term();
             Nodes::Node *exponent();
