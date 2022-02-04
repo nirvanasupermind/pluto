@@ -122,6 +122,9 @@ namespace Lexer {
             } else if (current_char == "~") {
                 advance();
                 tokens.push_back(Tokens::Token(line, Tokens::BITNOT));
+            }  else if (current_char == ",") {
+                advance();
+                tokens.push_back(Tokens::Token(line, Tokens::COMMA));
             } else if (current_char == ";") {
                 advance();
                 tokens.push_back(Tokens::Token(line, Tokens::SEMICOLON));
@@ -190,6 +193,8 @@ namespace Lexer {
             return Tokens::Token(line, Tokens::FOR);
         } else if(symbol_str == "while") {
             return Tokens::Token(line, Tokens::WHILE);
+        } else if(symbol_str == "function") {
+            return Tokens::Token(line, Tokens::FUNCTION);
         } else {
             return Tokens::Token(line, Tokens::SYMBOL, symbol_str);
         }

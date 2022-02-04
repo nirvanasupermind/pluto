@@ -15,6 +15,7 @@ namespace Tokens {
         ELSE,
         FOR,
         WHILE,
+        FUNCTION,
         SYMBOL,
         PLUS,
         MINUS,
@@ -42,6 +43,7 @@ namespace Tokens {
         BITNOT,
         LSHIFT,
         RSHIFT,
+        COMMA,
         SEMICOLON,
         EOF_
     };

@@ -1,23 +1,23 @@
-#ifndef VALUES_H
-#define VALUES_H
+#ifndef ENTITIES_H
+#define ENTITIES_H
 
 #define INSTANCEOF(x, t) dynamic_cast<t*>(x) != nullptr 
 
 #include <string>
 
-namespace Values {
-    class Value {
+namespace Entities {
+    class Entity {
         public:
             virtual std::string to_string() = 0;
             bool truthy();
     };
 
-    class Nil: public Value {
+    class Nil: public Entity {
         public:
             std::string to_string();
     };
 
-    class Byte: public Value {
+    class Byte: public Entity {
         public:
             signed char byte;
             
@@ -26,7 +26,7 @@ namespace Values {
             std::string to_string();
     };
 
-    class Number: public Value {
+    class Number: public Entity {
         public:
             double value;
             
@@ -35,7 +35,7 @@ namespace Values {
             std::string to_string();
     };
 
-    class Bool: public Value {
+    class Bool: public Entity {
         public:
             bool bool_;
             
@@ -45,4 +45,4 @@ namespace Values {
     };
 }
 
-#endif // VALUES_H
+#endif // ENTITIES_H

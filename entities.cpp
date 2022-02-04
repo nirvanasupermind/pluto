@@ -1,9 +1,10 @@
 #include <iostream>
 
-#include "values.h"
+#include "entities.h"
+#include "scopes.h"
 
-namespace Values {
-    bool Value::truthy() {
+namespace Entities {
+    bool Entity::truthy() {
         return !(INSTANCEOF(this, Nil) || (INSTANCEOF(this, Bool) && ((Bool*)this)->bool_ == false));
     }
     std::string Nil::to_string() {

@@ -2,7 +2,7 @@
 #include <map>;
 
 #include "nodes.h"
-#include "values.h"
+#include "entities.h"
 #include "scopes.h"
 
 namespace Scopes {
@@ -14,7 +14,7 @@ namespace Scopes {
         this->parent = parent;
     }
 
-    Values::Value *Scope::get(std::string name) {
+    Entities::Entity *Scope::get(std::string name) {
         if(map.count(name) == 0) {
             if(parent != nullptr)
                 return parent->get(name);
@@ -25,7 +25,7 @@ namespace Scopes {
         return map[name];
     }
 
-    void Scope::set(std::string name, Values::Value *value) {
+    void Scope::set(std::string name, Entities::Entity *value) {
         map[name] = value;
     }
 

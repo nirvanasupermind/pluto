@@ -36,6 +36,7 @@ namespace Tokens {
             case ELSE: s += "ELSE"; break;
             case FOR: s += "FOR"; break;
             case WHILE: s += "WHILE"; break;
+            case FUNCTION: s += "FUNCTION"; break;
             case SYMBOL: s += "SYMBOL"; break;
             case PLUS: s += "PLUS"; break;
             case MINUS: s += "MINUS"; break;
@@ -62,7 +63,8 @@ namespace Tokens {
             case BITXOR: s += "XOR"; break;
             case BITNOT: s += "NOT"; break;
             case LSHIFT: s += "LSHIFT"; break;
-            case RSHIFT: s += "LSHIFT"; break;
+            case RSHIFT: s += "RSHIFT"; break;
+            case COMMA: s += "COMMA"; break;
             case SEMICOLON: s += "SEMICOLON"; break;
             case EOF_: s += "EOF"; break;
         }

@@ -5,19 +5,19 @@
 #include <map>
 
 #include "nodes.h"
-#include "values.h"
+#include "entities.h"
 
 namespace Scopes {
     class Scope {
         public:
             Scope *parent;
-            std::map<std::string, Values::Value *> map;
+            std::map<std::string, Entities::Entity *> map;
 
             Scope();
             Scope(Scope *parent);
 
-            Values::Value *get(std::string name);
-            void set(std::string name, Values::Value *value);
+            Entities::Entity *get(std::string name);
+            void set(std::string name, Entities::Entity *value);
             Scopes::Scope *resolve(std::string name);
     };
 }
