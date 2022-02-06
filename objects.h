@@ -1,18 +1,23 @@
 #ifndef OBJECTS_H
 #define OBJECTS_H
 
-#define INSTANCEOF(x, t) dynamic_cast<t*>(x) != nullptr 
-
+#include <sstream>
 #include <string>
+#include <functional>
 
-#include "entities.h"
+#include "scopes.h"
 
 namespace Entities {
     class Object: public Entity {
         public:
-            Scopes::Scope *parent;
-            Objects::Object();
-            Objects::Object(Object *parent);
+            Scopes::Scope *scope;
+            std::function<std::vector<
+
+            Object();
+            Object(Object *parent);
+
+            std::string to_string();
+
     };
 }
 

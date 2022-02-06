@@ -59,11 +59,18 @@ namespace Nodes {
         this->symbol = symbol;
     }
 
-    Node::Node(int line, NodeType node_type, std::string name, Nodes::Node *val) {
+    Node::Node(int line, NodeType node_type, std::string name, Node *val) {
         this->line = line;
         this->node_type = node_type;
         this->name = name;
         this->val = val;
+    }
+
+    Node::Node(int line, NodeType node_type, std::string name, std::vector<std::string> args, Node *body) {
+        this->line = line;
+        this->name = name;
+        this->args = args;
+        this->body = body;
     }
 
     Node::Node(int line, NodeType node_type, std::vector<Node *> stmts) {

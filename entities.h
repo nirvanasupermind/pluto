@@ -43,6 +43,7 @@ namespace Entities {
 
             std::string to_string();
     };
+
 }
 
 #endif // ENTITIES_H

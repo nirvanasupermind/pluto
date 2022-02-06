@@ -42,6 +42,7 @@ namespace Nodes {
         IfElseNode,
         ForNode,
         WhileNode,
+        FunctionNode,
         FileNode
     };
 
@@ -61,6 +62,9 @@ namespace Nodes {
             Node *node_c = nullptr;
             Node *node_d = nullptr;
             std::vector<Node *> stmts;
+            
+            std::vector<std::string> args;
+            Node *body = nullptr;
 
             Node(int, NodeType, signed char byte);
             Node(int, NodeType, double value);
@@ -71,6 +75,7 @@ namespace Nodes {
             Node(int, NodeType);
             Node(int, NodeType, Node *);
             Node(int, NodeType, std::string, Node *);
+            Node(int, NodeType, std::string, std::vector<std::string>, Node *);
             Node(int, NodeType, std::vector<Node *>);
 
             std::string to_string();

@@ -25,13 +25,13 @@ namespace Parser {
             Nodes::Node *parse();
             Nodes::Node *file(Tokens::TokenType end);
             Nodes::Node *stmt();
-            Nodes::Node *if_();
-            Nodes::Node *for_();
+            Nodes::Node *function();
             Nodes::Node *while_();
+            Nodes::Node *for_();
+            Nodes::Node *if_();
             Nodes::Node *block();
             Nodes::Node *var();
             Nodes::Node *expr();
-            // Nodes::Node *ret();
             Nodes::Node *eq();
             Nodes::Node *ee();
             Nodes::Node *or_();
@@ -46,6 +46,8 @@ namespace Parser {
             Nodes::Node *term();
             Nodes::Node *exponent();
             Nodes::Node *factor();
+
+            std::vector<std::string> arg_list(Tokens::TokenType start, Tokens::TokenType end);
     };
 }
 

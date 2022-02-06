@@ -12,7 +12,7 @@ namespace Interpreter {
     }
 
     Entities::Entity *Interpreter::visit(Nodes::Node *node, Scopes::Scope *scope) {
-        // std::cout << node->node_type << '\n';
+        // std::cout << node->to_string() << '\n';
 
         switch (node->node_type) {
             case Nodes::EmptyNode:

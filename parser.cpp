@@ -77,6 +77,9 @@ namespace Parser {
         if (current().type == Tokens::WHILE)
             return while_();
 
+        if (current().type == Tokens::FUNCTION)
+            return function();
+
         Nodes::Node *result = expr();
 
         if (current().type != Tokens::SEMICOLON)
@@ -86,6 +89,31 @@ namespace Parser {
 
         return result;
     }
+
+    Nodes::Node *Parser::function() {
+        if (current().type != Tokens::FUNCTION) 
+            error();
+
+        int line = current().line;
+
+        advance();
+
+        if (current().type != Tokens::SYMBOL) 
+            error();
+
+        std::string name = current().symbol;
+
+        advance();
+
+        std::vector<std::string> args = arg_list(Tokens::LPAREN, Tokens::RPAREN);
+
+        advance();
+
+        Nodes::Node *body = block();
+
+        return new Nodes::Node(line, Nodes::FunctionNode, name, args, body);
+    }
+
 
     Nodes::Node *Parser::while_() {
         int line = current().line;
@@ -470,5 +498,35 @@ namespace Parser {
         }
 
         error();
+    }
+
+    std::vector<std::string> Parser::arg_list(Tokens::TokenType start, Tokens::TokenType end) {
+        if (current().type != start)
+            error();
+        
+    
+        advance();
+        
+        std::vector<std::string> args;
+
+        if(current().type == Tokens::RPAREN)
+            return args;
+        
+        while(current().type != Tokens::EOF_) {
+            if(current().type != Tokens::SYMBOL)
+                error();
+
+            args.push_back(current().symbol);
+
+            advance();
+
+            if(current().type == end)
+                break;
+
+            if(current().type != Tokens::COMMA)
+                error();
+        }
+
+        return args;
     }
 }
