@@ -11,7 +11,7 @@ namespace Entities {
     class Object: public Entity {
         public:
             Scopes::Scope *scope;
-            std::function<std::vector<
+            // std::function<Args>
 
             Object();
             Object(Object *parent);
