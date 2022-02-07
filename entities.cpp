@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "entities.h"
 #include "scopes.h"
 
