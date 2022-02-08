@@ -89,6 +89,8 @@ namespace Interpreter {
                 return visit_for_node(node, scope);
             case Nodes::WhileNode:
                 return visit_while_node(node, scope);
+            // case Nodes::FunctionNode:
+            //     return visit_function_node(node, scope);
             case Nodes::FileNode:
                 return visit_file_node(node, scope);
             default:
@@ -464,6 +466,16 @@ namespace Interpreter {
         
         return new Entities::Nil();
     }
+
+    //  Entities::Entity *Interpreter::visit_while_node(Nodes::Node *node, Scopes::Scope *scope) {
+    //     while(true) {
+    //         if(!(visit(node->node_a, scope)->truthy()))
+    //             break;
+    //         visit(node->node_b, scope);
+    //     }
+        
+    //     return new Entities::Nil();
+    // }
 
     Entities::Entity *Interpreter::visit_file_node(Nodes::Node *node, Scopes::Scope *scope) {
         if(node->stmts.size() == 0)

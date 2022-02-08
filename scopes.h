@@ -19,6 +19,8 @@ namespace Scopes {
             Entities::Entity *get(std::string name);
             void set(std::string name, Entities::Entity *value);
             Scopes::Scope *resolve(std::string name);
+
+            void add_builtins();
     };
 }
 

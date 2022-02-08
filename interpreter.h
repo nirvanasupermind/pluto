@@ -44,6 +44,7 @@ namespace Interpreter {
             Entities::Entity *visit_if_else_node(Nodes::Node *, Scopes::Scope *);
             Entities::Entity *visit_for_node(Nodes::Node *, Scopes::Scope *);
             Entities::Entity *visit_while_node(Nodes::Node *, Scopes::Scope *);
+            Entities::Entity *visit_function_node(Nodes::Node *, Scopes::Scope *);
             Entities::Entity *visit_file_node(Nodes::Node *, Scopes::Scope *);
     };
 }
