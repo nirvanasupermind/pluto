@@ -21,7 +21,7 @@ int main(int argc, char **argv) {
     global_scope->set("Function", Builtins::Utility::class_Function);
     global_scope->set("printLine", Builtins::Utility::func_printLine);
 
-    if(argc < 1) {
+    if(argc <= 1) {
         std::string filename("stdin");
 
         std::string text;
