@@ -1,8 +1,3 @@
-#include <string>
-#include <map>
-
-#include "nodes.h"
-#include "entities.h"
 #include "scopes.h"
 
 namespace Scopes {

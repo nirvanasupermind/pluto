@@ -11,15 +11,21 @@
 #include "interpreter.cpp"
 #include "entities.cpp"
 #include "scopes.cpp"
+#include "builtins.cpp"
+#include "arguments.cpp"
+#include "objects.cpp"
 
 int main(int argc, char **argv) {
-    if(argc <= 1) {
+    Scopes::Scope *global_scope = new Scopes::Scope();
+    global_scope->set("Object", Builtins::Utility::class_Object);
+    global_scope->set("Function", Builtins::Utility::class_Function);
+    global_scope->set("printLine", Builtins::Utility::func_printLine);
+
+    if(argc < 1) {
         std::string filename("stdin");
 
         std::string text;
         std::vector<Tokens::Token> tokens;
-        Scopes::Scope *global_scope = new Scopes::Scope();
-        
         while (true) {
             try {
                 std::cout << "> " << std::flush;
@@ -60,11 +66,11 @@ int main(int argc, char **argv) {
         strStream << inFile.rdbuf(); //read the file
         std::string text = strStream.str(); //text holds the content of the file
         std::vector<Tokens::Token> tokens;
-        Scopes::Scope *global_scope = new Scopes::Scope();
 
         try {
             Lexer::Lexer lexer(filename, text);
             tokens = lexer.get_tokens();
+
             //Lexer::print_tokens(tokens);
             Parser::Parser parser(filename, tokens);
             Nodes::Node *tree = parser.parse();

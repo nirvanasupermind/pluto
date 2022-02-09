@@ -1,9 +1,12 @@
 #ifndef LEXER_H
 #define LEXER_H
 
+#include <iostream>
 #include <string>
 #include <vector>
 #include <cstddef>
+
+#include "tokens.h"
 
 #define WHITESPACE std::string(" \n\t")
 #define DIGITS std::string("0123456789")

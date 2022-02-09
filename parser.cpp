@@ -1,7 +1,3 @@
-#include <string>
-#include <vector>
-#include <iostream>
-
 #include "parser.h"
 #include "tokens.h"
 #include "nodes.h"
@@ -111,7 +107,9 @@ namespace Parser {
 
         Nodes::Node *body = block();
 
-        return new Nodes::Node(line, Nodes::FunctionNode, name, args, body);
+        Nodes::Node *result = new Nodes::Node(line, Nodes::FunctionNode, name, args, body);
+
+        return result;
     }
 
 

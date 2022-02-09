@@ -1,5 +1,4 @@
 #include "entities.h"
-#include "scopes.h"
 
 namespace Entities {
     bool Entity::truthy() {

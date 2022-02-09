@@ -1,7 +1,1 @@
-var x = 2;
-
-for(var i = 0; i < 100; i = i + 1;) {
-    x = x + 2;   
-}
-
-x;
+Object;

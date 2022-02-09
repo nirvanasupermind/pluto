@@ -6,15 +6,19 @@
 #include <functional>
 
 #include "scopes.h"
+#include "arguments.h"
 
 namespace Entities {
+    using pluto_func = std::function<Entity *(Arguments::Arguments *)>;
+
     class Object: public Entity {
         public:
             Scopes::Scope *scope;
-            // std::function<Args>
+            pluto_func function;
 
             Object();
             Object(Object *parent);
+            Object(Object *parent, pluto_func function);
 
             std::string to_string();
 

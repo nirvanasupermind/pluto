@@ -1,9 +1,3 @@
-#include <string>
-#include <cmath>
-
-#include "nodes.h"
-#include "entities.h"
-#include "scopes.h"
 #include "interpreter.h"
 
 namespace Interpreter {
@@ -12,7 +6,8 @@ namespace Interpreter {
     }
 
     Entities::Entity *Interpreter::visit(Nodes::Node *node, Scopes::Scope *scope) {
-        // std::cout << node->to_string() << '\n';
+        // std::cout << node->node_type << '\n';
+        // std::cout << Nodes::FunctionNode << '\n';
 
         switch (node->node_type) {
             case Nodes::EmptyNode:
@@ -91,6 +86,8 @@ namespace Interpreter {
                 return visit_while_node(node, scope);
             // case Nodes::FunctionNode:
             //     return visit_function_node(node, scope);
+            case Nodes::FunctionNode:
+                return visit_function_node(node, scope);
             case Nodes::FileNode:
                 return visit_file_node(node, scope);
             default:
@@ -100,6 +97,7 @@ namespace Interpreter {
 
     Entities::Entity *Interpreter::visit_symbol_node(Nodes::Node *node, Scopes::Scope *scope) {
         Entities::Entity *result = scope->get(node->symbol);
+         
 
         if(result == nullptr)
             throw std::string(filename + ":" + std::to_string(node->line) + ": cannot find variable '"+node->symbol+"'");
@@ -442,7 +440,7 @@ namespace Interpreter {
     }
 
     Entities::Entity *Interpreter::visit_for_node(Nodes::Node *node, Scopes::Scope *scope) {
-         Scopes::Scope *for_scope = new Scopes::Scope(scope);
+        Scopes::Scope *for_scope = new Scopes::Scope(scope);
 
         visit(node->node_a, for_scope);
 
@@ -461,27 +459,39 @@ namespace Interpreter {
         while(true) {
             if(!(visit(node->node_a, scope)->truthy()))
                 break;
+
             visit(node->node_b, scope);
         }
         
         return new Entities::Nil();
     }
 
-    //  Entities::Entity *Interpreter::visit_while_node(Nodes::Node *node, Scopes::Scope *scope) {
-    //     while(true) {
-    //         if(!(visit(node->node_a, scope)->truthy()))
-    //             break;
-    //         visit(node->node_b, scope);
-    //     }
+    Entities::Entity *Interpreter::visit_function_node(Nodes::Node *node, Scopes::Scope *scope) {
+        Entities::Object *function = new Entities::Object(Builtins::Utility::class_Function, [this, node, scope](Arguments::Arguments *args) {
+            Scopes::Scope *function_scope = new Scopes::Scope(scope);
+
+            for(int i = 0; i < node->args.size(); i++) {
+                function_scope->set(node->args[i], args->get(i));
+            }
+
+            return this->visit(node->body, function_scope);
+        });
+
+        std::string name = node->name;
+
+        if(scope->map.count(name) != 0)
+            throw std::string(filename + ":" + std::to_string(node->line) + ": variable '" + name + "' is already defined");
         
-    //     return new Entities::Nil();
-    // }
+        scope->set(name, function);
+
+        return function;
+    }
 
     Entities::Entity *Interpreter::visit_file_node(Nodes::Node *node, Scopes::Scope *scope) {
         if(node->stmts.size() == 0)
             return new Entities::Nil();
 
-        for(int i = 0; i < node->stmts.size(); i++) {
+        for(int i = 0; i < node->stmts.size() - 1; i++) {
             visit(node->stmts[i], scope);
         }
 

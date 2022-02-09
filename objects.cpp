@@ -1,6 +1,3 @@
-#include <sstream>
-
-#include "entities.h"
 #include "objects.h"
 
 namespace Entities {
@@ -13,6 +10,15 @@ namespace Entities {
             this->scope = new Scopes::Scope();
         else
             this->scope = new Scopes::Scope(parent->scope);
+    }
+    
+    Object::Object(Object *parent, pluto_func function) {
+        if(parent == nullptr)
+            this->scope = new Scopes::Scope();
+        else
+            this->scope = new Scopes::Scope(parent->scope);
+
+        this->function = function;
     }
     
     std::string Object::to_string() {

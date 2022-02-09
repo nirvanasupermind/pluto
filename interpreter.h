@@ -2,10 +2,13 @@
 #define INTERPRETER_H
 
 #include <string>
+#include <cmath>
 
 #include "nodes.h"
-#include "entities.h"
 #include "scopes.h"
+#include "objects.h"
+#include "arguments.h"
+#include "builtins.h"
 
 namespace Interpreter {
     class Interpreter {

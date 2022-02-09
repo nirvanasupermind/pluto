@@ -7,13 +7,13 @@
 #include "entities.h"
 
 namespace Arguments {
-    class Args {
+    class Arguments {
         public:
             std::string filename;
             int line;
             std::vector<Entities::Entity *> args;
 
-            Args(std::string filename, std::vector<Entities::Enity *> args);
+            Arguments(std::string filename, int, std::vector<Entities::Entity *> args);
 
             Entities::Entity *get(int n);
             Entities::Entity *last();

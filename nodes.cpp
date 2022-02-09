@@ -1,6 +1,3 @@
-#include <iostream>
-#include <string>
-
 #include "nodes.h"
 
 namespace Nodes {
@@ -68,6 +65,7 @@ namespace Nodes {
 
     Node::Node(int line, NodeType node_type, std::string name, std::vector<std::string> args, Node *body) {
         this->line = line;
+        this->node_type = node_type;
         this->name = name;
         this->args = args;
         this->body = body;

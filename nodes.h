@@ -1,6 +1,7 @@
 #ifndef NODES_H
 #define NODES_H
 
+#include <iostream>
 #include <string>
 
 namespace Nodes {
