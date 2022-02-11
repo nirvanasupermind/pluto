@@ -8,17 +8,27 @@
 
 namespace pluto
 {
+    const std::string WHITESPACE(" \n\t");
+
     class Lexer
     {
     public:
         std::string filename;
         std::string text;
-        int idx;
-        int ln;
+        int position;
+        int line;
 
         Lexer(std::string filename, std::string text);
 
+        void error();
+        
+        void advance();
+
+        char current_char();
+
         std::vector<Token> generate_tokens();
+
+        Token generate_string();
 
         Token generate_number();
     };

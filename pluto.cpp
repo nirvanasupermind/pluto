@@ -4,19 +4,24 @@
 #include <vector>
 #include <string>
 
-#include "token.cpp"
-#include "lexer.cpp"
+#include "src/token.cpp"
+#include "src/lexer.cpp"
 
 void run(std::string filename, std::string text)
 {
     pluto::Lexer lexer(filename, text);
     std::vector<pluto::Token> tokens = lexer.generate_tokens();
+
+    for(int i = 0; i < tokens.size(); i++) {
+        std::cout << tokens.at(i).to_string() << '\n';
+    }
 }
+
 int main(int argc, char **argv)
 {
-    if (argc != 1)
+    if (argc != 2)
     {
-        std::cout << "Usage: pluto [script]";
+        std::cout << "Usage: pluto [script]" << '\n';
     }
     else
     {
@@ -29,7 +34,14 @@ int main(int argc, char **argv)
         strStream << inFile.rdbuf();
 
         std::string text = strStream.str();
-
-        run(filename, text, true);
+        
+        try
+        {
+            run(filename, text);
+        }
+        catch (std::string e)
+        {   
+            std::cerr << e << '\n';
+        }
     }
 }
