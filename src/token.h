@@ -7,8 +7,9 @@ namespace pluto
 {
     enum TokenType
     {
+        INT,
+        DOUBLE,
         STRING,
-        NUMBER,
         PLUS,
         MINUS,
         MULTIPLY,
@@ -23,12 +24,14 @@ namespace pluto
         public:
             int line;
             TokenType type;
+            int int_val;
+            double double_val;
             std::string string_val;
-            double num_val;
 
             Token(int line, TokenType type);
+            Token(int line, TokenType type, int int_val);
+            Token(int line, TokenType type, double double_val);
             Token(int line, TokenType type, std::string string_val);
-            Token(int line, TokenType type, double num_val);
 
             std::string to_string();
     };

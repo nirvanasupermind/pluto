@@ -28,9 +28,9 @@ namespace pluto
 
         std::vector<Token> generate_tokens();
 
-        Token generate_string();
-
         Token generate_number();
+
+        Token generate_string();
     };
 }
 

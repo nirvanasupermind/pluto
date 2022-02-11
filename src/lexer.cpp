@@ -91,6 +91,35 @@ namespace pluto
         return tokens;
     }
 
+    Token Lexer::generate_number()
+    {
+        std::string val;
+        int dot_count = 0;
+
+        while (position < text.length() && (std::isdigit(current_char()) || current_char() == '.'))
+        {
+            if (current_char() == '.')
+            {
+                if (++dot_count >= 2)
+                {
+                    break;
+                }
+            }
+
+            val = val + current_char();
+            advance();
+        }
+
+        if (dot_count == 0)
+        {
+            return Token(line, INT, std::stoi(val));
+        }
+        else
+        {
+            return Token(line, DOUBLE, std::stod(val));
+        }
+    }
+
     Token Lexer::generate_string()
     {
         std::string val;
@@ -112,27 +141,5 @@ namespace pluto
         advance();
 
         return Token(line, STRING, val);
-    }
-
-    Token Lexer::generate_number()
-    {
-        std::string val;
-        int dot_count = 0;
-
-        while (position < text.length() && (std::isdigit(current_char()) || current_char() == '.'))
-        {
-            if (current_char() == '.')
-            {
-                if (++dot_count >= 2)
-                {
-                    break;
-                }
-            }
-
-            val = val + current_char();
-            advance();
-        }
-
-        return Token(line, NUMBER, std::stod(val));
     }
 }

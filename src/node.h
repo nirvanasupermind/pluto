@@ -13,29 +13,30 @@ namespace pluto
         virtual std::string to_string();
     };
 
-    class StringNode : public Node
+    class IntNode : public Node
     {
     public:
         int line;
 
-        std::string string_val;
+        int int_val;
 
-        StringNode(int line, std::string string_val);
+        IntNode(int line, int int_val);
 
         std::string to_string();
     };
 
-    class NumberNode : public Node
+    class DoubleNode : public Node
     {
     public:
         int line;
 
-        double num_val;
+        double double_val;
 
-        NumberNode(int line, double num_val);
+        DoubleNode(int line, double double_val);
 
         std::string to_string();
     };
+
 }
 
 #endif
