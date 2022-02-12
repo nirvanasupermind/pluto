@@ -1,24 +1,21 @@
 #include <string>
+#include <memory>
 
+#include "token.h"
 #include "node.h"
 
 namespace pluto
 {
-    StringNode::StringNode(int line, std::string string_val)
-    {
-        this->line = line;
-        this->string_val = string_val;
-    }
 
-    std::string StringNode::to_string()
-    {
-        return string_val;
-    }
-
-    IntNode::IntNode(int line, int int_Val)
+    IntNode::IntNode(int line, int int_val)
     {
         this->line = line;
         this->int_val = int_val;
+    }
+
+    NodeKind IntNode::kind()
+    {
+        return Int;
     }
 
     std::string IntNode::to_string()
@@ -32,8 +29,94 @@ namespace pluto
         this->double_val = double_val;
     }
 
+    NodeKind DoubleNode::kind()
+    {
+        return Double;
+    }
+
     std::string DoubleNode::to_string()
     {
         return std::to_string(double_val);
     }
+
+    StringNode::StringNode(int line, std::string string_val)
+    {
+        this->line = line;
+        this->string_val = string_val;
+    }
+
+    NodeKind StringNode::kind()
+    {
+        return String;
+    }
+
+    std::string StringNode::to_string()
+    {
+        return string_val;
+    }
+
+    AddNode::AddNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
+    {
+        this->node_a = std::move(node_a);
+        this->node_b = std::move(node_b);
+    }
+
+    NodeKind AddNode::kind()
+    {
+        return Add;
+    }
+
+    std::string AddNode::to_string()
+    {
+        return "("+node_a.get()->to_string()+" + "+node_b.get()->to_string()+")";
+    }
+
+    SubtractNode::SubtractNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
+    {
+        this->node_a = std::move(node_a);
+        this->node_b = std::move(node_b);
+    }
+
+    NodeKind SubtractNode::kind()
+    {
+        return Subtract;
+    }
+
+    std::string SubtractNode::to_string()
+    {
+        return "("+node_a.get()->to_string()+" - "+node_b.get()->to_string()+")";
+    }
+
+    MultiplyNode::MultiplyNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
+    {
+        this->node_a = std::move(node_a);
+        this->node_b = std::move(node_b);
+    }
+
+    NodeKind MultiplyNode::kind()
+    {
+        return Multiply;
+    }
+
+    std::string MultiplyNode::to_string()
+    {
+        return "("+node_a.get()->to_string()+" * "+node_b.get()->to_string()+")";
+    }    
+
+
+    DivideNode::DivideNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
+    {
+        this->node_a = std::move(node_a);
+        this->node_b = std::move(node_b);
+    }
+
+    NodeKind DivideNode::kind()
+    {
+        return Multiply;
+    }
+
+    std::string DivideNode::to_string()
+    {
+        return "("+node_a.get()->to_string()+" / "+node_b.get()->to_string()+")";
+    }  
 }

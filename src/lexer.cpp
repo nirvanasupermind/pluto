@@ -16,7 +16,7 @@ namespace pluto
 
     void Lexer::error()
     {
-        throw filename + ":" + std::to_string(line) + ": lexical error";
+        throw std::string(filename + ":" + std::to_string(line) + ": lexical error");
     }
 
     void Lexer::advance()

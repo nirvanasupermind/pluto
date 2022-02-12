@@ -6,6 +6,7 @@
 
 #include "src/token.cpp"
 #include "src/lexer.cpp"
+#include "src/node.cpp"
 
 void run(std::string filename, std::string text)
 {

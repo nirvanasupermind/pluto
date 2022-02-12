@@ -21,7 +21,7 @@ namespace pluto
         Lexer(std::string filename, std::string text);
 
         void error();
-        
+
         void advance();
 
         char current_char();
