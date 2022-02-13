@@ -45,7 +45,49 @@ namespace pluto
 
     std::unique_ptr<Node> Parser::expr()
     {
-        return prefix_expr();
+        return additive_expr();
+    }
+
+    std::unique_ptr<Node> Parser::additive_expr()
+    {
+        std::unique_ptr<Node> result = multiplicative_expr();
+
+        while (pos < tokens.size() && (current().type == PLUS || current().type == MINUS))
+        {
+            if (current().type == PLUS)
+            {
+                advance();
+                result = std::unique_ptr<Node>(new AddNode(result.get()->line, std::move(result), multiplicative_expr()));
+            }
+            else if (current().type == MINUS)
+            {
+                advance();
+                result = std::unique_ptr<Node>(new SubtractNode(result.get()->line, std::move(result), multiplicative_expr()));
+            }
+        }
+
+        return result;
+    }
+
+    std::unique_ptr<Node> Parser::multiplicative_expr()
+    {
+        std::unique_ptr<Node> result = prefix_expr();
+
+        while (pos < tokens.size() && (current().type == MULTIPLY || current().type == DIVIDE))
+        {
+            if (current().type == MULTIPLY)
+            {
+                advance();
+                result = std::unique_ptr<Node>(new MultiplyNode(result.get()->line, std::move(result), prefix_expr()));
+            }
+            else if (current().type == DIVIDE)
+            {
+                advance();
+                result = std::unique_ptr<Node>(new MultiplyNode(result.get()->line, std::move(result), prefix_expr()));
+            }
+        }
+
+        return result;
     }
 
     std::unique_ptr<Node> Parser::prefix_expr()
@@ -78,7 +120,20 @@ namespace pluto
 
         Token current_token = current();
 
-        if (current_token.type == INT)
+        if (current_token.type == LPAREN)
+        {
+            advance();
+
+            std::unique_ptr<Node> result = expr();
+
+            if(current().type != RPAREN) {
+                raise_error();
+            }
+
+            advance();
+
+            return result;
+        } else if (current_token.type == INT)
         {
             advance();
             return std::unique_ptr<Node>(new IntNode(current_token.line, current_token.int_val));
@@ -88,7 +143,7 @@ namespace pluto
             advance();
             return std::unique_ptr<Node>(new DoubleNode(current_token.line, current_token.double_val));
         }
-        
+
         raise_error();
     }
 }
