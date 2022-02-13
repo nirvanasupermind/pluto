@@ -1,6 +1,7 @@
 #ifndef PARSER_H
 #define PARSER_H
 
+#include <iostream>
 #include <string>
 #include <memory>
 #include <vector>
@@ -12,22 +13,24 @@ namespace pluto
 {
     class Parser
     {
-    private:
+    public:
+        std::string filename;
         std::vector<Token> tokens;
         std::size_t pos;
-        Token current;
 
-        void raise_error() const;
+        Parser(std::string filename, std::vector<Token> tokens);
+
+        void raise_error();
         void advance();
-
-        std::unique_ptr<Node> additive_expr();
-        std::unique_ptr<Node> multiplicative_expr();
-        std::unique_ptr<Node> basic_expr();
-
-    public:
-        Parser(const std::vector<Token> &tokens);
+        Token current();
 
         std::unique_ptr<Node> parse();
+        std::unique_ptr<Node> expr();
+        // std::unique_ptr<Node> additive_expr();
+        // std::unique_ptr<Node> multiplicative_expr();
+        std::unique_ptr<Node> prefix_expr();
+        std::unique_ptr<Node> postfix_expr();
+        std::unique_ptr<Node> leaf_expr();
     };
 
 }

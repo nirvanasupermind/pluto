@@ -7,15 +7,19 @@
 #include "src/token.cpp"
 #include "src/lexer.cpp"
 #include "src/node.cpp"
+#include "src/parser.cpp"
 
 void run(std::string filename, std::string text)
 {
     pluto::Lexer lexer(filename, text);
     std::vector<pluto::Token> tokens = lexer.generate_tokens();
+    
+    pluto::Parser parser(filename, tokens);
+    std::unique_ptr<pluto::Node> tree = parser.parse();
 
-    for(int i = 0; i < tokens.size(); i++) {
-        std::cout << tokens.at(i).to_string() << '\n';
-    }
+    std::cout << tree.get()->to_string() << '\n';
+
+    
 }
 
 int main(int argc, char **argv)

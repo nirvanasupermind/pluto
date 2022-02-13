@@ -103,7 +103,6 @@ namespace pluto
         return "("+node_a.get()->to_string()+" * "+node_b.get()->to_string()+")";
     }    
 
-
     DivideNode::DivideNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
     {
         this->node_a = std::move(node_a);
@@ -112,11 +111,41 @@ namespace pluto
 
     NodeKind DivideNode::kind()
     {
-        return Multiply;
+        return Divide;
     }
 
     std::string DivideNode::to_string()
     {
         return "("+node_a.get()->to_string()+" / "+node_b.get()->to_string()+")";
-    }  
+    } 
+
+    PlusNode::PlusNode(int line, std::unique_ptr<Node> node)
+    {
+        this->node = std::move(node);
+    }
+
+    NodeKind PlusNode::kind()
+    {
+        return Plus;
+    }
+
+    std::string PlusNode::to_string()
+    {
+        return "(+ "+node.get()->to_string()+")";
+    } 
+
+    MinusNode::MinusNode(int line, std::unique_ptr<Node> node)
+    {
+        this->node = std::move(node);
+    }
+
+    NodeKind MinusNode::kind()
+    {
+        return Minus;
+    }
+
+    std::string MinusNode::to_string()
+    {
+        return "(- "+node.get()->to_string()+")";
+    }     
 }

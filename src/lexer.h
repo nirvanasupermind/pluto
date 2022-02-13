@@ -15,12 +15,12 @@ namespace pluto
     public:
         std::string filename;
         std::string text;
-        int position;
+        std::size_t pos;
         int line;
 
         Lexer(std::string filename, std::string text);
 
-        void error();
+        void raise_error();
 
         void advance();
 

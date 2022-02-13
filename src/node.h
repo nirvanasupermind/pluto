@@ -133,6 +133,34 @@ namespace pluto
 
         std::string to_string();
     };
+
+    class PlusNode : public Node
+    {
+    public:
+        int line;
+
+        std::unique_ptr<Node> node;
+
+        PlusNode(int line, std::unique_ptr<Node> node);
+
+        NodeKind kind();
+
+        std::string to_string();
+    };
+
+    class MinusNode : public Node
+    {
+    public:
+        int line;
+
+        std::unique_ptr<Node> node;
+
+        MinusNode(int line, std::unique_ptr<Node> node);
+
+        NodeKind kind();
+
+        std::string to_string();
+    };
 }
 
 #endif

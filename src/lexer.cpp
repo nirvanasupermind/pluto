@@ -10,18 +10,18 @@ namespace pluto
     {
         this->filename = filename;
         this->text = text;
-        position = 0;
+        pos = 0;
         line = 1;
     }
 
-    void Lexer::error()
+    void Lexer::raise_error()
     {
         throw std::string(filename + ":" + std::to_string(line) + ": lexical error");
     }
 
     void Lexer::advance()
     {
-        position++;
+        pos++;
 
         if (current_char() == '\n')
         {
@@ -31,14 +31,14 @@ namespace pluto
 
     char Lexer::current_char()
     {
-        return text[position];
+        return text[pos];
     }
 
     std::vector<Token> Lexer::generate_tokens()
     {
         std::vector<Token> tokens;
 
-        while (position < text.length())
+        while (pos < text.length())
         {
             if (WHITESPACE.find(current_char()) != std::string::npos)
             {
@@ -84,9 +84,11 @@ namespace pluto
             }
             else
             {
-                error();
+                raise_error();
             }
         }
+
+        tokens.push_back(Token(line, EOF_));
 
         return tokens;
     }
@@ -96,7 +98,7 @@ namespace pluto
         std::string val;
         int dot_count = 0;
 
-        while (position < text.length() && (std::isdigit(current_char()) || current_char() == '.'))
+        while (pos < text.length() && (std::isdigit(current_char()) || current_char() == '.'))
         {
             if (current_char() == '.')
             {
@@ -129,9 +131,9 @@ namespace pluto
 
         while (current_char() != '"')
         {
-            if (position == text.length())
+            if (pos >= text.length())
             {
-                error();
+                raise_error();
             }
 
             val = val + current_char();
