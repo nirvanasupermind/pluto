@@ -15,7 +15,12 @@ namespace pluto
     class Interpreter
     {
     public:
-        Interpreter() = default;
+        std::string filename;
+        
+        Interpreter(std::string filename);
+
+        void raise_error(int line, std::string message);
+        
         std::unique_ptr<Entity> visit(std::unique_ptr<Node> node);
         std::unique_ptr<Entity> visit(Node *node);
         std::unique_ptr<Entity> visit(IntNode *node);
@@ -26,7 +31,6 @@ namespace pluto
         std::unique_ptr<Entity> visit(MultiplyNode *node);
         std::unique_ptr<Entity> visit(DivideNode *node);
         std::unique_ptr<Entity> visit(PlusNode *node);
-        std::unique_ptr<Entity> visit(MinusNode *node);
     };
 }
 

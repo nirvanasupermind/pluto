@@ -56,6 +56,7 @@ namespace pluto
         {
             if (current().type == PLUS)
             {
+                // std::cout << result.get()->to_string() << '\n';
                 advance();
                 result = std::unique_ptr<Node>(new AddNode(result.get()->line, std::move(result), multiplicative_expr()));
             }

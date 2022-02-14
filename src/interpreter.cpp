@@ -10,9 +10,18 @@
 
 namespace pluto
 {
+    Interpreter::Interpreter(std::string filename) {
+        this->filename = filename;
+    }
+    
     std::unique_ptr<Entity> Interpreter::visit(std::unique_ptr<Node> node)
     {
         return visit(node.get());
+    }
+
+    void Interpreter::raise_error(int line, std::string message)
+    {
+        throw std::string(filename + ":" + std::to_string(line) + ": " + message);
     }
 
     std::unique_ptr<Entity> Interpreter::visit(Node *node)
@@ -25,8 +34,9 @@ namespace pluto
             return visit((DoubleNode *)node);
         case STRING_NODE:
             return visit((StringNode *)node);
-        default:
-            throw "invalid node";
+        default: {
+            raise_error(node->line, "invalid node");
+        }
         }
     }
 
