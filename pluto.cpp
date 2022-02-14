@@ -8,6 +8,11 @@
 #include "src/lexer.cpp"
 #include "src/node.cpp"
 #include "src/parser.cpp"
+#include "src/env.cpp"
+#include "src/entity.cpp"
+#include "src/object.cpp"
+#include "src/builtins.cpp"
+#include "src/interpreter.cpp"
 
 void run(std::string filename, std::string text)
 {

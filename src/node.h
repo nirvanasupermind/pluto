@@ -10,15 +10,15 @@ namespace pluto
 {
     enum NodeKind
     {
-        Int,
-        Double,
-        String,
-        Add,
-        Subtract,
-        Multiply,
-        Divide,
-        Plus,
-        Minus
+        INT_NODE,
+        DOUBLE_NODE,
+        STRING_NODE,
+        ADD_NODE,
+        SUBTRACT_NODE,
+        MULTIPLY_NODE,
+        DIVIDE_NODE,
+        PLUS_NODE,
+        MINUS_NODE
     };
 
     class Node
@@ -50,8 +50,8 @@ namespace pluto
     public:
         int line;
 
-        double double_val;
-
+        double double_val;        
+        
         DoubleNode(int line, double double_val);
 
         NodeKind kind();

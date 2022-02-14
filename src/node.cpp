@@ -15,7 +15,7 @@ namespace pluto
 
     NodeKind IntNode::kind()
     {
-        return Int;
+        return INT_NODE;
     }
 
     std::string IntNode::to_string()
@@ -31,7 +31,7 @@ namespace pluto
 
     NodeKind DoubleNode::kind()
     {
-        return Double;
+        return DOUBLE_NODE;
     }
 
     std::string DoubleNode::to_string()
@@ -47,12 +47,12 @@ namespace pluto
 
     NodeKind StringNode::kind()
     {
-        return String;
+        return STRING_NODE;
     }
 
     std::string StringNode::to_string()
     {
-        return string_val;
+        return "\"" + string_val + "\"";
     }
 
     AddNode::AddNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
@@ -63,7 +63,7 @@ namespace pluto
 
     NodeKind AddNode::kind()
     {
-        return Add;
+        return ADD_NODE;
     }
 
     std::string AddNode::to_string()
@@ -79,7 +79,7 @@ namespace pluto
 
     NodeKind SubtractNode::kind()
     {
-        return Subtract;
+        return SUBTRACT_NODE;
     }
 
     std::string SubtractNode::to_string()
@@ -95,7 +95,7 @@ namespace pluto
 
     NodeKind MultiplyNode::kind()
     {
-        return Multiply;
+        return MULTIPLY_NODE;
     }
 
     std::string MultiplyNode::to_string()
@@ -111,7 +111,7 @@ namespace pluto
 
     NodeKind DivideNode::kind()
     {
-        return Divide;
+        return DIVIDE_NODE;
     }
 
     std::string DivideNode::to_string()
@@ -126,7 +126,7 @@ namespace pluto
 
     NodeKind PlusNode::kind()
     {
-        return Plus;
+        return PLUS_NODE;
     }
 
     std::string PlusNode::to_string()
@@ -141,7 +141,7 @@ namespace pluto
 
     NodeKind MinusNode::kind()
     {
-        return Minus;
+        return MINUS_NODE;
     }
 
     std::string MinusNode::to_string()

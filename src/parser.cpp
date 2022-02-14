@@ -143,6 +143,11 @@ namespace pluto
             advance();
             return std::unique_ptr<Node>(new DoubleNode(current_token.line, current_token.double_val));
         }
+        else if (current_token.type == STRING)
+        {
+            advance();
+            return std::unique_ptr<Node>(new StringNode(current_token.line, current_token.string_val));
+        }
 
         raise_error();
     }
