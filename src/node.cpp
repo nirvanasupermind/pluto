@@ -57,6 +57,7 @@ namespace pluto
 
     AddNode::AddNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
     {
+        this->line = line;
         this->node_a = std::move(node_a);
         this->node_b = std::move(node_b);
     }
@@ -73,6 +74,7 @@ namespace pluto
 
     SubtractNode::SubtractNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
     {
+        this->line = line;
         this->node_a = std::move(node_a);
         this->node_b = std::move(node_b);
     }
@@ -89,6 +91,7 @@ namespace pluto
 
     MultiplyNode::MultiplyNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
     {
+        this->line = line;
         this->node_a = std::move(node_a);
         this->node_b = std::move(node_b);
     }
@@ -105,6 +108,7 @@ namespace pluto
 
     DivideNode::DivideNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
     {
+        this->line = line;
         this->node_a = std::move(node_a);
         this->node_b = std::move(node_b);
     }
@@ -117,6 +121,23 @@ namespace pluto
     std::string DivideNode::to_string()
     {
         return "("+node_a.get()->to_string()+" / "+node_b.get()->to_string()+")";
+    } 
+
+    ModNode::ModNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
+    {
+        this->line = line;
+        this->node_a = std::move(node_a);
+        this->node_b = std::move(node_b);
+    }
+
+    NodeKind ModNode::kind()
+    {
+        return MOD_NODE;
+    }
+
+    std::string ModNode::to_string()
+    {
+        return "("+node_a.get()->to_string()+" % "+node_b.get()->to_string()+")";
     } 
 
     PlusNode::PlusNode(int line, std::unique_ptr<Node> node)

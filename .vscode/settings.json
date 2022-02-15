@@ -1,6 +1,6 @@
 {
     "files.associations": {
-        "*.pluto": "rust",
+        "*.pluto": "java",
         "iosfwd": "cpp",
         "__bit_reference": "cpp",
         "__config": "cpp",

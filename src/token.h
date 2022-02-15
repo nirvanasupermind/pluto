@@ -14,6 +14,7 @@ namespace pluto
         MINUS,
         MULTIPLY,
         DIVIDE,
+        MOD,
         LPAREN,
         RPAREN,
         EOF_

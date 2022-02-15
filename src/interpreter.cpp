@@ -1,5 +1,6 @@
 #include <string>
 #include <memory>
+#include <cmath>
 
 #include "node.h"
 #include "env.h"
@@ -10,10 +11,11 @@
 
 namespace pluto
 {
-    Interpreter::Interpreter(std::string filename) {
+    Interpreter::Interpreter(std::string filename)
+    {
         this->filename = filename;
     }
-    
+
     std::unique_ptr<Entity> Interpreter::visit(std::unique_ptr<Node> node)
     {
         return visit(node.get());
@@ -34,7 +36,18 @@ namespace pluto
             return visit((DoubleNode *)node);
         case STRING_NODE:
             return visit((StringNode *)node);
-        default: {
+        case ADD_NODE:
+            return visit((AddNode *)node);
+        case SUBTRACT_NODE:
+            return visit((SubtractNode *)node);
+        case MULTIPLY_NODE:
+            return visit((MultiplyNode *)node);
+        case DIVIDE_NODE:
+            return visit((DivideNode *)node);
+        case MOD_NODE:
+            return visit((ModNode *)node);
+        default:
+        {
             raise_error(node->line, "invalid node");
         }
         }
@@ -53,5 +66,146 @@ namespace pluto
     std::unique_ptr<Entity> Interpreter::visit(StringNode *node)
     {
         return std::unique_ptr<Entity>(new Object(std::move(Builtins::class_string.get()->env), node->string_val));
+    }
+
+    std::unique_ptr<Entity> Interpreter::visit(AddNode *node)
+    {
+        std::unique_ptr<Entity> a = visit(std::move(node->node_a));
+        std::unique_ptr<Entity> b = visit(std::move(node->node_b));
+
+        if (a.get()->kind() == INT_ENTITY && b.get()->kind() == INT_ENTITY)
+        {
+            return std::unique_ptr<Entity>(new Int(((Int *)a.get())->int_val + ((Int *)b.get())->int_val));
+        }
+        else if (a.get()->kind() == INT_ENTITY && b.get()->kind() == DOUBLE_ENTITY)
+        {
+            return std::unique_ptr<Entity>(new Double(((Int *)a.get())->int_val + ((Double *)b.get())->double_val));
+        }
+        else if (a.get()->kind() == DOUBLE_ENTITY && b.get()->kind() == INT_ENTITY)
+        {
+            return std::unique_ptr<Entity>(new Double(((Double *)a.get())->double_val + ((Int *)b.get())->int_val));
+        }
+        else if (a.get()->kind() == DOUBLE_ENTITY && b.get()->kind() == DOUBLE_ENTITY)
+        {
+            return std::unique_ptr<Entity>(new Double(((Double *)a.get())->double_val + ((Double *)b.get())->double_val));
+        }
+        else if (a.get()->kind() == OBJECT_ENTITY && b.get()->kind() == OBJECT_ENTITY &&
+                 ((Object *)a.get())->is_string && ((Object *)b.get())->is_string)
+        {
+            return std::unique_ptr<Entity>(new Object(std::move(Builtins::class_string.get()->env),
+                                                      ((Object *)a.get())->string_val + ((Object *)b.get())->string_val));
+        }
+        else
+        {
+            raise_error(node->line, "invalid operands for binary operator '+'");
+        }
+    }
+
+    std::unique_ptr<Entity> Interpreter::visit(SubtractNode *node)
+    {
+        std::unique_ptr<Entity> a = visit(std::move(node->node_a));
+        std::unique_ptr<Entity> b = visit(std::move(node->node_b));
+
+        if (a.get()->kind() == INT_ENTITY && b.get()->kind() == INT_ENTITY)
+        {
+            return std::unique_ptr<Entity>(new Int(((Int *)a.get())->int_val - ((Int *)b.get())->int_val));
+        }
+        else if (a.get()->kind() == INT_ENTITY && b.get()->kind() == DOUBLE_ENTITY)
+        {
+            return std::unique_ptr<Entity>(new Double(((Int *)a.get())->int_val - ((Double *)b.get())->double_val));
+        }
+        else if (a.get()->kind() == DOUBLE_ENTITY && b.get()->kind() == INT_ENTITY)
+        {
+            return std::unique_ptr<Entity>(new Double(((Double *)a.get())->double_val - ((Int *)b.get())->int_val));
+        }
+        else if (a.get()->kind() == DOUBLE_ENTITY && b.get()->kind() == DOUBLE_ENTITY)
+        {
+            return std::unique_ptr<Entity>(new Double(((Double *)a.get())->double_val - ((Double *)b.get())->double_val));
+        }
+        else
+        {
+            raise_error(node->line, "invalid operands for binary operator '-'");
+        }
+    }
+
+    std::unique_ptr<Entity> Interpreter::visit(MultiplyNode *node)
+    {
+        std::unique_ptr<Entity> a = visit(std::move(node->node_a));
+        std::unique_ptr<Entity> b = visit(std::move(node->node_b));
+
+        if (a.get()->kind() == INT_ENTITY && b.get()->kind() == INT_ENTITY)
+        {
+            return std::unique_ptr<Entity>(new Int(((Int *)a.get())->int_val * ((Int *)b.get())->int_val));
+        }
+        else if (a.get()->kind() == INT_ENTITY && b.get()->kind() == DOUBLE_ENTITY)
+        {
+            return std::unique_ptr<Entity>(new Double(((Int *)a.get())->int_val * ((Double *)b.get())->double_val));
+        }
+        else if (a.get()->kind() == DOUBLE_ENTITY && b.get()->kind() == INT_ENTITY)
+        {
+            return std::unique_ptr<Entity>(new Double(((Double *)a.get())->double_val * ((Int *)b.get())->int_val));
+        }
+        else if (a.get()->kind() == DOUBLE_ENTITY && b.get()->kind() == DOUBLE_ENTITY)
+        {
+            return std::unique_ptr<Entity>(new Double(((Double *)a.get())->double_val * ((Double *)b.get())->double_val));
+        }
+        else
+        {
+            raise_error(node->line, "invalid operands for binary operator '*'");
+        }
+    }
+
+    std::unique_ptr<Entity> Interpreter::visit(DivideNode *node)
+    {
+        std::unique_ptr<Entity> a = visit(std::move(node->node_a));
+        std::unique_ptr<Entity> b = visit(std::move(node->node_b));
+
+        if (a.get()->kind() == INT_ENTITY && b.get()->kind() == INT_ENTITY)
+        {
+            return std::unique_ptr<Entity>(new Int(((Int *)a.get())->int_val / ((Int *)b.get())->int_val));
+        }
+        else if (a.get()->kind() == INT_ENTITY && b.get()->kind() == DOUBLE_ENTITY)
+        {
+            return std::unique_ptr<Entity>(new Double(((Int *)a.get())->int_val / ((Double *)b.get())->double_val));
+        }
+        else if (a.get()->kind() == DOUBLE_ENTITY && b.get()->kind() == INT_ENTITY)
+        {
+            return std::unique_ptr<Entity>(new Double(((Double *)a.get())->double_val / ((Int *)b.get())->int_val));
+        }
+        else if (a.get()->kind() == DOUBLE_ENTITY && b.get()->kind() == DOUBLE_ENTITY)
+        {
+            return std::unique_ptr<Entity>(new Double(((Double *)a.get())->double_val / ((Double *)b.get())->double_val));
+        }
+        else
+        {
+            raise_error(node->line, "invalid operands for binary operator '/'");
+        }
+    }
+
+    std::unique_ptr<Entity> Interpreter::visit(ModNode *node)
+    {
+        std::unique_ptr<Entity> a = visit(std::move(node->node_a));
+        std::unique_ptr<Entity> b = visit(std::move(node->node_b));
+
+        if (a.get()->kind() == INT_ENTITY && b.get()->kind() == INT_ENTITY)
+        {
+            return std::unique_ptr<Entity>(new Int(((Int *)a.get())->int_val % ((Int *)b.get())->int_val));
+        }
+        else if (a.get()->kind() == INT_ENTITY && b.get()->kind() == DOUBLE_ENTITY)
+        {
+            return std::unique_ptr<Entity>(new Double(std::fmod(((Int *)a.get())->int_val, ((Double *)b.get())->double_val)));
+        }
+        else if (a.get()->kind() == DOUBLE_ENTITY && b.get()->kind() == INT_ENTITY)
+        {
+            return std::unique_ptr<Entity>(new Double(std::fmod(((Double *)a.get())->double_val, ((Int *)b.get())->int_val)));
+        }
+        else if (a.get()->kind() == DOUBLE_ENTITY && b.get()->kind() == DOUBLE_ENTITY)
+        {
+            return std::unique_ptr<Entity>(new Double(std::fmod(((Double *)a.get())->double_val, ((Double *)b.get())->double_val)));
+        }
+        else
+        {
+            raise_error(node->line, "invalid operands for binary operator '%'");
+        }
     }
 }

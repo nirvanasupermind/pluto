@@ -14,9 +14,9 @@ namespace pluto
         line = 1;
     }
 
-    void Lexer::raise_error()
+    void Lexer::raise_error(std::string msg)
     {
-        throw std::string(filename + ":" + std::to_string(line) + ": lexical error");
+        throw std::string(filename + ":" + std::to_string(line) + ": " + msg);
     }
 
     void Lexer::advance()
@@ -72,6 +72,11 @@ namespace pluto
                 tokens.push_back(Token(line, DIVIDE));
                 advance();
             }
+            else if (current_char() == '%')
+            {
+                tokens.push_back(Token(line, MOD));
+                advance();
+            }
             else if (current_char() == '(')
             {
                 tokens.push_back(Token(line, LPAREN));
@@ -84,7 +89,8 @@ namespace pluto
             }
             else
             {
-                raise_error();
+                std::string s(1, current_char()); 
+                raise_error("illegal character '"+s+"'");
             }
         }
 
@@ -133,7 +139,7 @@ namespace pluto
         {
             if (pos >= text.length())
             {
-                raise_error();
+                raise_error("unfinished string literal");
             }
 
             val = val + current_char();

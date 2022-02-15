@@ -17,6 +17,7 @@ namespace pluto
         SUBTRACT_NODE,
         MULTIPLY_NODE,
         DIVIDE_NODE,
+        MOD_NODE,
         PLUS_NODE,
         MINUS_NODE
     };
@@ -34,8 +35,6 @@ namespace pluto
     class IntNode : public Node
     {
     public:
-        int line;
-
         int int_val;
 
         IntNode(int line, int int_val);
@@ -48,8 +47,6 @@ namespace pluto
     class DoubleNode : public Node
     {
     public:
-        int line;
-
         double double_val;        
         
         DoubleNode(int line, double double_val);
@@ -62,8 +59,6 @@ namespace pluto
     class StringNode : public Node
     {
     public:
-        int line;
-
         std::string string_val;
 
         StringNode(int line, std::string string_val);
@@ -76,8 +71,6 @@ namespace pluto
     class AddNode : public Node
     {
     public:
-        int line;
-
         std::unique_ptr<Node> node_a;
         std::unique_ptr<Node> node_b;
 
@@ -92,8 +85,6 @@ namespace pluto
     class SubtractNode : public Node
     {
     public:
-        int line;
-
         std::unique_ptr<Node> node_a;
         std::unique_ptr<Node> node_b;
 
@@ -107,8 +98,6 @@ namespace pluto
     class MultiplyNode : public Node
     {
     public:
-        int line;
-
         std::unique_ptr<Node> node_a;
         std::unique_ptr<Node> node_b;
 
@@ -122,8 +111,6 @@ namespace pluto
     class DivideNode : public Node
     {
     public:
-        int line;
-
         std::unique_ptr<Node> node_a;
         std::unique_ptr<Node> node_b;
 
@@ -134,11 +121,22 @@ namespace pluto
         std::string to_string();
     };
 
+    class ModNode : public Node
+    {
+    public:
+        std::unique_ptr<Node> node_a;
+        std::unique_ptr<Node> node_b;
+
+        ModNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b);
+
+        NodeKind kind();
+
+        std::string to_string();
+    };
+
     class PlusNode : public Node
     {
     public:
-        int line;
-
         std::unique_ptr<Node> node;
 
         PlusNode(int line, std::unique_ptr<Node> node);
@@ -151,8 +149,6 @@ namespace pluto
     class MinusNode : public Node
     {
     public:
-        int line;
-
         std::unique_ptr<Node> node;
 
         MinusNode(int line, std::unique_ptr<Node> node);

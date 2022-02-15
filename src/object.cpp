@@ -20,6 +20,7 @@ namespace pluto
     Object::Object(std::unique_ptr<Env> env, std::string string_val)
     {
         this->env = std::move(env);
+        this->string_val = string_val;
         is_string = true;
     }
 

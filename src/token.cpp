@@ -50,6 +50,8 @@ namespace pluto
             return "MULTIPLY";
         case DIVIDE:
             return "DIVIDE";
+        case MOD:
+            return "MOD";
         case LPAREN:
             return "LPAREN";
         case RPAREN:

@@ -18,7 +18,7 @@ namespace pluto
 
     void Parser::raise_error()
     {
-        throw std::string(filename + ":" + std::to_string(current().line) + ": syntax error");
+        throw std::string(filename + ":" + std::to_string(current().line) + ": invalid syntax");
     }
 
     void Parser::advance()
@@ -56,7 +56,6 @@ namespace pluto
         {
             if (current().type == PLUS)
             {
-                // std::cout << result.get()->to_string() << '\n';
                 advance();
                 result = std::unique_ptr<Node>(new AddNode(result.get()->line, std::move(result), multiplicative_expr()));
             }
@@ -74,7 +73,7 @@ namespace pluto
     {
         std::unique_ptr<Node> result = prefix_expr();
 
-        while (pos < tokens.size() && (current().type == MULTIPLY || current().type == DIVIDE))
+        while (pos < tokens.size() && (current().type == MULTIPLY || current().type == DIVIDE || current().type == MOD))
         {
             if (current().type == MULTIPLY)
             {
@@ -84,7 +83,12 @@ namespace pluto
             else if (current().type == DIVIDE)
             {
                 advance();
-                result = std::unique_ptr<Node>(new MultiplyNode(result.get()->line, std::move(result), prefix_expr()));
+                result = std::unique_ptr<Node>(new DivideNode(result.get()->line, std::move(result), prefix_expr()));
+            }
+            else if (current().type == MOD)
+            {
+                advance();
+                result = std::unique_ptr<Node>(new ModNode(result.get()->line, std::move(result), prefix_expr()));
             }
         }
 
@@ -137,7 +141,10 @@ namespace pluto
         } else if (current_token.type == INT)
         {
             advance();
-            return std::unique_ptr<Node>(new IntNode(current_token.line, current_token.int_val));
+
+            std::unique_ptr<Node> result = std::unique_ptr<Node>(new IntNode(current_token.line, current_token.int_val));
+
+            return result;
         }
         else if (current_token.type == DOUBLE)
         {

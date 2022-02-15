@@ -20,7 +20,7 @@ namespace pluto
 
         Lexer(std::string filename, std::string text);
 
-        void raise_error();
+        void raise_error(std::string msg);
 
         void advance();
 
