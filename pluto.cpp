@@ -24,7 +24,6 @@ void run(std::string filename, std::string text)
     
     pluto::Interpreter interpreter(filename);
     std::unique_ptr<pluto::Entity> entity = interpreter.visit(std::move(tree));
-
     
     std::cout << entity->to_string() << '\n';
 }

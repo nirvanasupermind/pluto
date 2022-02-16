@@ -55,6 +55,36 @@ namespace pluto
         return "\"" + string_val + "\"";
     }
 
+    TrueNode::TrueNode(int line)
+    {
+        this->line = line;
+    }
+
+    NodeKind TrueNode::kind()
+    {
+        return TRUE_NODE;
+    }
+
+    std::string TrueNode::to_string()
+    {
+        return "true";
+    } 
+
+    FalseNode::FalseNode(int line)
+    {
+        this->line = line;
+    }
+
+    NodeKind FalseNode::kind()
+    {
+        return FALSE_NODE;
+    }
+
+    std::string FalseNode::to_string()
+    {
+        return "false";
+    } 
+
     AddNode::AddNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
     {
         this->line = line;

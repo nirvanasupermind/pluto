@@ -31,6 +31,9 @@ namespace pluto
         Token generate_number();
 
         Token generate_string();
+        
+        Token generate_name();
+
     };
 }
 

@@ -33,4 +33,22 @@ namespace pluto
     {
         return std::to_string(double_val);
     }
+
+    Bool::Bool(bool bool_val)
+    {
+        this->bool_val = bool_val;
+    }
+
+    EntityKind Bool::kind()
+    {
+        return BOOL_ENTITY;
+    }
+    
+    std::string Bool::to_string()
+    {
+        return (bool_val ? "true": "false");
+    }
+
+    std::unique_ptr<Entity> Bool::TRUE(new Bool(true));
+    std::unique_ptr<Entity> Bool::FALSE(new Bool(false));
 }

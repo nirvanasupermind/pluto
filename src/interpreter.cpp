@@ -34,6 +34,10 @@ namespace pluto
             return visit((IntNode *)node);
         case DOUBLE_NODE:
             return visit((DoubleNode *)node);
+        case TRUE_NODE:
+            return visit((TrueNode *)node);
+        case FALSE_NODE:
+            return visit((FalseNode *)node);
         case STRING_NODE:
             return visit((StringNode *)node);
         case ADD_NODE:
@@ -66,6 +70,17 @@ namespace pluto
     std::unique_ptr<Entity> Interpreter::visit(StringNode *node)
     {
         return std::unique_ptr<Entity>(new Object(std::move(Builtins::class_string.get()->env), node->string_val));
+    }
+
+    std::unique_ptr<Entity> Interpreter::visit(TrueNode *node)
+    {
+        return std::move(Bool::TRUE);
+    }
+
+
+    std::unique_ptr<Entity> Interpreter::visit(FalseNode *node)
+    {
+        return std::move(Bool::FALSE);
     }
 
     std::unique_ptr<Entity> Interpreter::visit(AddNode *node)

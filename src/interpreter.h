@@ -26,6 +26,8 @@ namespace pluto
         std::unique_ptr<Entity> visit(IntNode *node);
         std::unique_ptr<Entity> visit(DoubleNode *node);
         std::unique_ptr<Entity> visit(StringNode *node);
+        std::unique_ptr<Entity> visit(TrueNode *node);
+        std::unique_ptr<Entity> visit(FalseNode *node);
         std::unique_ptr<Entity> visit(AddNode *node);
         std::unique_ptr<Entity> visit(SubtractNode *node);
         std::unique_ptr<Entity> visit(MultiplyNode *node);

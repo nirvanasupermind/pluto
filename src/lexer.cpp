@@ -52,6 +52,10 @@ namespace pluto
             {
                 tokens.push_back(generate_number());
             }
+            else if (std::isalpha(current_char()) || current_char() == '_')
+            {
+                tokens.push_back(generate_name());
+            }
             else if (current_char() == '+')
             {
                 tokens.push_back(Token(line, PLUS));
@@ -100,7 +104,7 @@ namespace pluto
     }
 
     Token Lexer::generate_number()
-    {
+    {        
         std::string val;
         int dot_count = 0;
 
@@ -130,8 +134,9 @@ namespace pluto
 
     Token Lexer::generate_string()
     {
+        int orig_line = line; // Important because strings may be multiline
+
         std::string val;
-        int dot_count = 0;
 
         advance();
 
@@ -148,6 +153,27 @@ namespace pluto
 
         advance();
 
-        return Token(line, STRING, val);
+        return Token(orig_line, STRING, val);
+    }
+
+    Token Lexer::generate_name()
+    {
+        std::string name;
+
+        while (pos < text.length() && (isalnum(current_char()) || current_char() == '_'))
+        {
+            name = name + current_char();
+            advance();
+        }
+
+        advance();
+        
+        if(name == "true") {
+            return Token(line, TRUE);
+        } else if(name == "false") {
+            return Token(line, FALSE); 
+        } else {
+            return Token(line, NAME, name);
+        }
     }
 }

@@ -125,6 +125,8 @@ namespace pluto
 
         Token current_token = current();
 
+        // std::cout << current_token.to_string() << '\n';
+
         if (current_token.type == LPAREN)
         {
             advance();
@@ -155,6 +157,16 @@ namespace pluto
         {
             advance();
             return std::unique_ptr<Node>(new StringNode(current_token.line, current_token.string_val));
+        }
+        else if (current_token.type == TRUE)
+        {
+            advance();
+            return std::unique_ptr<Node>(new TrueNode(current_token.line));
+        }
+        else if (current_token.type == FALSE)
+        {
+            advance();
+            return std::unique_ptr<Node>(new FalseNode(current_token.line));
         }
 
         raise_error();

@@ -25,11 +25,16 @@ namespace pluto
         this->double_val = double_val;
     }
 
-    Token::Token(int line, TokenType type, std::string string_val)
+    Token::Token(int line, TokenType type, std::string string_val, bool is_name)
     {
         this->line = line;
         this->type = type;
-        this->string_val = string_val;
+
+        if(is_name) {
+            this->name = string_val;
+        } else {
+            this->string_val = string_val;
+        }
     }
 
     std::string Token::to_string()
@@ -42,6 +47,12 @@ namespace pluto
             return "DOUBLE:"+std::to_string(double_val);
         case STRING:
             return "STRING:"+string_val;
+        case NAME:
+            return "NAME:"+name;
+        case TRUE:
+            return "TRUE";
+        case FALSE:
+            return "FALSE";
         case PLUS:
             return "PLUS";
         case MINUS:
