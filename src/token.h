@@ -18,6 +18,10 @@ namespace pluto
         MULTIPLY,
         DIVIDE,
         MOD,
+        OR,
+        AND,
+        XOR,
+        NOT,
         LPAREN,
         RPAREN,
         EOF_

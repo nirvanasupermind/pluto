@@ -32,9 +32,13 @@ namespace pluto
         std::unique_ptr<Entity> visit(SubtractNode *node);
         std::unique_ptr<Entity> visit(MultiplyNode *node);
         std::unique_ptr<Entity> visit(DivideNode *node);
+        std::unique_ptr<Entity> visit(OrNode *node);
+        std::unique_ptr<Entity> visit(AndNode *node);
+        std::unique_ptr<Entity> visit(XorNode *node);
         std::unique_ptr<Entity> visit(ModNode *node);
         std::unique_ptr<Entity> visit(PlusNode *node);
         std::unique_ptr<Entity> visit(MinusNode *node);
+        std::unique_ptr<Entity> visit(NotNode *node);
     };
 }
 

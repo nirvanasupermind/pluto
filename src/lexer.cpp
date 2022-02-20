@@ -81,6 +81,34 @@ namespace pluto
                 tokens.push_back(Token(line, MOD));
                 advance();
             }
+            else if (current_char() == '|')
+            {
+                advance();
+                if (current_char() == '|')
+                {
+                    tokens.push_back(Token(line, OR));
+                }
+            }
+            else if (current_char() == '&')
+            {
+                advance();
+                if (current_char() == '&')
+                {
+                    tokens.push_back(Token(line, AND));
+                }
+            }
+            else if (current_char() == '^')
+            {
+                advance();
+                if (current_char() == '&')
+                {
+                    tokens.push_back(Token(line, XOR));
+                }
+            }
+            else if (current_char() == '!')
+            {
+                tokens.push_back(Token(line, NOT));
+            }
             else if (current_char() == '(')
             {
                 tokens.push_back(Token(line, LPAREN));
@@ -93,8 +121,8 @@ namespace pluto
             }
             else
             {
-                std::string s(1, current_char()); 
-                raise_error("illegal character '"+s+"'");
+                std::string s(1, current_char());
+                raise_error("illegal character '" + s + "'");
             }
         }
 
@@ -104,7 +132,7 @@ namespace pluto
     }
 
     Token Lexer::generate_number()
-    {        
+    {
         std::string val;
         int dot_count = 0;
 
@@ -167,12 +195,17 @@ namespace pluto
         }
 
         advance();
-        
-        if(name == "true") {
+
+        if (name == "true")
+        {
             return Token(line, TRUE);
-        } else if(name == "false") {
-            return Token(line, FALSE); 
-        } else {
+        }
+        else if (name == "false")
+        {
+            return Token(line, FALSE);
+        }
+        else
+        {
             return Token(line, NAME, name);
         }
     }

@@ -20,8 +20,12 @@ namespace pluto
         MULTIPLY_NODE,
         DIVIDE_NODE,
         MOD_NODE,
+        OR_NODE,
+        AND_NODE,
+        XOR_NODE,
         PLUS_NODE,
-        MINUS_NODE
+        MINUS_NODE,
+        NOT_NODE
     };
 
     class Node
@@ -156,6 +160,45 @@ namespace pluto
         std::string to_string();
     };
 
+    class OrNode : public Node
+    {
+    public:
+        std::unique_ptr<Node> node_a;
+        std::unique_ptr<Node> node_b;
+
+        OrNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b);
+
+        NodeKind kind();
+
+        std::string to_string();
+    };
+
+    class AndNode : public Node
+    {
+    public:
+        std::unique_ptr<Node> node_a;
+        std::unique_ptr<Node> node_b;
+
+        AndNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b);
+
+        NodeKind kind();
+
+        std::string to_string();
+    };
+
+    class XorNode : public Node
+    {
+    public:
+        std::unique_ptr<Node> node_a;
+        std::unique_ptr<Node> node_b;
+
+        XorNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b);
+
+        NodeKind kind();
+
+        std::string to_string();
+    };
+
     class PlusNode : public Node
     {
     public:
@@ -174,6 +217,18 @@ namespace pluto
         std::unique_ptr<Node> node;
 
         MinusNode(int line, std::unique_ptr<Node> node);
+
+        NodeKind kind();
+
+        std::string to_string();
+    };
+
+    class NotNode : public Node
+    {
+    public:
+        std::unique_ptr<Node> node;
+
+        NotNode(int line, std::unique_ptr<Node> node);
 
         NodeKind kind();
 

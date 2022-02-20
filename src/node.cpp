@@ -170,6 +170,57 @@ namespace pluto
         return "("+node_a.get()->to_string()+" % "+node_b.get()->to_string()+")";
     } 
 
+    OrNode::OrNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
+    {
+        this->line = line;
+        this->node_a = std::move(node_a);
+        this->node_b = std::move(node_b);
+    }
+
+    NodeKind OrNode::kind()
+    {
+        return OR_NODE;
+    }
+
+    std::string OrNode::to_string()
+    {
+        return "("+node_a.get()->to_string()+" || "+node_b.get()->to_string()+")";
+    } 
+
+    AndNode::AndNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
+    {
+        this->line = line;
+        this->node_a = std::move(node_a);
+        this->node_b = std::move(node_b);
+    }
+
+    NodeKind AndNode::kind()
+    {
+        return AND_NODE;
+    }
+
+    std::string AndNode::to_string()
+    {
+        return "("+node_a.get()->to_string()+" && "+node_b.get()->to_string()+")";
+    } 
+
+    XorNode::XorNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
+    {
+        this->line = line;
+        this->node_a = std::move(node_a);
+        this->node_b = std::move(node_b);
+    }
+
+    NodeKind XorNode::kind()
+    {
+        return XOR_NODE;
+    }
+
+    std::string XorNode::to_string()
+    {
+        return "("+node_a.get()->to_string()+" ^^ "+node_b.get()->to_string()+")";
+    } 
+
     PlusNode::PlusNode(int line, std::unique_ptr<Node> node)
     {
         this->node = std::move(node);
@@ -198,5 +249,20 @@ namespace pluto
     std::string MinusNode::to_string()
     {
         return "(- "+node.get()->to_string()+")";
-    }     
+    }   
+    
+    NotNode::NotNode(int line, std::unique_ptr<Node> node)
+    {
+        this->node = std::move(node);
+    }
+
+    NodeKind NotNode::kind()
+    {
+        return NOT_NODE;
+    }
+
+    std::string NotNode::to_string()
+    {
+        return "(! "+node.get()->to_string()+")";
+    }  
 }

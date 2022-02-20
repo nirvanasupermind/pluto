@@ -21,8 +21,11 @@ void run(std::string filename, std::string text)
     
     pluto::Parser parser(filename, tokens);
     std::unique_ptr<pluto::Node> tree = parser.parse();
+
+    std::cout << tree->to_string() << '\n';
     
     pluto::Interpreter interpreter(filename);
+    // final result is stored in entity
     std::unique_ptr<pluto::Entity> entity = interpreter.visit(std::move(tree));
     
     std::cout << entity->to_string() << '\n';

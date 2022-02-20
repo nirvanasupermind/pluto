@@ -30,9 +30,12 @@ namespace pluto
         this->line = line;
         this->type = type;
 
-        if(is_name) {
+        if (is_name)
+        {
             this->name = string_val;
-        } else {
+        }
+        else
+        {
             this->string_val = string_val;
         }
     }
@@ -42,13 +45,13 @@ namespace pluto
         switch (type)
         {
         case INT:
-            return "INT:"+std::to_string(int_val);
+            return "INT:" + std::to_string(int_val);
         case DOUBLE:
-            return "DOUBLE:"+std::to_string(double_val);
+            return "DOUBLE:" + std::to_string(double_val);
         case STRING:
-            return "STRING:"+string_val;
+            return "STRING:" + string_val;
         case NAME:
-            return "NAME:"+name;
+            return "NAME:" + name;
         case TRUE:
             return "TRUE";
         case FALSE:
@@ -63,6 +66,14 @@ namespace pluto
             return "DIVIDE";
         case MOD:
             return "MOD";
+        case OR:
+            return "OR";
+        case AND:
+            return "AND";
+        case XOR:
+            return "XOR";
+        case NOT:
+            return "NOT";
         case LPAREN:
             return "LPAREN";
         case RPAREN:

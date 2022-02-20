@@ -50,6 +50,18 @@ namespace pluto
             return visit((DivideNode *)node);
         case MOD_NODE:
             return visit((ModNode *)node);
+        case OR_NODE:
+            return visit((OrNode *)node);
+        case AND_NODE:
+            return visit((AndNode *)node);
+        case XOR_NODE:
+            return visit((XorNode *)node);
+        case PLUS_NODE:
+            return visit((PlusNode *)node);
+        case MINUS_NODE:
+            return visit((MinusNode *)node);
+        case NOT_NODE:
+            return visit((NotNode *)node);
         default:
         {
             raise_error(node->line, "invalid node");
@@ -74,13 +86,15 @@ namespace pluto
 
     std::unique_ptr<Entity> Interpreter::visit(TrueNode *node)
     {
-        return std::move(Bool::TRUE);
-    }
+        // AddNode(2, 5)
+        // visit(AddNode(2, 5)) returns a pluto wrapper around 7
 
+        return std::unique_ptr<Entity>(new Bool(true));
+    }
 
     std::unique_ptr<Entity> Interpreter::visit(FalseNode *node)
     {
-        return std::move(Bool::FALSE);
+        return std::unique_ptr<Entity>(new Bool(false));
     }
 
     std::unique_ptr<Entity> Interpreter::visit(AddNode *node)
@@ -221,6 +235,102 @@ namespace pluto
         else
         {
             raise_error(node->line, "invalid operands for binary operator '%'");
+        }
+    }
+
+    std::unique_ptr<Entity> Interpreter::visit(OrNode *node)
+    {
+        std::unique_ptr<Entity> a = visit(std::move(node->node_a));
+        std::unique_ptr<Entity> b = visit(std::move(node->node_b));
+
+        if (a.get()->kind() == BOOL_ENTITY && b.get()->kind() == BOOL_ENTITY)
+        {
+            return std::unique_ptr<Entity>(new Bool(((Bool *)a.get())->bool_val || ((Bool *)b.get())->bool_val));
+        }
+        else
+        {
+            raise_error(node->line, "invalid operands for binary operator '||'");
+        }
+    }
+
+    std::unique_ptr<Entity> Interpreter::visit(AndNode *node)
+    {
+        // std::cout << "    std::unique_ptr<Entity> Interpreter::visit(AndNode *node)" << '\n';
+        std::unique_ptr<Entity> a = visit(std::move(node->node_a));
+        std::unique_ptr<Entity> b = visit(std::move(node->node_b));
+
+        if (a.get()->kind() == BOOL_ENTITY && b.get()->kind() == BOOL_ENTITY)
+        {
+            return std::unique_ptr<Entity>(new Bool(((Bool *)a.get())->bool_val && ((Bool *)b.get())->bool_val));
+        }
+        else
+        {
+            raise_error(node->line, "invalid operands for binary operator '&&'");
+        }
+    }
+
+    std::unique_ptr<Entity> Interpreter::visit(XorNode *node)
+    {
+        std::unique_ptr<Entity> a = visit(std::move(node->node_a));
+        std::unique_ptr<Entity> b = visit(std::move(node->node_b));
+
+        if (a.get()->kind() == BOOL_ENTITY && b.get()->kind() == BOOL_ENTITY)
+        {
+            return std::unique_ptr<Entity>(new Bool(((Bool *)a.get())->bool_val != ((Bool *)b.get())->bool_val));
+        }
+        else
+        {
+            raise_error(node->line, "invalid operands for binary operator '^^'");
+        }
+    }
+
+    std::unique_ptr<Entity> Interpreter::visit(PlusNode *node)
+    {
+        std::unique_ptr<Entity> a = visit(std::move(node->node));
+
+        if (a.get()->kind() == INT_ENTITY)
+        {
+            return std::unique_ptr<Entity>(new Int(+(((Int *)a.get())->int_val)));
+        }
+        else if (a.get()->kind() == DOUBLE_ENTITY)
+        {
+            return std::unique_ptr<Entity>(new Double(+(((Double *)a.get())->double_val)));
+        }
+        else
+        {
+            raise_error(node->line, "invalid operands for unary operator '-'");
+        }
+    }
+
+    std::unique_ptr<Entity> Interpreter::visit(MinusNode *node)
+    {
+        std::unique_ptr<Entity> a = visit(std::move(node->node));
+
+        if (a.get()->kind() == INT_ENTITY)
+        {
+            return std::unique_ptr<Entity>(new Int(-(((Int *)a.get())->int_val)));
+        }
+        else if (a.get()->kind() == DOUBLE_ENTITY)
+        {
+            return std::unique_ptr<Entity>(new Double(-(((Double *)a.get())->double_val)));
+        }
+        else
+        {
+            raise_error(node->line, "invalid operands for unary operator '-'");
+        }
+    }
+
+    std::unique_ptr<Entity> Interpreter::visit(NotNode *node)
+    {        
+        std::unique_ptr<Entity> a = visit(std::move(node->node));
+
+        if (a.get()->kind() == BOOL_ENTITY)
+        {
+            return std::unique_ptr<Entity>(new Bool(!(((Bool *)a.get())->bool_val)));
+        }
+        else
+        {
+            raise_error(node->line, "invalid operands for unary operator '-'");
         }
     }
 }

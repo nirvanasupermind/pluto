@@ -45,7 +45,56 @@ namespace pluto
 
     std::unique_ptr<Node> Parser::expr()
     {
-        return additive_expr();
+        return or_expr();
+    }
+
+    std::unique_ptr<Node> Parser::or_expr()
+    {
+        std::unique_ptr<Node> result = and_expr();
+
+
+        while (pos < tokens.size() && (current().type == OR))
+        {
+            if (current().type == OR)
+            {
+                advance();
+                result = std::unique_ptr<Node>(new OrNode(result.get()->line, std::move(result), and_expr()));
+            }
+        }
+
+        return result;
+    }
+    
+    std::unique_ptr<Node> Parser::and_expr()
+    {
+        std::unique_ptr<Node> result = xor_expr();
+
+        while (pos < tokens.size() && (current().type == AND))
+        {
+            if (current().type == AND)
+            {
+                advance();
+                result = std::unique_ptr<Node>(new AndNode(result.get()->line, std::move(result), xor_expr()));
+            }
+        }
+
+        return result;
+    }
+    
+    std::unique_ptr<Node> Parser::xor_expr()
+    {
+        std::unique_ptr<Node> result = additive_expr();
+
+        while (pos < tokens.size() && (current().type == XOR))
+        {
+            if (current().type == XOR)
+            {
+                advance();
+                result = std::unique_ptr<Node>(new XorNode(result.get()->line, std::move(result), additive_expr()));
+            }
+        }
+
+        return result;
     }
 
     std::unique_ptr<Node> Parser::additive_expr()
@@ -109,6 +158,11 @@ namespace pluto
             advance();
             return std::unique_ptr<Node>(new MinusNode(current_token.line, prefix_expr()));
         }
+        else if (current_token.type == NOT)
+        {
+            advance();
+            return std::unique_ptr<Node>(new NotNode(current_token.line, prefix_expr()));
+        }
 
         return postfix_expr();
     }
@@ -133,14 +187,16 @@ namespace pluto
 
             std::unique_ptr<Node> result = expr();
 
-            if(current().type != RPAREN) {
+            if (current().type != RPAREN)
+            {
                 raise_error();
             }
 
             advance();
 
             return result;
-        } else if (current_token.type == INT)
+        }
+        else if (current_token.type == INT)
         {
             advance();
 
