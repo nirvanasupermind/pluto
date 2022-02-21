@@ -7,7 +7,7 @@
 #include "node.h"
 #include "env.h"
 #include "entity.h"
-#include "object.h"
+#include "concept.h"
 #include "builtins.h"
 
 namespace pluto
@@ -28,6 +28,7 @@ namespace pluto
         std::unique_ptr<Entity> visit(StringNode *node);
         std::unique_ptr<Entity> visit(TrueNode *node);
         std::unique_ptr<Entity> visit(FalseNode *node);
+        std::unique_ptr<Entity> visit(NilNode *node);
         std::unique_ptr<Entity> visit(AddNode *node);
         std::unique_ptr<Entity> visit(SubtractNode *node);
         std::unique_ptr<Entity> visit(MultiplyNode *node);
@@ -35,6 +36,9 @@ namespace pluto
         std::unique_ptr<Entity> visit(OrNode *node);
         std::unique_ptr<Entity> visit(AndNode *node);
         std::unique_ptr<Entity> visit(XorNode *node);
+        std::unique_ptr<Entity> visit(BOrNode *node);
+        std::unique_ptr<Entity> visit(BAndNode *node);
+        std::unique_ptr<Entity> visit(BXorNode *node);
         std::unique_ptr<Entity> visit(ModNode *node);
         std::unique_ptr<Entity> visit(PlusNode *node);
         std::unique_ptr<Entity> visit(MinusNode *node);

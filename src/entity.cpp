@@ -49,6 +49,19 @@ namespace pluto
         return (bool_val ? "true": "false");
     }
 
-    std::unique_ptr<Entity> Bool::TRUE(new Bool(true));
-    std::unique_ptr<Entity> Bool::FALSE(new Bool(false));
+
+    Nil::Nil()
+    {
+    }
+
+
+    EntityKind Nil::kind()
+    {
+        return NIL_ENTITY;
+    }
+    
+    std::string Nil::to_string()
+    {
+        return "nil";
+    }
 }

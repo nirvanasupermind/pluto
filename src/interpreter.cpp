@@ -5,7 +5,7 @@
 #include "node.h"
 #include "env.h"
 #include "entity.h"
-#include "object.h"
+#include "concept.h"
 #include "builtins.h"
 #include "interpreter.h"
 
@@ -38,6 +38,8 @@ namespace pluto
             return visit((TrueNode *)node);
         case FALSE_NODE:
             return visit((FalseNode *)node);
+        case NIL_NODE:
+            return visit((NilNode *)node);
         case STRING_NODE:
             return visit((StringNode *)node);
         case ADD_NODE:
@@ -56,6 +58,12 @@ namespace pluto
             return visit((AndNode *)node);
         case XOR_NODE:
             return visit((XorNode *)node);
+        case BOR_NODE:
+            return visit((BOrNode *)node);
+        case BAND_NODE:
+            return visit((BAndNode *)node);
+        case BXOR_NODE:
+            return visit((BXorNode *)node);
         case PLUS_NODE:
             return visit((PlusNode *)node);
         case MINUS_NODE:
@@ -63,9 +71,7 @@ namespace pluto
         case NOT_NODE:
             return visit((NotNode *)node);
         default:
-        {
             raise_error(node->line, "invalid node");
-        }
         }
     }
 
@@ -86,15 +92,17 @@ namespace pluto
 
     std::unique_ptr<Entity> Interpreter::visit(TrueNode *node)
     {
-        // AddNode(2, 5)
-        // visit(AddNode(2, 5)) returns a pluto wrapper around 7
-
         return std::unique_ptr<Entity>(new Bool(true));
     }
 
     std::unique_ptr<Entity> Interpreter::visit(FalseNode *node)
     {
         return std::unique_ptr<Entity>(new Bool(false));
+    }
+
+    std::unique_ptr<Entity> Interpreter::visit(NilNode *node)
+    {
+        return std::unique_ptr<Entity>(new Nil());
     }
 
     std::unique_ptr<Entity> Interpreter::visit(AddNode *node)
@@ -117,12 +125,6 @@ namespace pluto
         else if (a.get()->kind() == DOUBLE_ENTITY && b.get()->kind() == DOUBLE_ENTITY)
         {
             return std::unique_ptr<Entity>(new Double(((Double *)a.get())->double_val + ((Double *)b.get())->double_val));
-        }
-        else if (a.get()->kind() == OBJECT_ENTITY && b.get()->kind() == OBJECT_ENTITY &&
-                 ((Object *)a.get())->is_string && ((Object *)b.get())->is_string)
-        {
-            return std::unique_ptr<Entity>(new Object(std::move(Builtins::class_string.get()->env),
-                                                      ((Object *)a.get())->string_val + ((Object *)b.get())->string_val));
         }
         else
         {
@@ -284,6 +286,51 @@ namespace pluto
         }
     }
 
+    std::unique_ptr<Entity> Interpreter::visit(BOrNode *node)
+    {
+        std::unique_ptr<Entity> a = visit(std::move(node->node_a));
+        std::unique_ptr<Entity> b = visit(std::move(node->node_b));
+
+        if (a.get()->kind() == INT_ENTITY && b.get()->kind() == INT_ENTITY)
+        {
+            return std::unique_ptr<Entity>(new Int(((Int *)a.get())->int_val | ((Int *)b.get())->int_val));
+        }
+        else
+        {
+            raise_error(node->line, "invalid operands for binary operator '|'");
+        }
+    }
+
+    std::unique_ptr<Entity> Interpreter::visit(BAndNode *node)
+    {
+        std::unique_ptr<Entity> a = visit(std::move(node->node_a));
+        std::unique_ptr<Entity> b = visit(std::move(node->node_b));
+
+        if (a.get()->kind() == INT_ENTITY && b.get()->kind() == INT_ENTITY)
+        {
+            return std::unique_ptr<Entity>(new Int(((Int *)a.get())->int_val & ((Int *)b.get())->int_val));
+        }
+        else
+        {
+            raise_error(node->line, "invalid operands for binary operator '&'");
+        }
+    }
+
+    std::unique_ptr<Entity> Interpreter::visit(BXorNode *node)
+    {
+        std::unique_ptr<Entity> a = visit(std::move(node->node_a));
+        std::unique_ptr<Entity> b = visit(std::move(node->node_b));
+
+        if (a.get()->kind() == INT_ENTITY && b.get()->kind() == INT_ENTITY)
+        {
+            return std::unique_ptr<Entity>(new Int(((Int *)a.get())->int_val ^ ((Int *)b.get())->int_val));
+        }
+        else
+        {
+            raise_error(node->line, "invalid operands for binary operator '^'");
+        }
+    }
+    
     std::unique_ptr<Entity> Interpreter::visit(PlusNode *node)
     {
         std::unique_ptr<Entity> a = visit(std::move(node->node));
@@ -321,7 +368,7 @@ namespace pluto
     }
 
     std::unique_ptr<Entity> Interpreter::visit(NotNode *node)
-    {        
+    {
         std::unique_ptr<Entity> a = visit(std::move(node->node));
 
         if (a.get()->kind() == BOOL_ENTITY)

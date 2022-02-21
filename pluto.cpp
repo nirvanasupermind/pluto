@@ -10,7 +10,7 @@
 #include "src/parser.cpp"
 #include "src/env.cpp"
 #include "src/entity.cpp"
-#include "src/object.cpp"
+#include "src/concept.cpp"
 #include "src/builtins.cpp"
 #include "src/interpreter.cpp"
 
@@ -21,8 +21,6 @@ void run(std::string filename, std::string text)
     
     pluto::Parser parser(filename, tokens);
     std::unique_ptr<pluto::Node> tree = parser.parse();
-
-    std::cout << tree->to_string() << '\n';
     
     pluto::Interpreter interpreter(filename);
     // final result is stored in entity

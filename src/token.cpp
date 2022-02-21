@@ -74,10 +74,22 @@ namespace pluto
             return "XOR";
         case NOT:
             return "NOT";
+        case BOR:
+            return "BOR";
+        case BAND:
+            return "BAND";
+        case BXOR:
+            return "BXOR";
+        case BNOT:
+            return "BNOT";
+        case NIL:
+            return "NIL";
         case LPAREN:
             return "LPAREN";
         case RPAREN:
             return "RPAREN";
+        case SEMICOLON:
+            return "SEMICOLON";
         case EOF_:
             return "EOF";
         default:

@@ -83,31 +83,52 @@ namespace pluto
             }
             else if (current_char() == '|')
             {
+                int ln = line;
+
                 advance();
+
                 if (current_char() == '|')
                 {
-                    tokens.push_back(Token(line, OR));
+                    tokens.push_back(Token(ln, OR));
+                } else {
+                    tokens.push_back(Token(ln, BOR));
                 }
             }
             else if (current_char() == '&')
             {
+                int ln = line;
+
                 advance();
+
                 if (current_char() == '&')
                 {
-                    tokens.push_back(Token(line, AND));
+                    tokens.push_back(Token(ln, AND));
+                } else {
+                    tokens.push_back(Token(ln, BAND));
                 }
             }
             else if (current_char() == '^')
             {
+                int ln = line;
+
                 advance();
-                if (current_char() == '&')
+
+                if (current_char() == '^')
                 {
-                    tokens.push_back(Token(line, XOR));
+                    tokens.push_back(Token(ln, XOR));
+                } else {
+                    tokens.push_back(Token(ln, BXOR));
                 }
             }
             else if (current_char() == '!')
             {
                 tokens.push_back(Token(line, NOT));
+                advance();
+            }
+            else if (current_char() == '~')
+            {
+                tokens.push_back(Token(line, BNOT));
+                advance();
             }
             else if (current_char() == '(')
             {
@@ -117,6 +138,11 @@ namespace pluto
             else if (current_char() == ')')
             {
                 tokens.push_back(Token(line, RPAREN));
+                advance();
+            }
+            else if (current_char() == ';')
+            {
+                tokens.push_back(Token(line, SEMICOLON));
                 advance();
             }
             else
@@ -203,6 +229,10 @@ namespace pluto
         else if (name == "false")
         {
             return Token(line, FALSE);
+        }
+        else if (name == "nil")
+        {
+            return Token(line, NIL);
         }
         else
         {

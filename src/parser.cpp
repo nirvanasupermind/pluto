@@ -43,28 +43,73 @@ namespace pluto
         return result;
     }
 
-    std::unique_ptr<Node> Parser::expr()
+    std::unique_ptr<Node> Parser::stmt()
     {
-        return or_expr();
+        std::unique_ptr<Node> result = expr();
+
+        if (current().type != SEMICOLON)
+        {
+            raise_error();
+        }
+
+        advance();
+
+        return result;
     }
 
-    std::unique_ptr<Node> Parser::or_expr()
+    std::unique_ptr<Node> Parser::expr()
     {
-        std::unique_ptr<Node> result = and_expr();
+        return band_expr();
+    }
 
+    std::unique_ptr<Node> Parser::band_expr()
+    {
+        std::unique_ptr<Node> result = bxor_expr();
 
-        while (pos < tokens.size() && (current().type == OR))
+        while (pos < tokens.size() && (current().type == BAND))
         {
-            if (current().type == OR)
+            if (current().type == BAND)
             {
                 advance();
-                result = std::unique_ptr<Node>(new OrNode(result.get()->line, std::move(result), and_expr()));
+                result = std::unique_ptr<Node>(new BAndNode(result.get()->line, std::move(result), band_expr()));
             }
         }
 
         return result;
     }
-    
+
+    std::unique_ptr<Node> Parser::bxor_expr()
+    {
+        std::unique_ptr<Node> result = and_expr();
+
+        while (pos < tokens.size() && (current().type == BXOR))
+        {
+            if (current().type == BXOR)
+            {
+                advance();
+                result = std::unique_ptr<Node>(new BXorNode(result.get()->line, std::move(result), bor_expr()));
+            }
+        }
+
+        return result;
+    }
+
+    std::unique_ptr<Node> Parser::bor_expr()
+    {
+        std::unique_ptr<Node> result = and_expr();
+
+        while (pos < tokens.size() && (current().type == BOR))
+        {
+            if (current().type == BOR)
+            {
+                advance();
+                result = std::unique_ptr<Node>(new BOrNode(result.get()->line, std::move(result), and_expr()));
+            }
+        }
+
+        return result;
+    }
+
     std::unique_ptr<Node> Parser::and_expr()
     {
         std::unique_ptr<Node> result = xor_expr();
@@ -80,17 +125,34 @@ namespace pluto
 
         return result;
     }
-    
+
     std::unique_ptr<Node> Parser::xor_expr()
     {
-        std::unique_ptr<Node> result = additive_expr();
+        std::unique_ptr<Node> result = or_expr();
 
         while (pos < tokens.size() && (current().type == XOR))
         {
             if (current().type == XOR)
             {
                 advance();
-                result = std::unique_ptr<Node>(new XorNode(result.get()->line, std::move(result), additive_expr()));
+                result = std::unique_ptr<Node>(new XorNode(result.get()->line, std::move(result), or_expr()));
+            }
+        }
+
+        return result;
+    }
+
+    std::unique_ptr<Node> Parser::or_expr()
+    {
+        std::unique_ptr<Node> result = additive_expr();
+
+
+        while (pos < tokens.size() && (current().type == OR))
+        {
+            if (current().type == OR)
+            {
+                advance();
+                result = std::unique_ptr<Node>(new OrNode(result.get()->line, std::move(result), additive_expr()));
             }
         }
 
@@ -223,6 +285,11 @@ namespace pluto
         {
             advance();
             return std::unique_ptr<Node>(new FalseNode(current_token.line));
+        }
+        else if (current_token.type == NIL)
+        {
+            advance();
+            return std::unique_ptr<Node>(new NilNode(current_token.line));
         }
 
         raise_error();

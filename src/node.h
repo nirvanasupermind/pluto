@@ -15,6 +15,7 @@ namespace pluto
         STRING_NODE,
         TRUE_NODE,
         FALSE_NODE,
+        NIL_NODE,
         ADD_NODE,
         SUBTRACT_NODE,
         MULTIPLY_NODE,
@@ -23,9 +24,13 @@ namespace pluto
         OR_NODE,
         AND_NODE,
         XOR_NODE,
+        BOR_NODE,
+        BAND_NODE,
+        BXOR_NODE,
         PLUS_NODE,
         MINUS_NODE,
-        NOT_NODE
+        NOT_NODE,
+        BNOT_NODE
     };
 
     class Node
@@ -88,6 +93,16 @@ namespace pluto
     {
     public:
         FalseNode(int line);
+
+        NodeKind kind();
+
+        std::string to_string();
+    };
+
+    class NilNode : public Node
+    {
+    public:
+        NilNode(int line);
 
         NodeKind kind();
 
@@ -199,6 +214,45 @@ namespace pluto
         std::string to_string();
     };
 
+    class BOrNode : public Node
+    {
+    public:
+        std::unique_ptr<Node> node_a;
+        std::unique_ptr<Node> node_b;
+
+        BOrNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b);
+
+        NodeKind kind();
+
+        std::string to_string();
+    };
+
+    class BAndNode : public Node
+    {
+    public:
+        std::unique_ptr<Node> node_a;
+        std::unique_ptr<Node> node_b;
+
+        BAndNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b);
+
+        NodeKind kind();
+
+        std::string to_string();
+    };
+
+    class BXorNode : public Node
+    {
+    public:
+        std::unique_ptr<Node> node_a;
+        std::unique_ptr<Node> node_b;
+
+        BXorNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b);
+
+        NodeKind kind();
+
+        std::string to_string();
+    };
+
     class PlusNode : public Node
     {
     public:
@@ -229,6 +283,18 @@ namespace pluto
         std::unique_ptr<Node> node;
 
         NotNode(int line, std::unique_ptr<Node> node);
+
+        NodeKind kind();
+
+        std::string to_string();
+    };
+
+    class BNotNode : public Node
+    {
+    public:
+        std::unique_ptr<Node> node;
+
+        BNotNode(int line, std::unique_ptr<Node> node);
 
         NodeKind kind();
 

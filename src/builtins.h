@@ -6,15 +6,15 @@
 
 #include "env.h"
 #include "entity.h"
-#include "object.h"
+#include "concept.h"
 
 namespace pluto
 {
     class Builtins
     {
     public:
-        static const std::unique_ptr<Object> class_object;
-        static const std::unique_ptr<Object> class_string;
+        static const std::unique_ptr<Class> class_object;
+        static const std::unique_ptr<Class> class_string;
     };
 }
 

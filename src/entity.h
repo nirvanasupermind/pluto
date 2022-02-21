@@ -10,7 +10,10 @@ namespace pluto
         INT_ENTITY,
         DOUBLE_ENTITY,
         BOOL_ENTITY,
-        OBJECT_ENTITY
+        NIL_ENTITY,
+        OBJECT_ENTITY,
+        CLASS_ENTITY,
+        MODULE_ENTITY
     };
 
     class Entity
@@ -48,12 +51,19 @@ namespace pluto
     class Bool : public Entity
     {
     public:
-        static std::unique_ptr<Entity> TRUE;
-        static std::unique_ptr<Entity> FALSE;
-
         bool bool_val;
 
         Bool(bool bool_val);
+
+        EntityKind kind();
+
+        std::string to_string();
+    };
+
+    class Nil : public Entity
+    {
+    public:
+        Nil();
 
         EntityKind kind();
 

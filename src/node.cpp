@@ -85,6 +85,21 @@ namespace pluto
         return "false";
     } 
 
+    NilNode::NilNode(int line)
+    {
+        this->line = line;
+    }
+
+    NodeKind NilNode::kind()
+    {
+        return NIL_NODE;
+    }
+
+    std::string NilNode::to_string()
+    {
+        return "nil";
+    } 
+
     AddNode::AddNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
     {
         this->line = line;
@@ -221,6 +236,57 @@ namespace pluto
         return "("+node_a.get()->to_string()+" ^^ "+node_b.get()->to_string()+")";
     } 
 
+    BOrNode::BOrNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
+    {
+        this->line = line;
+        this->node_a = std::move(node_a);
+        this->node_b = std::move(node_b);
+    }
+
+    NodeKind BOrNode::kind()
+    {
+        return BOR_NODE;
+    }
+
+    std::string BOrNode::to_string()
+    {
+        return "("+node_a.get()->to_string()+" | "+node_b.get()->to_string()+")";
+    } 
+
+    BAndNode::BAndNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
+    {
+        this->line = line;
+        this->node_a = std::move(node_a);
+        this->node_b = std::move(node_b);
+    }
+
+    NodeKind BAndNode::kind()
+    {
+        return BAND_NODE;
+    }
+
+    std::string BAndNode::to_string()
+    {
+        return "("+node_a.get()->to_string()+" & "+node_b.get()->to_string()+")";
+    } 
+
+    BXorNode::BXorNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
+    {
+        this->line = line;
+        this->node_a = std::move(node_a);
+        this->node_b = std::move(node_b);
+    }
+
+    NodeKind BXorNode::kind()
+    {
+        return BXOR_NODE;
+    }
+
+    std::string BXorNode::to_string()
+    {
+        return "("+node_a.get()->to_string()+" ^ "+node_b.get()->to_string()+")";
+    } 
+
     PlusNode::PlusNode(int line, std::unique_ptr<Node> node)
     {
         this->node = std::move(node);
@@ -264,5 +330,20 @@ namespace pluto
     std::string NotNode::to_string()
     {
         return "(! "+node.get()->to_string()+")";
+    }  
+
+    BNotNode::BNotNode(int line, std::unique_ptr<Node> node)
+    {
+        this->node = std::move(node);
+    }
+
+    NodeKind BNotNode::kind()
+    {
+        return BNOT_NODE;
+    }
+
+    std::string BNotNode::to_string()
+    {
+        return "(~ "+node.get()->to_string()+")";
     }  
 }
