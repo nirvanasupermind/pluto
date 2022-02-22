@@ -56,6 +56,8 @@ namespace pluto
             return "TRUE";
         case FALSE:
             return "FALSE";
+        case NIL:
+            return "NIL";
         case PLUS:
             return "PLUS";
         case MINUS:
@@ -82,8 +84,10 @@ namespace pluto
             return "BXOR";
         case BNOT:
             return "BNOT";
-        case NIL:
-            return "NIL";
+        case LSHIFT:
+            return "LSHIFT";
+        case RSHIFT:
+            return "RSHIFT";
         case LPAREN:
             return "LPAREN";
         case RPAREN:

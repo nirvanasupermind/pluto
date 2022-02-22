@@ -28,12 +28,12 @@ namespace pluto
 
     Token Parser::current()
     {
-        return tokens[pos];
+        return tokens.at(pos);
     }
 
     std::unique_ptr<Node> Parser::parse()
     {
-        std::unique_ptr<Node> result = expr();
+        std::unique_ptr<Node> result = stmt();
 
         if (current().type != EOF_)
         {
@@ -46,7 +46,7 @@ namespace pluto
     std::unique_ptr<Node> Parser::stmt()
     {
         std::unique_ptr<Node> result = expr();
-
+        
         if (current().type != SEMICOLON)
         {
             raise_error();
@@ -225,6 +225,11 @@ namespace pluto
             advance();
             return std::unique_ptr<Node>(new NotNode(current_token.line, prefix_expr()));
         }
+        else if (current_token.type == BNOT)
+        {
+            advance();
+            return std::unique_ptr<Node>(new BNotNode(current_token.line, prefix_expr()));
+        }
 
         return postfix_expr();
     }
@@ -240,9 +245,7 @@ namespace pluto
     {
 
         Token current_token = current();
-
-        // std::cout << current_token.to_string() << '\n';
-
+        
         if (current_token.type == LPAREN)
         {
             advance();

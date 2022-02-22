@@ -27,6 +27,8 @@ namespace pluto
         BAND,
         BXOR,
         BNOT,
+        LSHIFT,
+        RSHIFT,
         SEMICOLON,
         LPAREN,
         RPAREN,

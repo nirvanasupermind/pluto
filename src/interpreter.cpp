@@ -70,6 +70,8 @@ namespace pluto
             return visit((MinusNode *)node);
         case NOT_NODE:
             return visit((NotNode *)node);
+        case BNOT_NODE:
+            return visit((BNotNode *)node);
         default:
             raise_error(node->line, "invalid node");
         }
@@ -377,7 +379,21 @@ namespace pluto
         }
         else
         {
-            raise_error(node->line, "invalid operands for unary operator '-'");
+            raise_error(node->line, "invalid operand for unary operator '!'");
+        }
+    }
+
+    std::unique_ptr<Entity> Interpreter::visit(BNotNode *node)
+    {
+        std::unique_ptr<Entity> a = visit(std::move(node->node));
+
+        if (a.get()->kind() == INT_ENTITY)
+        {
+            return std::unique_ptr<Entity>(new Int(~(((Int *)a.get())->int_val)));
+        }
+        else
+        {
+            raise_error(node->line, "invalid operand for unary operator '~'");
         }
     }
 }

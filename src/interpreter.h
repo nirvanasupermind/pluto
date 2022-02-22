@@ -43,6 +43,7 @@ namespace pluto
         std::unique_ptr<Entity> visit(PlusNode *node);
         std::unique_ptr<Entity> visit(MinusNode *node);
         std::unique_ptr<Entity> visit(NotNode *node);
+        std::unique_ptr<Entity> visit(BNotNode *node);
     };
 }
 

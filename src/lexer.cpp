@@ -130,6 +130,32 @@ namespace pluto
                 tokens.push_back(Token(line, BNOT));
                 advance();
             }
+            else if (current_char() == '<')
+            {
+                int ln = line;
+
+                advance();
+
+                if (current_char() == '<')
+                {
+                    tokens.push_back(Token(ln, LSHIFT));
+                } else {
+                    raise_error("less-than token not yet implemented");
+                }
+            }
+            else if (current_char() == '>')
+            {
+                int ln = line;
+
+                advance();
+
+                if (current_char() == '>')
+                {
+                    tokens.push_back(Token(ln, RSHIFT));
+                } else {
+                    raise_error("greater-than token not yet implemented");
+                }
+            }
             else if (current_char() == '(')
             {
                 tokens.push_back(Token(line, LPAREN));
@@ -219,8 +245,6 @@ namespace pluto
             name = name + current_char();
             advance();
         }
-
-        advance();
 
         if (name == "true")
         {
