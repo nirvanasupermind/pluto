@@ -287,6 +287,40 @@ namespace pluto
         return "("+node_a.get()->to_string()+" ^ "+node_b.get()->to_string()+")";
     } 
 
+    LShiftNode::LShiftNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
+    {
+        this->line = line;
+        this->node_a = std::move(node_a);
+        this->node_b = std::move(node_b);
+    }
+
+    NodeKind LShiftNode::kind()
+    {
+        return LSHIFT_NODE;
+    }
+
+    std::string LShiftNode::to_string()
+    {
+        return "("+node_a.get()->to_string()+" << "+node_b.get()->to_string()+")";
+    } 
+    
+    RShiftNode::RShiftNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
+    {
+        this->line = line;
+        this->node_a = std::move(node_a);
+        this->node_b = std::move(node_b);
+    }
+
+    NodeKind RShiftNode::kind()
+    {
+        return RSHIFT_NODE;
+    }
+
+    std::string RShiftNode::to_string()
+    {
+        return "("+node_a.get()->to_string()+" >> "+node_b.get()->to_string()+")";
+    } 
+
     PlusNode::PlusNode(int line, std::unique_ptr<Node> node)
     {
         this->node = std::move(node);

@@ -144,7 +144,7 @@ namespace pluto
 
     std::unique_ptr<Node> Parser::or_expr()
     {
-        std::unique_ptr<Node> result = additive_expr();
+        std::unique_ptr<Node> result = shift_expr();
 
 
         while (pos < tokens.size() && (current().type == OR))
@@ -152,7 +152,28 @@ namespace pluto
             if (current().type == OR)
             {
                 advance();
-                result = std::unique_ptr<Node>(new OrNode(result.get()->line, std::move(result), additive_expr()));
+                result = std::unique_ptr<Node>(new OrNode(result.get()->line, std::move(result), shift_expr()));
+            }
+        }
+
+        return result;
+    }
+
+    std::unique_ptr<Node> Parser::shift_expr()
+    {
+        std::unique_ptr<Node> result = additive_expr();
+
+        while (pos < tokens.size() && (current().type == LSHIFT || current().type == RSHIFT))
+        {
+            if (current().type == LSHIFT)
+            {
+                advance();
+                result = std::unique_ptr<Node>(new LShiftNode(result.get()->line, std::move(result), additive_expr()));
+            }
+            else if (current().type == RSHIFT)
+            {
+                advance();
+                result = std::unique_ptr<Node>(new RShiftNode(result.get()->line, std::move(result), additive_expr()));
             }
         }
 

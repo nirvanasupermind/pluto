@@ -64,6 +64,10 @@ namespace pluto
             return visit((BAndNode *)node);
         case BXOR_NODE:
             return visit((BXorNode *)node);
+        case LSHIFT_NODE:
+            return visit((LShiftNode *)node);
+        case RSHIFT_NODE:
+            return visit((RShiftNode *)node);
         case PLUS_NODE:
             return visit((PlusNode *)node);
         case MINUS_NODE:
@@ -332,7 +336,37 @@ namespace pluto
             raise_error(node->line, "invalid operands for binary operator '^'");
         }
     }
-    
+
+    std::unique_ptr<Entity> Interpreter::visit(LShiftNode *node)
+    {
+        std::unique_ptr<Entity> a = visit(std::move(node->node_a));
+        std::unique_ptr<Entity> b = visit(std::move(node->node_b));
+
+        if (a.get()->kind() == INT_ENTITY && b.get()->kind() == INT_ENTITY)
+        {
+            return std::unique_ptr<Entity>(new Int(((Int *)a.get())->int_val << ((Int *)b.get())->int_val));
+        }
+        else
+        {
+            raise_error(node->line, "invalid operands for binary operator '<<'");
+        }
+    }
+
+    std::unique_ptr<Entity> Interpreter::visit(RShiftNode *node)
+    {
+        std::unique_ptr<Entity> a = visit(std::move(node->node_a));
+        std::unique_ptr<Entity> b = visit(std::move(node->node_b));
+
+        if (a.get()->kind() == INT_ENTITY && b.get()->kind() == INT_ENTITY)
+        {
+            return std::unique_ptr<Entity>(new Int(((Int *)a.get())->int_val >> ((Int *)b.get())->int_val));
+        }
+        else
+        {
+            raise_error(node->line, "invalid operands for binary operator '>>'");
+        }
+    }
+
     std::unique_ptr<Entity> Interpreter::visit(PlusNode *node)
     {
         std::unique_ptr<Entity> a = visit(std::move(node->node));

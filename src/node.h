@@ -27,6 +27,8 @@ namespace pluto
         BOR_NODE,
         BAND_NODE,
         BXOR_NODE,
+        LSHIFT_NODE,
+        RSHIFT_NODE,
         PLUS_NODE,
         MINUS_NODE,
         NOT_NODE,
@@ -247,6 +249,32 @@ namespace pluto
         std::unique_ptr<Node> node_b;
 
         BXorNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b);
+
+        NodeKind kind();
+
+        std::string to_string();
+    };
+
+    class LShiftNode : public Node
+    {
+    public:
+        std::unique_ptr<Node> node_a;
+        std::unique_ptr<Node> node_b;
+
+        LShiftNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b);
+
+        NodeKind kind();
+
+        std::string to_string();
+    };
+
+    class RShiftNode : public Node
+    {
+    public:
+        std::unique_ptr<Node> node_a;
+        std::unique_ptr<Node> node_b;
+
+        RShiftNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b);
 
         NodeKind kind();
 

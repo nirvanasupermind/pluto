@@ -39,6 +39,8 @@ namespace pluto
         std::unique_ptr<Entity> visit(BOrNode *node);
         std::unique_ptr<Entity> visit(BAndNode *node);
         std::unique_ptr<Entity> visit(BXorNode *node);
+        std::unique_ptr<Entity> visit(LShiftNode *node);
+        std::unique_ptr<Entity> visit(RShiftNode *node);
         std::unique_ptr<Entity> visit(ModNode *node);
         std::unique_ptr<Entity> visit(PlusNode *node);
         std::unique_ptr<Entity> visit(MinusNode *node);

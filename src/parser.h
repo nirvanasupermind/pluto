@@ -33,6 +33,7 @@ namespace pluto
         std::unique_ptr<Node> and_expr();
         std::unique_ptr<Node> xor_expr();
         std::unique_ptr<Node> or_expr();
+        std::unique_ptr<Node> shift_expr();
         std::unique_ptr<Node> additive_expr();
         std::unique_ptr<Node> multiplicative_expr();
         std::unique_ptr<Node> prefix_expr();

@@ -90,6 +90,7 @@ namespace pluto
                 if (current_char() == '|')
                 {
                     tokens.push_back(Token(ln, OR));
+                    advance();
                 } else {
                     tokens.push_back(Token(ln, BOR));
                 }
@@ -103,6 +104,7 @@ namespace pluto
                 if (current_char() == '&')
                 {
                     tokens.push_back(Token(ln, AND));
+                    advance();
                 } else {
                     tokens.push_back(Token(ln, BAND));
                 }
@@ -116,6 +118,7 @@ namespace pluto
                 if (current_char() == '^')
                 {
                     tokens.push_back(Token(ln, XOR));
+                    advance();
                 } else {
                     tokens.push_back(Token(ln, BXOR));
                 }
@@ -139,8 +142,7 @@ namespace pluto
                 if (current_char() == '<')
                 {
                     tokens.push_back(Token(ln, LSHIFT));
-                } else {
-                    raise_error("less-than token not yet implemented");
+                    advance();
                 }
             }
             else if (current_char() == '>')
@@ -152,6 +154,7 @@ namespace pluto
                 if (current_char() == '>')
                 {
                     tokens.push_back(Token(ln, RSHIFT));
+                    advance();
                 } else {
                     raise_error("greater-than token not yet implemented");
                 }
