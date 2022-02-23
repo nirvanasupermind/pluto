@@ -29,6 +29,12 @@ namespace pluto
         BXOR_NODE,
         LSHIFT_NODE,
         RSHIFT_NODE,
+        EE_NODE,
+        NE_NODE,
+        LT_NODE,
+        GT_NODE,
+        LTE_NODE,
+        GTE_NODE,
         PLUS_NODE,
         MINUS_NODE,
         NOT_NODE,
@@ -275,6 +281,58 @@ namespace pluto
         std::unique_ptr<Node> node_b;
 
         RShiftNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b);
+
+        NodeKind kind();
+
+        std::string to_string();
+    };
+
+    class LTNode : public Node
+    {
+    public:
+        std::unique_ptr<Node> node_a;
+        std::unique_ptr<Node> node_b;
+
+        LTNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b);
+
+        NodeKind kind();
+
+        std::string to_string();
+    };
+    
+    class GTNode : public Node
+    {
+    public:
+        std::unique_ptr<Node> node_a;
+        std::unique_ptr<Node> node_b;
+
+        GTNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b);
+
+        NodeKind kind();
+
+        std::string to_string();
+    };
+
+    class LTENode : public Node
+    {
+    public:
+        std::unique_ptr<Node> node_a;
+        std::unique_ptr<Node> node_b;
+
+        LTENode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b);
+
+        NodeKind kind();
+
+        std::string to_string();
+    };
+
+    class GTENode : public Node
+    {
+    public:
+        std::unique_ptr<Node> node_a;
+        std::unique_ptr<Node> node_b;
+
+        GTENode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b);
 
         NodeKind kind();
 

@@ -91,7 +91,9 @@ namespace pluto
                 {
                     tokens.push_back(Token(ln, OR));
                     advance();
-                } else {
+                }
+                else
+                {
                     tokens.push_back(Token(ln, BOR));
                 }
             }
@@ -105,7 +107,9 @@ namespace pluto
                 {
                     tokens.push_back(Token(ln, AND));
                     advance();
-                } else {
+                }
+                else
+                {
                     tokens.push_back(Token(ln, BAND));
                 }
             }
@@ -119,7 +123,9 @@ namespace pluto
                 {
                     tokens.push_back(Token(ln, XOR));
                     advance();
-                } else {
+                }
+                else
+                {
                     tokens.push_back(Token(ln, BXOR));
                 }
             }
@@ -144,6 +150,15 @@ namespace pluto
                     tokens.push_back(Token(ln, LSHIFT));
                     advance();
                 }
+                else if (current_char() == '=')
+                {
+                    tokens.push_back(Token(ln, LTE));
+                    advance();
+                }
+                else
+                {
+                    tokens.push_back(Token(ln, LT));
+                }
             }
             else if (current_char() == '>')
             {
@@ -155,8 +170,31 @@ namespace pluto
                 {
                     tokens.push_back(Token(ln, RSHIFT));
                     advance();
-                } else {
-                    raise_error("greater-than token not yet implemented");
+                }
+                else if (current_char() == '=')
+                {
+                    tokens.push_back(Token(ln, GTE));
+                    advance();
+                }
+                else
+                {
+                    tokens.push_back(Token(ln, GT));
+                }
+            }
+            else if (current_char() == '=')
+            {
+                int ln = line;
+
+                advance();
+
+                if (current_char() == '=')
+                {
+                    tokens.push_back(Token(ln, EE));
+                    advance();
+                }
+                else
+                {
+                    tokens.push_back(Token(ln, EQ));
                 }
             }
             else if (current_char() == '(')

@@ -46,7 +46,7 @@ namespace pluto
     std::unique_ptr<Node> Parser::stmt()
     {
         std::unique_ptr<Node> result = expr();
-        
+
         if (current().type != SEMICOLON)
         {
             raise_error();
@@ -146,7 +146,6 @@ namespace pluto
     {
         std::unique_ptr<Node> result = shift_expr();
 
-
         while (pos < tokens.size() && (current().type == OR))
         {
             if (current().type == OR)
@@ -174,6 +173,37 @@ namespace pluto
             {
                 advance();
                 result = std::unique_ptr<Node>(new RShiftNode(result.get()->line, std::move(result), additive_expr()));
+            }
+        }
+
+        return result;
+    }
+
+    std::unique_ptr<Node> Parser::comp_expr()
+    {
+        std::unique_ptr<Node> result = additive_expr();
+
+        while (pos < tokens.size() && (current().type == LT || current().type == GT || current().type == LTE || current().type == GTE))
+        {
+            if (current().type == LT)
+            {
+                advance();
+                result = std::unique_ptr<Node>(new LTNode(result.get()->line, std::move(result), additive_expr()));
+            }
+            else if (current().type == GT)
+            {
+                advance();
+                result = std::unique_ptr<Node>(new GTNode(result.get()->line, std::move(result), additive_expr()));
+            }
+            else if (current().type == LTE)
+            {
+                advance();
+                result = std::unique_ptr<Node>(new LTENode(result.get()->line, std::move(result), additive_expr()));
+            }
+            else if (current().type == GTE)
+            {
+                advance();
+                result = std::unique_ptr<Node>(new LTENode(result.get()->line, std::move(result), additive_expr()));
             }
         }
 
@@ -266,7 +296,7 @@ namespace pluto
     {
 
         Token current_token = current();
-        
+
         if (current_token.type == LPAREN)
         {
             advance();
