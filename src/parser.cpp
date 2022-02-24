@@ -18,7 +18,7 @@ namespace pluto
 
     void Parser::raise_error()
     {
-        throw std::string(filename + ":" + std::to_string(current().line) + ": invalid syntax");
+        throw std::string(filename + ":" + std::to_string(current().line) + ": invalid syntax (unexpected token '"+current().to_string()+"')");
     }
 
     void Parser::advance()
@@ -71,7 +71,7 @@ namespace pluto
             if (current().type == BAND)
             {
                 advance();
-                result = std::unique_ptr<Node>(new BAndNode(result.get()->line, std::move(result), band_expr()));
+                result = std::unique_ptr<Node>(new BAndNode(result->line, std::move(result), band_expr()));
             }
         }
 
@@ -87,7 +87,7 @@ namespace pluto
             if (current().type == BXOR)
             {
                 advance();
-                result = std::unique_ptr<Node>(new BXorNode(result.get()->line, std::move(result), bor_expr()));
+                result = std::unique_ptr<Node>(new BXorNode(result->line, std::move(result), bor_expr()));
             }
         }
 
@@ -103,7 +103,7 @@ namespace pluto
             if (current().type == BOR)
             {
                 advance();
-                result = std::unique_ptr<Node>(new BOrNode(result.get()->line, std::move(result), and_expr()));
+                result = std::unique_ptr<Node>(new BOrNode(result->line, std::move(result), and_expr()));
             }
         }
 
@@ -119,7 +119,7 @@ namespace pluto
             if (current().type == AND)
             {
                 advance();
-                result = std::unique_ptr<Node>(new AndNode(result.get()->line, std::move(result), xor_expr()));
+                result = std::unique_ptr<Node>(new AndNode(result->line, std::move(result), xor_expr()));
             }
         }
 
@@ -135,7 +135,7 @@ namespace pluto
             if (current().type == XOR)
             {
                 advance();
-                result = std::unique_ptr<Node>(new XorNode(result.get()->line, std::move(result), or_expr()));
+                result = std::unique_ptr<Node>(new XorNode(result->line, std::move(result), or_expr()));
             }
         }
 
@@ -151,7 +151,7 @@ namespace pluto
             if (current().type == OR)
             {
                 advance();
-                result = std::unique_ptr<Node>(new OrNode(result.get()->line, std::move(result), shift_expr()));
+                result = std::unique_ptr<Node>(new OrNode(result->line, std::move(result), shift_expr()));
             }
         }
 
@@ -160,19 +160,40 @@ namespace pluto
 
     std::unique_ptr<Node> Parser::shift_expr()
     {
-        std::unique_ptr<Node> result = additive_expr();
+        std::unique_ptr<Node> result = equality_expr();
 
         while (pos < tokens.size() && (current().type == LSHIFT || current().type == RSHIFT))
         {
             if (current().type == LSHIFT)
             {
                 advance();
-                result = std::unique_ptr<Node>(new LShiftNode(result.get()->line, std::move(result), additive_expr()));
+                result = std::unique_ptr<Node>(new LShiftNode(result->line, std::move(result), equality_expr()));
             }
             else if (current().type == RSHIFT)
             {
                 advance();
-                result = std::unique_ptr<Node>(new RShiftNode(result.get()->line, std::move(result), additive_expr()));
+                result = std::unique_ptr<Node>(new RShiftNode(result->line, std::move(result), equality_expr()));
+            }
+        }
+
+        return result;
+    }
+
+    std::unique_ptr<Node> Parser::equality_expr()
+    {
+        std::unique_ptr<Node> result = comp_expr();
+
+        while (pos < tokens.size() && (current().type == EE || current().type == NE))
+        {
+            if (current().type == EE)
+            {
+                advance();
+                result = std::unique_ptr<Node>(new EENode(result->line, std::move(result), comp_expr()));
+            }
+            else if (current().type == NE)
+            {
+                advance();
+                result = std::unique_ptr<Node>(new NENode(result->line, std::move(result), comp_expr()));
             }
         }
 
@@ -188,22 +209,22 @@ namespace pluto
             if (current().type == LT)
             {
                 advance();
-                result = std::unique_ptr<Node>(new LTNode(result.get()->line, std::move(result), additive_expr()));
+                result = std::unique_ptr<Node>(new LTNode(result->line, std::move(result), additive_expr()));
             }
             else if (current().type == GT)
             {
                 advance();
-                result = std::unique_ptr<Node>(new GTNode(result.get()->line, std::move(result), additive_expr()));
+                result = std::unique_ptr<Node>(new GTNode(result->line, std::move(result), additive_expr()));
             }
             else if (current().type == LTE)
             {
                 advance();
-                result = std::unique_ptr<Node>(new LTENode(result.get()->line, std::move(result), additive_expr()));
+                result = std::unique_ptr<Node>(new LTENode(result->line, std::move(result), additive_expr()));
             }
             else if (current().type == GTE)
             {
                 advance();
-                result = std::unique_ptr<Node>(new LTENode(result.get()->line, std::move(result), additive_expr()));
+                result = std::unique_ptr<Node>(new LTENode(result->line, std::move(result), additive_expr()));
             }
         }
 
@@ -219,12 +240,12 @@ namespace pluto
             if (current().type == PLUS)
             {
                 advance();
-                result = std::unique_ptr<Node>(new AddNode(result.get()->line, std::move(result), multiplicative_expr()));
+                result = std::unique_ptr<Node>(new AddNode(result->line, std::move(result), multiplicative_expr()));
             }
             else if (current().type == MINUS)
             {
                 advance();
-                result = std::unique_ptr<Node>(new SubtractNode(result.get()->line, std::move(result), multiplicative_expr()));
+                result = std::unique_ptr<Node>(new SubtractNode(result->line, std::move(result), multiplicative_expr()));
             }
         }
 
@@ -240,17 +261,17 @@ namespace pluto
             if (current().type == MULTIPLY)
             {
                 advance();
-                result = std::unique_ptr<Node>(new MultiplyNode(result.get()->line, std::move(result), prefix_expr()));
+                result = std::unique_ptr<Node>(new MultiplyNode(result->line, std::move(result), prefix_expr()));
             }
             else if (current().type == DIVIDE)
             {
                 advance();
-                result = std::unique_ptr<Node>(new DivideNode(result.get()->line, std::move(result), prefix_expr()));
+                result = std::unique_ptr<Node>(new DivideNode(result->line, std::move(result), prefix_expr()));
             }
             else if (current().type == MOD)
             {
                 advance();
-                result = std::unique_ptr<Node>(new ModNode(result.get()->line, std::move(result), prefix_expr()));
+                result = std::unique_ptr<Node>(new ModNode(result->line, std::move(result), prefix_expr()));
             }
         }
 

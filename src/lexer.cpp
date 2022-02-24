@@ -131,8 +131,19 @@ namespace pluto
             }
             else if (current_char() == '!')
             {
-                tokens.push_back(Token(line, NOT));
+                 int ln = line;
+
                 advance();
+
+                if (current_char() == '=')
+                {
+                    tokens.push_back(Token(ln, NE));
+                    advance();
+                }
+                else
+                {
+                    tokens.push_back(Token(ln, NOT));
+                }
             }
             else if (current_char() == '~')
             {

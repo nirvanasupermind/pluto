@@ -1,29 +1,37 @@
-namespace Pluto {
-
+module Pluto {
     class Object {
         func constructor();
         func clone();
+        func hashCode();
     }
 
     class Bool {
         static const TRUE = Bool(true);
         static const FALSE = Bool(false);
         func constructor(val);
+        func equals(other);
+        func hashCode();
         func toString();
     }
 
     class Int {
         func constructor(val);
+        func equals(other);
         func intVal();
         func doubleVal();
+        func hashCode();
         func toString();
         static func parse(s);
     }
 
     class Double {
+        static const INF = 1.0 / 0.0;
+        static const NAN = 0.0 / 0.0;
         func constructor(val);
+        func equals(other);
         func intVal();
         func doubleVal();
+        func hashCode();
         func toString();
         static func toString(s);
         static func parse(s);
@@ -39,23 +47,31 @@ namespace Pluto {
         static func ceil(a);
         static func cos(a);
         static func floor(a);
+        static func log(a);
+        static func exp(a);
         static func max(a, b);
         static func min(a, b);
         static func rand();
         static func round(a);
         static func sin(a);
+        static func sqrt(a);
         static func tan(a);
     }
 
     class String {
         func constructor();
-        func upper();
-        func lower();
-        func startsWith(sub);
-        func endsWith(sub);
-        func trim();
+        func concat(other);
+        func contains(other);
+        func charAt(index);
+        func endsWith(suffix);
+        func equals(other);
+        func indexOf(search);
+        func length();
+        func repeat(amount);
         func replace(search, replacement);
-        func equals(val);
+        func split(separator);
+        func startsWith(prefix);
+        func hashCode();
         func toString();
     }
 
@@ -63,7 +79,6 @@ namespace Pluto {
         func constructor();
         func add(element);
         func clear();
-        func forEach(action);
         func get(index);
         func remove(index);
         func set(index, element);
@@ -71,9 +86,12 @@ namespace Pluto {
         func toString();
     }
 
-    
+    class Func {
+        func constructor();  
+    }
+
     class System {
-        static func exit(code);
+        static func clock();
         static func read();        
         static func write(entity);
         static func writeln(entity);

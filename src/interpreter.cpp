@@ -68,6 +68,16 @@ namespace pluto
             return visit((LShiftNode *)node);
         case RSHIFT_NODE:
             return visit((RShiftNode *)node);
+        case EE_NODE:
+            return visit((EENode *)node);
+        case LT_NODE:
+            return visit((LTNode *)node);
+        case GT_NODE:
+            return visit((GTNode *)node);
+        case LTE_NODE:
+            return visit((LTENode *)node);
+        case GTE_NODE:
+            return visit((GTENode *)node);
         case PLUS_NODE:
             return visit((PlusNode *)node);
         case MINUS_NODE:
@@ -80,7 +90,7 @@ namespace pluto
             raise_error(node->line, "invalid node");
         }
     }
-
+    
     std::unique_ptr<Entity> Interpreter::visit(IntNode *node)
     {
         return std::unique_ptr<Entity>(new Int(node->int_val));
@@ -93,7 +103,7 @@ namespace pluto
 
     std::unique_ptr<Entity> Interpreter::visit(StringNode *node)
     {
-        return std::unique_ptr<Entity>(new Object(std::move(Builtins::class_string.get()->env), node->string_val));
+        return std::unique_ptr<Entity>(new Object(std::move(Builtins::class_string->env), node->string_val));
     }
 
     std::unique_ptr<Entity> Interpreter::visit(TrueNode *node)
@@ -116,19 +126,19 @@ namespace pluto
         std::unique_ptr<Entity> a = visit(std::move(node->node_a));
         std::unique_ptr<Entity> b = visit(std::move(node->node_b));
 
-        if (a.get()->kind() == INT_ENTITY && b.get()->kind() == INT_ENTITY)
+        if (a->kind() == INT_ENTITY && b->kind() == INT_ENTITY)
         {
             return std::unique_ptr<Entity>(new Int(((Int *)a.get())->int_val + ((Int *)b.get())->int_val));
         }
-        else if (a.get()->kind() == INT_ENTITY && b.get()->kind() == DOUBLE_ENTITY)
+        else if (a->kind() == INT_ENTITY && b->kind() == DOUBLE_ENTITY)
         {
             return std::unique_ptr<Entity>(new Double(((Int *)a.get())->int_val + ((Double *)b.get())->double_val));
         }
-        else if (a.get()->kind() == DOUBLE_ENTITY && b.get()->kind() == INT_ENTITY)
+        else if (a->kind() == DOUBLE_ENTITY && b->kind() == INT_ENTITY)
         {
             return std::unique_ptr<Entity>(new Double(((Double *)a.get())->double_val + ((Int *)b.get())->int_val));
         }
-        else if (a.get()->kind() == DOUBLE_ENTITY && b.get()->kind() == DOUBLE_ENTITY)
+        else if (a->kind() == DOUBLE_ENTITY && b->kind() == DOUBLE_ENTITY)
         {
             return std::unique_ptr<Entity>(new Double(((Double *)a.get())->double_val + ((Double *)b.get())->double_val));
         }
@@ -143,19 +153,19 @@ namespace pluto
         std::unique_ptr<Entity> a = visit(std::move(node->node_a));
         std::unique_ptr<Entity> b = visit(std::move(node->node_b));
 
-        if (a.get()->kind() == INT_ENTITY && b.get()->kind() == INT_ENTITY)
+        if (a->kind() == INT_ENTITY && b->kind() == INT_ENTITY)
         {
             return std::unique_ptr<Entity>(new Int(((Int *)a.get())->int_val - ((Int *)b.get())->int_val));
         }
-        else if (a.get()->kind() == INT_ENTITY && b.get()->kind() == DOUBLE_ENTITY)
+        else if (a->kind() == INT_ENTITY && b->kind() == DOUBLE_ENTITY)
         {
             return std::unique_ptr<Entity>(new Double(((Int *)a.get())->int_val - ((Double *)b.get())->double_val));
         }
-        else if (a.get()->kind() == DOUBLE_ENTITY && b.get()->kind() == INT_ENTITY)
+        else if (a->kind() == DOUBLE_ENTITY && b->kind() == INT_ENTITY)
         {
             return std::unique_ptr<Entity>(new Double(((Double *)a.get())->double_val - ((Int *)b.get())->int_val));
         }
-        else if (a.get()->kind() == DOUBLE_ENTITY && b.get()->kind() == DOUBLE_ENTITY)
+        else if (a->kind() == DOUBLE_ENTITY && b->kind() == DOUBLE_ENTITY)
         {
             return std::unique_ptr<Entity>(new Double(((Double *)a.get())->double_val - ((Double *)b.get())->double_val));
         }
@@ -170,19 +180,19 @@ namespace pluto
         std::unique_ptr<Entity> a = visit(std::move(node->node_a));
         std::unique_ptr<Entity> b = visit(std::move(node->node_b));
 
-        if (a.get()->kind() == INT_ENTITY && b.get()->kind() == INT_ENTITY)
+        if (a->kind() == INT_ENTITY && b->kind() == INT_ENTITY)
         {
             return std::unique_ptr<Entity>(new Int(((Int *)a.get())->int_val * ((Int *)b.get())->int_val));
         }
-        else if (a.get()->kind() == INT_ENTITY && b.get()->kind() == DOUBLE_ENTITY)
+        else if (a->kind() == INT_ENTITY && b->kind() == DOUBLE_ENTITY)
         {
             return std::unique_ptr<Entity>(new Double(((Int *)a.get())->int_val * ((Double *)b.get())->double_val));
         }
-        else if (a.get()->kind() == DOUBLE_ENTITY && b.get()->kind() == INT_ENTITY)
+        else if (a->kind() == DOUBLE_ENTITY && b->kind() == INT_ENTITY)
         {
             return std::unique_ptr<Entity>(new Double(((Double *)a.get())->double_val * ((Int *)b.get())->int_val));
         }
-        else if (a.get()->kind() == DOUBLE_ENTITY && b.get()->kind() == DOUBLE_ENTITY)
+        else if (a->kind() == DOUBLE_ENTITY && b->kind() == DOUBLE_ENTITY)
         {
             return std::unique_ptr<Entity>(new Double(((Double *)a.get())->double_val * ((Double *)b.get())->double_val));
         }
@@ -197,19 +207,19 @@ namespace pluto
         std::unique_ptr<Entity> a = visit(std::move(node->node_a));
         std::unique_ptr<Entity> b = visit(std::move(node->node_b));
 
-        if (a.get()->kind() == INT_ENTITY && b.get()->kind() == INT_ENTITY)
+        if (a->kind() == INT_ENTITY && b->kind() == INT_ENTITY)
         {
             return std::unique_ptr<Entity>(new Int(((Int *)a.get())->int_val / ((Int *)b.get())->int_val));
         }
-        else if (a.get()->kind() == INT_ENTITY && b.get()->kind() == DOUBLE_ENTITY)
+        else if (a->kind() == INT_ENTITY && b->kind() == DOUBLE_ENTITY)
         {
             return std::unique_ptr<Entity>(new Double(((Int *)a.get())->int_val / ((Double *)b.get())->double_val));
         }
-        else if (a.get()->kind() == DOUBLE_ENTITY && b.get()->kind() == INT_ENTITY)
+        else if (a->kind() == DOUBLE_ENTITY && b->kind() == INT_ENTITY)
         {
             return std::unique_ptr<Entity>(new Double(((Double *)a.get())->double_val / ((Int *)b.get())->int_val));
         }
-        else if (a.get()->kind() == DOUBLE_ENTITY && b.get()->kind() == DOUBLE_ENTITY)
+        else if (a->kind() == DOUBLE_ENTITY && b->kind() == DOUBLE_ENTITY)
         {
             return std::unique_ptr<Entity>(new Double(((Double *)a.get())->double_val / ((Double *)b.get())->double_val));
         }
@@ -224,19 +234,19 @@ namespace pluto
         std::unique_ptr<Entity> a = visit(std::move(node->node_a));
         std::unique_ptr<Entity> b = visit(std::move(node->node_b));
 
-        if (a.get()->kind() == INT_ENTITY && b.get()->kind() == INT_ENTITY)
+        if (a->kind() == INT_ENTITY && b->kind() == INT_ENTITY)
         {
             return std::unique_ptr<Entity>(new Int(((Int *)a.get())->int_val % ((Int *)b.get())->int_val));
         }
-        else if (a.get()->kind() == INT_ENTITY && b.get()->kind() == DOUBLE_ENTITY)
+        else if (a->kind() == INT_ENTITY && b->kind() == DOUBLE_ENTITY)
         {
             return std::unique_ptr<Entity>(new Double(std::fmod(((Int *)a.get())->int_val, ((Double *)b.get())->double_val)));
         }
-        else if (a.get()->kind() == DOUBLE_ENTITY && b.get()->kind() == INT_ENTITY)
+        else if (a->kind() == DOUBLE_ENTITY && b->kind() == INT_ENTITY)
         {
             return std::unique_ptr<Entity>(new Double(std::fmod(((Double *)a.get())->double_val, ((Int *)b.get())->int_val)));
         }
-        else if (a.get()->kind() == DOUBLE_ENTITY && b.get()->kind() == DOUBLE_ENTITY)
+        else if (a->kind() == DOUBLE_ENTITY && b->kind() == DOUBLE_ENTITY)
         {
             return std::unique_ptr<Entity>(new Double(std::fmod(((Double *)a.get())->double_val, ((Double *)b.get())->double_val)));
         }
@@ -251,7 +261,7 @@ namespace pluto
         std::unique_ptr<Entity> a = visit(std::move(node->node_a));
         std::unique_ptr<Entity> b = visit(std::move(node->node_b));
 
-        if (a.get()->kind() == BOOL_ENTITY && b.get()->kind() == BOOL_ENTITY)
+        if (a->kind() == BOOL_ENTITY && b->kind() == BOOL_ENTITY)
         {
             return std::unique_ptr<Entity>(new Bool(((Bool *)a.get())->bool_val || ((Bool *)b.get())->bool_val));
         }
@@ -267,7 +277,7 @@ namespace pluto
         std::unique_ptr<Entity> a = visit(std::move(node->node_a));
         std::unique_ptr<Entity> b = visit(std::move(node->node_b));
 
-        if (a.get()->kind() == BOOL_ENTITY && b.get()->kind() == BOOL_ENTITY)
+        if (a->kind() == BOOL_ENTITY && b->kind() == BOOL_ENTITY)
         {
             return std::unique_ptr<Entity>(new Bool(((Bool *)a.get())->bool_val && ((Bool *)b.get())->bool_val));
         }
@@ -282,7 +292,7 @@ namespace pluto
         std::unique_ptr<Entity> a = visit(std::move(node->node_a));
         std::unique_ptr<Entity> b = visit(std::move(node->node_b));
 
-        if (a.get()->kind() == BOOL_ENTITY && b.get()->kind() == BOOL_ENTITY)
+        if (a->kind() == BOOL_ENTITY && b->kind() == BOOL_ENTITY)
         {
             return std::unique_ptr<Entity>(new Bool(((Bool *)a.get())->bool_val != ((Bool *)b.get())->bool_val));
         }
@@ -297,7 +307,7 @@ namespace pluto
         std::unique_ptr<Entity> a = visit(std::move(node->node_a));
         std::unique_ptr<Entity> b = visit(std::move(node->node_b));
 
-        if (a.get()->kind() == INT_ENTITY && b.get()->kind() == INT_ENTITY)
+        if (a->kind() == INT_ENTITY && b->kind() == INT_ENTITY)
         {
             return std::unique_ptr<Entity>(new Int(((Int *)a.get())->int_val | ((Int *)b.get())->int_val));
         }
@@ -312,7 +322,7 @@ namespace pluto
         std::unique_ptr<Entity> a = visit(std::move(node->node_a));
         std::unique_ptr<Entity> b = visit(std::move(node->node_b));
 
-        if (a.get()->kind() == INT_ENTITY && b.get()->kind() == INT_ENTITY)
+        if (a->kind() == INT_ENTITY && b->kind() == INT_ENTITY)
         {
             return std::unique_ptr<Entity>(new Int(((Int *)a.get())->int_val & ((Int *)b.get())->int_val));
         }
@@ -327,7 +337,7 @@ namespace pluto
         std::unique_ptr<Entity> a = visit(std::move(node->node_a));
         std::unique_ptr<Entity> b = visit(std::move(node->node_b));
 
-        if (a.get()->kind() == INT_ENTITY && b.get()->kind() == INT_ENTITY)
+        if (a->kind() == INT_ENTITY && b->kind() == INT_ENTITY)
         {
             return std::unique_ptr<Entity>(new Int(((Int *)a.get())->int_val ^ ((Int *)b.get())->int_val));
         }
@@ -342,7 +352,7 @@ namespace pluto
         std::unique_ptr<Entity> a = visit(std::move(node->node_a));
         std::unique_ptr<Entity> b = visit(std::move(node->node_b));
 
-        if (a.get()->kind() == INT_ENTITY && b.get()->kind() == INT_ENTITY)
+        if (a->kind() == INT_ENTITY && b->kind() == INT_ENTITY)
         {
             return std::unique_ptr<Entity>(new Int(((Int *)a.get())->int_val << ((Int *)b.get())->int_val));
         }
@@ -357,7 +367,7 @@ namespace pluto
         std::unique_ptr<Entity> a = visit(std::move(node->node_a));
         std::unique_ptr<Entity> b = visit(std::move(node->node_b));
 
-        if (a.get()->kind() == INT_ENTITY && b.get()->kind() == INT_ENTITY)
+        if (a->kind() == INT_ENTITY && b->kind() == INT_ENTITY)
         {
             return std::unique_ptr<Entity>(new Int(((Int *)a.get())->int_val >> ((Int *)b.get())->int_val));
         }
@@ -367,15 +377,105 @@ namespace pluto
         }
     }
 
+    std::unique_ptr<Entity> Interpreter::visit(EENode *node)
+    {
+        std::unique_ptr<Entity> a = visit(std::move(node->node_a));
+        std::unique_ptr<Entity> b = visit(std::move(node->node_b));
+
+        if (a->kind() == INT_ENTITY && b->kind() == INT_ENTITY)
+        {
+            return std::unique_ptr<Entity>(new Bool(((Int *)a.get())->int_val == ((Int *)b.get())->int_val));
+        }
+        else
+        {
+            raise_error(node->line, "invalid operands for binary operator '=='");
+        }
+    }
+    
+std::unique_ptr<Entity> Interpreter::visit(NENode *node)
+    {
+        std::unique_ptr<Entity> a = visit(std::move(node->node_a));
+        std::unique_ptr<Entity> b = visit(std::move(node->node_b));
+
+        if (a->kind() == INT_ENTITY && b->kind() == INT_ENTITY)
+        {
+            return std::unique_ptr<Entity>(new Bool(((Int *)a.get())->int_val != ((Int *)b.get())->int_val));
+        }
+        else
+        {
+            raise_error(node->line, "invalid operands for binary operator '=='");
+        }
+    }
+
+    std::unique_ptr<Entity> Interpreter::visit(LTNode *node)
+    {
+        std::unique_ptr<Entity> a = visit(std::move(node->node_a));
+        std::unique_ptr<Entity> b = visit(std::move(node->node_b));
+
+        if (a->kind() == INT_ENTITY && b->kind() == INT_ENTITY)
+        {
+            return std::unique_ptr<Entity>(new Bool(((Int *)a.get())->int_val < ((Int *)b.get())->int_val));
+        }
+        else
+        {
+            raise_error(node->line, "invalid operands for binary operator '<'");
+        }
+    }
+
+    std::unique_ptr<Entity> Interpreter::visit(GTNode *node)
+    {
+        std::unique_ptr<Entity> a = visit(std::move(node->node_a));
+        std::unique_ptr<Entity> b = visit(std::move(node->node_b));
+
+        if (a->kind() == INT_ENTITY && b->kind() == INT_ENTITY)
+        {
+            return std::unique_ptr<Entity>(new Bool(((Int *)a.get())->int_val > ((Int *)b.get())->int_val));
+        }
+        else
+        {
+            raise_error(node->line, "invalid operands for binary operator '>'");
+        }
+    }
+
+    std::unique_ptr<Entity> Interpreter::visit(LTENode *node)
+    {
+        std::unique_ptr<Entity> a = visit(std::move(node->node_a));
+        std::unique_ptr<Entity> b = visit(std::move(node->node_b));
+
+        if (a->kind() == INT_ENTITY && b->kind() == INT_ENTITY)
+        {
+            return std::unique_ptr<Entity>(new Bool(((Int *)a.get())->int_val <= ((Int *)b.get())->int_val));
+        }
+        else
+        {
+            raise_error(node->line, "invalid operands for binary operator '<='");
+        }
+    }
+
+    std::unique_ptr<Entity> Interpreter::visit(GTENode *node)
+    {
+        std::unique_ptr<Entity> a = visit(std::move(node->node_a));
+        std::unique_ptr<Entity> b = visit(std::move(node->node_b));
+
+        if (a->kind() == INT_ENTITY && b->kind() == INT_ENTITY)
+        {
+            return std::unique_ptr<Entity>(new Bool(((Int *)a.get())->int_val >= ((Int *)b.get())->int_val));
+        }
+        else
+        {
+            raise_error(node->line, "invalid operands for binary operator '>='");
+        }
+    }
+
     std::unique_ptr<Entity> Interpreter::visit(PlusNode *node)
     {
         std::unique_ptr<Entity> a = visit(std::move(node->node));
 
-        if (a.get()->kind() == INT_ENTITY)
+        if (a->kind() == INT_ENTITY)
         {
             return std::unique_ptr<Entity>(new Int(+(((Int *)a.get())->int_val)));
         }
-        else if (a.get()->kind() == DOUBLE_ENTITY)
+        else if (a->kind() == DOUBLE_ENTITY)
         {
             return std::unique_ptr<Entity>(new Double(+(((Double *)a.get())->double_val)));
         }
@@ -389,11 +489,11 @@ namespace pluto
     {
         std::unique_ptr<Entity> a = visit(std::move(node->node));
 
-        if (a.get()->kind() == INT_ENTITY)
+        if (a->kind() == INT_ENTITY)
         {
             return std::unique_ptr<Entity>(new Int(-(((Int *)a.get())->int_val)));
         }
-        else if (a.get()->kind() == DOUBLE_ENTITY)
+        else if (a->kind() == DOUBLE_ENTITY)
         {
             return std::unique_ptr<Entity>(new Double(-(((Double *)a.get())->double_val)));
         }
@@ -407,7 +507,7 @@ namespace pluto
     {
         std::unique_ptr<Entity> a = visit(std::move(node->node));
 
-        if (a.get()->kind() == BOOL_ENTITY)
+        if (a->kind() == BOOL_ENTITY)
         {
             return std::unique_ptr<Entity>(new Bool(!(((Bool *)a.get())->bool_val)));
         }
@@ -421,7 +521,7 @@ namespace pluto
     {
         std::unique_ptr<Entity> a = visit(std::move(node->node));
 
-        if (a.get()->kind() == INT_ENTITY)
+        if (a->kind() == INT_ENTITY)
         {
             return std::unique_ptr<Entity>(new Int(~(((Int *)a.get())->int_val)));
         }

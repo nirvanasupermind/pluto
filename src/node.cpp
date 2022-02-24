@@ -321,6 +321,40 @@ namespace pluto
         return "("+node_a.get()->to_string()+" >> "+node_b.get()->to_string()+")";
     } 
 
+    EENode::EENode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
+    {
+        this->line = line;
+        this->node_a = std::move(node_a);
+        this->node_b = std::move(node_b);
+    }
+
+    NodeKind EENode::kind()
+    {
+        return EE_NODE;
+    }
+
+    std::string EENode::to_string()
+    {
+        return "("+node_a.get()->to_string()+" == "+node_b.get()->to_string()+")";
+    } 
+
+    NENode::NENode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
+    {
+        this->line = line;
+        this->node_a = std::move(node_a);
+        this->node_b = std::move(node_b);
+    }
+
+    NodeKind NENode::kind()
+    {
+        return NE_NODE;
+    }
+
+    std::string NENode::to_string()
+    {
+        return "("+node_a.get()->to_string()+" != "+node_b.get()->to_string()+")";
+    } 
+
     LTNode::LTNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
     {
         this->line = line;
@@ -336,6 +370,57 @@ namespace pluto
     std::string LTNode::to_string()
     {
         return "("+node_a.get()->to_string()+" < "+node_b.get()->to_string()+")";
+    } 
+
+    LTENode::LTENode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
+    {
+        this->line = line;
+        this->node_a = std::move(node_a);
+        this->node_b = std::move(node_b);
+    }
+
+    NodeKind LTENode::kind()
+    {
+        return LTE_NODE;
+    }
+
+    std::string LTENode::to_string()
+    {
+        return "("+node_a.get()->to_string()+" <= "+node_b.get()->to_string()+")";
+    } 
+
+    GTNode::GTNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
+    {
+        this->line = line;
+        this->node_a = std::move(node_a);
+        this->node_b = std::move(node_b);
+    }
+
+    NodeKind GTNode::kind()
+    {
+        return GT_NODE;
+    }
+
+    std::string GTNode::to_string()
+    {
+        return "("+node_a.get()->to_string()+" > "+node_b.get()->to_string()+")";
+    } 
+
+    GTENode::GTENode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
+    {
+        this->line = line;
+        this->node_a = std::move(node_a);
+        this->node_b = std::move(node_b);
+    }
+
+    NodeKind GTENode::kind()
+    {
+        return GTE_NODE;
+    }
+
+    std::string GTENode::to_string()
+    {
+        return "("+node_a.get()->to_string()+" >= "+node_b.get()->to_string()+")";
     } 
 
     PlusNode::PlusNode(int line, std::unique_ptr<Node> node)

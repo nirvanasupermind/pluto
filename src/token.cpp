@@ -88,6 +88,10 @@ namespace pluto
             return "LSHIFT";
         case RSHIFT:
             return "RSHIFT";
+        case EE:
+            return "EE";
+        case NE:
+            return "NE";
         case LT:
             return "LT";
         case GT:
