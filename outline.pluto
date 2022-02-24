@@ -1,0 +1,81 @@
+namespace Pluto {
+
+    class Object {
+        func constructor();
+        func clone();
+    }
+
+    class Bool {
+        static const TRUE = Bool(true);
+        static const FALSE = Bool(false);
+        func constructor(val);
+        func toString();
+    }
+
+    class Int {
+        func constructor(val);
+        func intVal();
+        func doubleVal();
+        func toString();
+        static func parse(s);
+    }
+
+    class Double {
+        func constructor(val);
+        func intVal();
+        func doubleVal();
+        func toString();
+        static func toString(s);
+        static func parse(s);
+    }
+
+    class Math {
+        static const E = 2.7182818284590452354;
+        static const PI = 3.14159265358979323846;
+        static func abs(a);
+        static func acos(a);
+        static func asin(a);
+        static func atan(a);
+        static func ceil(a);
+        static func cos(a);
+        static func floor(a);
+        static func max(a, b);
+        static func min(a, b);
+        static func rand();
+        static func round(a);
+        static func sin(a);
+        static func tan(a);
+    }
+
+    class String {
+        func constructor();
+        func upper();
+        func lower();
+        func startsWith(sub);
+        func endsWith(sub);
+        func trim();
+        func replace(search, replacement);
+        func equals(val);
+        func toString();
+    }
+
+    class List {
+        func constructor();
+        func add(element);
+        func clear();
+        func forEach(action);
+        func get(index);
+        func remove(index);
+        func set(index, element);
+        func size();
+        func toString();
+    }
+
+    
+    class System {
+        static func exit(code);
+        static func read();        
+        static func write(entity);
+        static func writeln(entity);
+    }
+}
