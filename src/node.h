@@ -13,6 +13,7 @@ namespace pluto
         INT_NODE,
         DOUBLE_NODE,
         STRING_NODE,
+        NAME_NODE,
         TRUE_NODE,
         FALSE_NODE,
         NIL_NODE,
@@ -81,6 +82,18 @@ namespace pluto
         std::string string_val;
 
         StringNode(int line, std::string string_val);
+
+        NodeKind kind();
+
+        std::string to_string();
+    };
+
+    class NameNode : public Node
+    {
+    public:
+        std::string string_val;
+
+        NameNode(int line, std::string string_val);
 
         NodeKind kind();
 

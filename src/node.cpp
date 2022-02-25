@@ -55,6 +55,22 @@ namespace pluto
         return "\"" + string_val + "\"";
     }
 
+    NameNode::NameNode(int line, std::string string_val)
+    {
+        this->line = line;
+        this->string_val = string_val;
+    }
+
+    NodeKind NameNode::kind()
+    {
+        return NAME_NODE;
+    }
+
+    std::string NameNode::to_string()
+    {
+        return "\"" + string_val + "\"";
+    }
+
     TrueNode::TrueNode(int line)
     {
         this->line = line;

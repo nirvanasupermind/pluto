@@ -312,7 +312,7 @@ namespace pluto
         }
         else
         {
-            return Token(line, NAME, name);
+            return Token(line, NAME, name, true);
         }
     }
 }

@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "*.pluto": "rust",
-        "iostream": "cpp"
+        "iostream": "cpp",
+        "memory": "cpp"
     }
 }
