@@ -34,14 +34,14 @@ namespace pluto
     }
 
     bool Env::has(std::string key)
-    {
+    {        
         if (map.count(key) == 0 && parent.get() != nullptr)
         {
             return parent.get()->has(key);
         }
         else
         {
-            return true;
+            return map.count(key) == 1;
         }
     }
 }

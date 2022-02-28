@@ -1,99 +1,92 @@
-module Pluto {
-    class Object {
-        func constructor();
-        func clone();
-        func hashCode();
-    }
+class Object {
+    func constructor();
+    func clone();
+}
 
-    class Bool {
-        static const TRUE = Bool(true);
-        static const FALSE = Bool(false);
-        func constructor(val);
-        func equals(other);
-        func hashCode();
-        func toString();
-    }
+class Bool {
+    static const TRUE = Bool(true);
+    static const FALSE = Bool(false);
+    func constructor(val);
+    func equals(other);
+    func toString();
+}
 
-    class Int {
-        func constructor(val);
-        func equals(other);
-        func intVal();
-        func doubleVal();
-        func hashCode();
-        func toString();
-        static func parse(s);
-    }
+class Int {
+    func constructor(val);
+    func equals(other);
+    func intVal();
+    func doubleVal();
+    func toString();
+    static func parse(s);
+}
 
-    class Double {
-        static const INF = 1.0 / 0.0;
-        static const NAN = 0.0 / 0.0;
-        func constructor(val);
-        func equals(other);
-        func intVal();
-        func doubleVal();
-        func hashCode();
-        func toString();
-        static func toString(s);
-        static func parse(s);
-    }
+class Double {
+    static const POSITIVE_INFINITY = Infinity;
+    static const NEGATIVE_INFINITY = -Infinity;
+    static const NaN = NaN;
+    func constructor(val);
+    func equals(other);
+    func intVal();
+    func doubleVal();
+    func toString();
+    static func parse(s);
+}
 
-    class Math {
-        static const E = 2.7182818284590452354;
-        static const PI = 3.14159265358979323846;
-        static func abs(a);
-        static func acos(a);
-        static func asin(a);
-        static func atan(a);
-        static func ceil(a);
-        static func cos(a);
-        static func floor(a);
-        static func log(a);
-        static func exp(a);
-        static func max(a, b);
-        static func min(a, b);
-        static func rand();
-        static func round(a);
-        static func sin(a);
-        static func sqrt(a);
-        static func tan(a);
-    }
+class Math {
+    static const E = 2.7182818284590452354;
+    static const PI = 3.14159265358979323846;
+    static func abs(a);
+    static func acos(a);
+    static func asin(a);
+    static func atan(a);
+    static func ceil(a);
+    static func cos(a);
+    static func floor(a);
+    static func log(a);
+    static func exp(a);
+    static func max(a, b);
+    static func min(a, b);
+    static func rand();
+    static func round(a);
+    static func sin(a);
+    static func sqrt(a);
+    static func tan(a);
+}
 
-    class String {
-        func constructor();
-        func concat(other);
-        func contains(other);
-        func charAt(index);
-        func endsWith(suffix);
-        func equals(other);
-        func indexOf(search);
-        func length();
-        func repeat(amount);
-        func replace(search, replacement);
-        func split(separator);
-        func startsWith(prefix);
-        func hashCode();
-        func toString();
-    }
+class String {
+    func constructor();
+    func concat(other);
+    func contains(other);
+    func charAt(index);
+    func endsWith(suffix);
+    func equals(other);
+    func indexOf(search);
+    func length();
+    func repeat(amount);
+    func replace(search, replacement);
+    func split(separator);
+    func startsWith(prefix);
+    func toString();
+}
 
-    class List {
-        func constructor();
-        func add(element);
-        func clear();
-        func get(index);
-        func remove(index);
-        func set(index, element);
-        func size();
-        func toString();
-    }
+class List {
+    func constructor();
+    func add(element);
+    func clear();
+    func get(index);
+    func remove(index);
+    func set(index, element);
+    func size();
+    func toString();
+}
 
-    class Func {
-        func constructor();  
-    }
+class Func {
+    func constructor();  
+}
 
-    class System {
-        static func clock();
-        static func read();        
-        static func write(entity);
-        static func writeln(entity);
-    }
+class System {
+    static func clock();
+    static func read();        
+    static func write(data);
+    static func writeln(data);
 }

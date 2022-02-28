@@ -26,6 +26,10 @@ namespace pluto
         std::unique_ptr<Env> env;
         std::string string_val;
 
+        Object() : Concept() {};
+
+        Object(std::unique_ptr<Env> env) : Concept(std::move(env)) {};
+
         Object(std::unique_ptr<Env> env, std::string string_val);
 
         EntityKind kind();
@@ -38,6 +42,10 @@ namespace pluto
     public:
         std::unique_ptr<Env> env;
 
+        Class() : Concept() {};
+
+        Class(std::unique_ptr<Env> env) : Concept(std::move(env)) {};
+
         EntityKind kind();
 
         std::string to_string();
@@ -47,6 +55,10 @@ namespace pluto
     {
     public:
         std::unique_ptr<Env> env;
+
+        Module() : Concept() {};
+
+        Module(std::unique_ptr<Env> env) : Concept(std::move(env)) {};
 
         EntityKind kind();
 

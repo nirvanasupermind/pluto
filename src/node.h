@@ -91,9 +91,9 @@ namespace pluto
     class NameNode : public Node
     {
     public:
-        std::string string_val;
+        std::string name;
 
-        NameNode(int line, std::string string_val);
+        NameNode(int line, std::string name);
 
         NodeKind kind();
 
