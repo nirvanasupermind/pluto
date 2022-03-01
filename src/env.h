@@ -12,14 +12,14 @@ namespace pluto
     class Env
     {
         public:
-            std::map<std::string, std::unique_ptr<Entity> > map;
-            std::unique_ptr<Env> parent;
+            std::map<std::string, std::shared_ptr<Entity> > map;
+            std::shared_ptr<Env> parent;
 
             Env();
-            Env(std::unique_ptr<Env> parent);
+            Env(std::shared_ptr<Env> parent);
 
-            void set(std::string key, std::unique_ptr<Entity> val);
-            std::unique_ptr<Entity> get(std::string key);
+            void set(std::string key, std::shared_ptr<Entity> val);
+            std::shared_ptr<Entity> get(std::string key);
             bool has(std::string key);
     };
 }

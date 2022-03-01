@@ -9,16 +9,16 @@ namespace pluto
 {
     Concept::Concept()
     {
-        this->env = std::unique_ptr<Env>(new Env());
+        this->env = std::shared_ptr<Env>(new Env());
     }
 
-    Concept::Concept(std::unique_ptr<Env> env)
+    Concept::Concept(std::shared_ptr<Env> env)
     {
-        this->env = std::move(env);
+        this->env = env;
     }
 
-    Object::Object(std::unique_ptr<Env> env, std::string string_val) {
-        this->env = std::move(env);
+    Object::Object(std::shared_ptr<Env> env, std::string string_val) {
+        this->env = env;
         this->string_val = string_val;
     }
 

@@ -11,17 +11,17 @@ namespace pluto
     {
     }
 
-    Env::Env(std::unique_ptr<Env> parent)
+    Env::Env(std::shared_ptr<Env> parent)
     {
-        this->parent = std::move(parent);
+        this->parent = parent;
     }
 
-    void Env::set(std::string key, std::unique_ptr<Entity> val)
+    void Env::set(std::string key, std::shared_ptr<Entity> val)
     {
-        map[key] = std::move(val);
+        map[key] = val;
     }
 
-    std::unique_ptr<Entity> Env::get(std::string key)
+    std::shared_ptr<Entity> Env::get(std::string key)
     {
         if (map.count(key) == 0 && parent.get() != nullptr)
         {
@@ -29,7 +29,7 @@ namespace pluto
         }
         else
         {
-            return std::move(map[key]);
+            return map.at(key);
         }
     }
 

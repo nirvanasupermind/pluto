@@ -88,5 +88,4 @@ class System {
     static func clock();
     static func read();        
     static func write(data);
-    static func writeln(data);
 }

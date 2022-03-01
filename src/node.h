@@ -3,6 +3,7 @@
 
 #include <string>
 #include <memory>
+#include <vector>
 
 #include "token.h"
 
@@ -10,6 +11,7 @@ namespace pluto
 {
     enum NodeKind
     {
+        PROGRAM_NODE,
         INT_NODE,
         DOUBLE_NODE,
         STRING_NODE,
@@ -50,6 +52,18 @@ namespace pluto
         virtual NodeKind kind() = 0;
         
         virtual std::string to_string() = 0;
+    };
+
+    class ProgramNode : public Node
+    {
+    public:
+        std::vector<std::shared_ptr<Node> > nodes;
+
+        ProgramNode(int line, std::vector<std::shared_ptr<Node> > nodes);
+
+        NodeKind kind();
+
+        std::string to_string();
     };
 
     class IntNode : public Node
@@ -133,10 +147,10 @@ namespace pluto
     class AddNode : public Node
     {
     public:
-        std::unique_ptr<Node> node_a;
-        std::unique_ptr<Node> node_b;
+        std::shared_ptr<Node> node_a;
+        std::shared_ptr<Node> node_b;
 
-        AddNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b);
+        AddNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b);
 
         NodeKind kind();
 
@@ -147,10 +161,10 @@ namespace pluto
     class SubtractNode : public Node
     {
     public:
-        std::unique_ptr<Node> node_a;
-        std::unique_ptr<Node> node_b;
+        std::shared_ptr<Node> node_a;
+        std::shared_ptr<Node> node_b;
 
-        SubtractNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b);
+        SubtractNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b);
 
         NodeKind kind();
 
@@ -160,10 +174,10 @@ namespace pluto
     class MultiplyNode : public Node
     {
     public:
-        std::unique_ptr<Node> node_a;
-        std::unique_ptr<Node> node_b;
+        std::shared_ptr<Node> node_a;
+        std::shared_ptr<Node> node_b;
 
-        MultiplyNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b);
+        MultiplyNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b);
 
         NodeKind kind();
 
@@ -173,10 +187,10 @@ namespace pluto
     class DivideNode : public Node
     {
     public:
-        std::unique_ptr<Node> node_a;
-        std::unique_ptr<Node> node_b;
+        std::shared_ptr<Node> node_a;
+        std::shared_ptr<Node> node_b;
 
-        DivideNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b);
+        DivideNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b);
 
         NodeKind kind();
 
@@ -186,10 +200,10 @@ namespace pluto
     class ModNode : public Node
     {
     public:
-        std::unique_ptr<Node> node_a;
-        std::unique_ptr<Node> node_b;
+        std::shared_ptr<Node> node_a;
+        std::shared_ptr<Node> node_b;
 
-        ModNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b);
+        ModNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b);
 
         NodeKind kind();
 
@@ -199,10 +213,10 @@ namespace pluto
     class OrNode : public Node
     {
     public:
-        std::unique_ptr<Node> node_a;
-        std::unique_ptr<Node> node_b;
+        std::shared_ptr<Node> node_a;
+        std::shared_ptr<Node> node_b;
 
-        OrNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b);
+        OrNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b);
 
         NodeKind kind();
 
@@ -212,10 +226,10 @@ namespace pluto
     class AndNode : public Node
     {
     public:
-        std::unique_ptr<Node> node_a;
-        std::unique_ptr<Node> node_b;
+        std::shared_ptr<Node> node_a;
+        std::shared_ptr<Node> node_b;
 
-        AndNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b);
+        AndNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b);
 
         NodeKind kind();
 
@@ -225,10 +239,10 @@ namespace pluto
     class XorNode : public Node
     {
     public:
-        std::unique_ptr<Node> node_a;
-        std::unique_ptr<Node> node_b;
+        std::shared_ptr<Node> node_a;
+        std::shared_ptr<Node> node_b;
 
-        XorNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b);
+        XorNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b);
 
         NodeKind kind();
 
@@ -238,10 +252,10 @@ namespace pluto
     class BOrNode : public Node
     {
     public:
-        std::unique_ptr<Node> node_a;
-        std::unique_ptr<Node> node_b;
+        std::shared_ptr<Node> node_a;
+        std::shared_ptr<Node> node_b;
 
-        BOrNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b);
+        BOrNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b);
 
         NodeKind kind();
 
@@ -251,10 +265,10 @@ namespace pluto
     class BAndNode : public Node
     {
     public:
-        std::unique_ptr<Node> node_a;
-        std::unique_ptr<Node> node_b;
+        std::shared_ptr<Node> node_a;
+        std::shared_ptr<Node> node_b;
 
-        BAndNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b);
+        BAndNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b);
 
         NodeKind kind();
 
@@ -264,10 +278,10 @@ namespace pluto
     class BXorNode : public Node
     {
     public:
-        std::unique_ptr<Node> node_a;
-        std::unique_ptr<Node> node_b;
+        std::shared_ptr<Node> node_a;
+        std::shared_ptr<Node> node_b;
 
-        BXorNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b);
+        BXorNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b);
 
         NodeKind kind();
 
@@ -277,10 +291,10 @@ namespace pluto
     class LShiftNode : public Node
     {
     public:
-        std::unique_ptr<Node> node_a;
-        std::unique_ptr<Node> node_b;
+        std::shared_ptr<Node> node_a;
+        std::shared_ptr<Node> node_b;
 
-        LShiftNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b);
+        LShiftNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b);
 
         NodeKind kind();
 
@@ -290,10 +304,10 @@ namespace pluto
     class RShiftNode : public Node
     {
     public:
-        std::unique_ptr<Node> node_a;
-        std::unique_ptr<Node> node_b;
+        std::shared_ptr<Node> node_a;
+        std::shared_ptr<Node> node_b;
 
-        RShiftNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b);
+        RShiftNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b);
 
         NodeKind kind();
 
@@ -303,10 +317,10 @@ namespace pluto
     class EENode : public Node
     {
     public:
-        std::unique_ptr<Node> node_a;
-        std::unique_ptr<Node> node_b;
+        std::shared_ptr<Node> node_a;
+        std::shared_ptr<Node> node_b;
 
-        EENode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b);
+        EENode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b);
 
         NodeKind kind();
 
@@ -316,10 +330,10 @@ namespace pluto
     class NENode : public Node
     {
     public:
-        std::unique_ptr<Node> node_a;
-        std::unique_ptr<Node> node_b;
+        std::shared_ptr<Node> node_a;
+        std::shared_ptr<Node> node_b;
 
-        NENode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b);
+        NENode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b);
 
         NodeKind kind();
 
@@ -329,10 +343,10 @@ namespace pluto
     class LTNode : public Node
     {
     public:
-        std::unique_ptr<Node> node_a;
-        std::unique_ptr<Node> node_b;
+        std::shared_ptr<Node> node_a;
+        std::shared_ptr<Node> node_b;
 
-        LTNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b);
+        LTNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b);
 
         NodeKind kind();
 
@@ -342,10 +356,10 @@ namespace pluto
     class GTNode : public Node
     {
     public:
-        std::unique_ptr<Node> node_a;
-        std::unique_ptr<Node> node_b;
+        std::shared_ptr<Node> node_a;
+        std::shared_ptr<Node> node_b;
 
-        GTNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b);
+        GTNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b);
 
         NodeKind kind();
 
@@ -355,10 +369,10 @@ namespace pluto
     class LTENode : public Node
     {
     public:
-        std::unique_ptr<Node> node_a;
-        std::unique_ptr<Node> node_b;
+        std::shared_ptr<Node> node_a;
+        std::shared_ptr<Node> node_b;
 
-        LTENode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b);
+        LTENode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b);
 
         NodeKind kind();
 
@@ -368,10 +382,10 @@ namespace pluto
     class GTENode : public Node
     {
     public:
-        std::unique_ptr<Node> node_a;
-        std::unique_ptr<Node> node_b;
+        std::shared_ptr<Node> node_a;
+        std::shared_ptr<Node> node_b;
 
-        GTENode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b);
+        GTENode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b);
 
         NodeKind kind();
 
@@ -381,9 +395,9 @@ namespace pluto
     class PlusNode : public Node
     {
     public:
-        std::unique_ptr<Node> node;
+        std::shared_ptr<Node> node;
 
-        PlusNode(int line, std::unique_ptr<Node> node);
+        PlusNode(int line, std::shared_ptr<Node> node);
 
         NodeKind kind();
 
@@ -393,9 +407,9 @@ namespace pluto
     class MinusNode : public Node
     {
     public:
-        std::unique_ptr<Node> node;
+        std::shared_ptr<Node> node;
 
-        MinusNode(int line, std::unique_ptr<Node> node);
+        MinusNode(int line, std::shared_ptr<Node> node);
 
         NodeKind kind();
 
@@ -405,9 +419,9 @@ namespace pluto
     class NotNode : public Node
     {
     public:
-        std::unique_ptr<Node> node;
+        std::shared_ptr<Node> node;
 
-        NotNode(int line, std::unique_ptr<Node> node);
+        NotNode(int line, std::shared_ptr<Node> node);
 
         NodeKind kind();
 
@@ -417,9 +431,9 @@ namespace pluto
     class BNotNode : public Node
     {
     public:
-        std::unique_ptr<Node> node;
+        std::shared_ptr<Node> node;
 
-        BNotNode(int line, std::unique_ptr<Node> node);
+        BNotNode(int line, std::shared_ptr<Node> node);
 
         NodeKind kind();
 

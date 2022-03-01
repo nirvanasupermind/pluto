@@ -12,10 +12,10 @@ namespace pluto
     class Concept : public Entity
     {
     public:
-        std::unique_ptr<Env> env;
+        std::shared_ptr<Env> env;
 
         Concept();
-        Concept(std::unique_ptr<Env> env);
+        Concept(std::shared_ptr<Env> env);
 
         // std::string to_string();
     };
@@ -23,14 +23,14 @@ namespace pluto
     class Object : public Concept
     {
     public:
-        std::unique_ptr<Env> env;
+        std::shared_ptr<Env> env;
         std::string string_val;
 
         Object() : Concept() {};
 
-        Object(std::unique_ptr<Env> env) : Concept(std::move(env)) {};
+        Object(std::shared_ptr<Env> env) : Concept(env) {};
 
-        Object(std::unique_ptr<Env> env, std::string string_val);
+        Object(std::shared_ptr<Env> env, std::string string_val);
 
         EntityKind kind();
 
@@ -40,11 +40,11 @@ namespace pluto
     class Class : public Concept
     {
     public:
-        std::unique_ptr<Env> env;
+        std::shared_ptr<Env> env;
 
         Class() : Concept() {};
 
-        Class(std::unique_ptr<Env> env) : Concept(std::move(env)) {};
+        Class(std::shared_ptr<Env> env) : Concept(env) {};
 
         EntityKind kind();
 
@@ -54,11 +54,11 @@ namespace pluto
     class Module : public Concept
     {
     public:
-        std::unique_ptr<Env> env;
+        std::shared_ptr<Env> env;
 
         Module() : Concept() {};
 
-        Module(std::unique_ptr<Env> env) : Concept(std::move(env)) {};
+        Module(std::shared_ptr<Env> env) : Concept(env) {};
 
         EntityKind kind();
 

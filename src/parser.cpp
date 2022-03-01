@@ -31,9 +31,9 @@ namespace pluto
         return tokens.at(pos);
     }
 
-    std::unique_ptr<Node> Parser::parse()
+    std::shared_ptr<Node> Parser::parse()
     {
-        std::unique_ptr<Node> result = stmt();
+        std::shared_ptr<Node> result = program();
 
         if (current().type != EOF_)
         {
@@ -43,9 +43,23 @@ namespace pluto
         return result;
     }
 
-    std::unique_ptr<Node> Parser::stmt()
+    std::shared_ptr<Node> Parser::program()
     {
-        std::unique_ptr<Node> result = expr();
+        int ln = current().line;
+
+        std::vector<std::shared_ptr<Node> > nodes;
+
+        while (current().type != EOF_)
+        {
+            nodes.push_back(stmt());
+        }
+
+        return std::shared_ptr<Node>(new ProgramNode(ln, nodes));
+    }
+
+    std::shared_ptr<Node> Parser::stmt()
+    {
+        std::shared_ptr<Node> result = expr();
 
         if (current().type != SEMICOLON)
         {
@@ -57,263 +71,263 @@ namespace pluto
         return result;
     }
 
-    std::unique_ptr<Node> Parser::expr()
+    std::shared_ptr<Node> Parser::expr()
     {
         return band_expr();
     }
 
-    std::unique_ptr<Node> Parser::band_expr()
+    std::shared_ptr<Node> Parser::band_expr()
     {
-        std::unique_ptr<Node> result = bxor_expr();
+        std::shared_ptr<Node> result = bxor_expr();
 
         while (pos < tokens.size() && (current().type == BAND))
         {
             if (current().type == BAND)
             {
                 advance();
-                result = std::unique_ptr<Node>(new BAndNode(result->line, std::move(result), band_expr()));
+                result = std::shared_ptr<Node>(new BAndNode(result->line, result, bxor_expr()));
             }
         }
 
         return result;
     }
 
-    std::unique_ptr<Node> Parser::bxor_expr()
+    std::shared_ptr<Node> Parser::bxor_expr()
     {
-        std::unique_ptr<Node> result = and_expr();
+        std::shared_ptr<Node> result = and_expr();
 
         while (pos < tokens.size() && (current().type == BXOR))
         {
             if (current().type == BXOR)
             {
                 advance();
-                result = std::unique_ptr<Node>(new BXorNode(result->line, std::move(result), bor_expr()));
+                result = std::shared_ptr<Node>(new BXorNode(result->line, result, bor_expr()));
             }
         }
 
         return result;
     }
 
-    std::unique_ptr<Node> Parser::bor_expr()
+    std::shared_ptr<Node> Parser::bor_expr()
     {
-        std::unique_ptr<Node> result = and_expr();
+        std::shared_ptr<Node> result = and_expr();
 
         while (pos < tokens.size() && (current().type == BOR))
         {
             if (current().type == BOR)
             {
                 advance();
-                result = std::unique_ptr<Node>(new BOrNode(result->line, std::move(result), and_expr()));
+                result = std::shared_ptr<Node>(new BOrNode(result->line, result, and_expr()));
             }
         }
 
         return result;
     }
 
-    std::unique_ptr<Node> Parser::and_expr()
+    std::shared_ptr<Node> Parser::and_expr()
     {
-        std::unique_ptr<Node> result = xor_expr();
+        std::shared_ptr<Node> result = xor_expr();
 
         while (pos < tokens.size() && (current().type == AND))
         {
             if (current().type == AND)
             {
                 advance();
-                result = std::unique_ptr<Node>(new AndNode(result->line, std::move(result), xor_expr()));
+                result = std::shared_ptr<Node>(new AndNode(result->line, result, xor_expr()));
             }
         }
 
         return result;
     }
 
-    std::unique_ptr<Node> Parser::xor_expr()
+    std::shared_ptr<Node> Parser::xor_expr()
     {
-        std::unique_ptr<Node> result = or_expr();
+        std::shared_ptr<Node> result = or_expr();
 
         while (pos < tokens.size() && (current().type == XOR))
         {
             if (current().type == XOR)
             {
                 advance();
-                result = std::unique_ptr<Node>(new XorNode(result->line, std::move(result), or_expr()));
+                result = std::shared_ptr<Node>(new XorNode(result->line, result, or_expr()));
             }
         }
 
         return result;
     }
 
-    std::unique_ptr<Node> Parser::or_expr()
+    std::shared_ptr<Node> Parser::or_expr()
     {
-        std::unique_ptr<Node> result = shift_expr();
+        std::shared_ptr<Node> result = shift_expr();
 
         while (pos < tokens.size() && (current().type == OR))
         {
             if (current().type == OR)
             {
                 advance();
-                result = std::unique_ptr<Node>(new OrNode(result->line, std::move(result), shift_expr()));
+                result = std::shared_ptr<Node>(new OrNode(result->line, result, shift_expr()));
             }
         }
 
         return result;
     }
 
-    std::unique_ptr<Node> Parser::shift_expr()
+    std::shared_ptr<Node> Parser::shift_expr()
     {
-        std::unique_ptr<Node> result = equality_expr();
+        std::shared_ptr<Node> result = equality_expr();
 
         while (pos < tokens.size() && (current().type == LSHIFT || current().type == RSHIFT))
         {
             if (current().type == LSHIFT)
             {
                 advance();
-                result = std::unique_ptr<Node>(new LShiftNode(result->line, std::move(result), equality_expr()));
+                result = std::shared_ptr<Node>(new LShiftNode(result->line, result, equality_expr()));
             }
             else if (current().type == RSHIFT)
             {
                 advance();
-                result = std::unique_ptr<Node>(new RShiftNode(result->line, std::move(result), equality_expr()));
+                result = std::shared_ptr<Node>(new RShiftNode(result->line, result, equality_expr()));
             }
         }
 
         return result;
     }
 
-    std::unique_ptr<Node> Parser::equality_expr()
+    std::shared_ptr<Node> Parser::equality_expr()
     {
-        std::unique_ptr<Node> result = comp_expr();
+        std::shared_ptr<Node> result = comp_expr();
 
         while (pos < tokens.size() && (current().type == EE || current().type == NE))
         {
             if (current().type == EE)
             {
                 advance();
-                result = std::unique_ptr<Node>(new EENode(result->line, std::move(result), comp_expr()));
+                result = std::shared_ptr<Node>(new EENode(result->line, result, comp_expr()));
             }
             else if (current().type == NE)
             {
                 advance();
-                result = std::unique_ptr<Node>(new NENode(result->line, std::move(result), comp_expr()));
+                result = std::shared_ptr<Node>(new NENode(result->line, result, comp_expr()));
             }
         }
 
         return result;
     }
 
-    std::unique_ptr<Node> Parser::comp_expr()
+    std::shared_ptr<Node> Parser::comp_expr()
     {
-        std::unique_ptr<Node> result = additive_expr();
+        std::shared_ptr<Node> result = additive_expr();
 
         while (pos < tokens.size() && (current().type == LT || current().type == GT || current().type == LTE || current().type == GTE))
         {
             if (current().type == LT)
             {
                 advance();
-                result = std::unique_ptr<Node>(new LTNode(result->line, std::move(result), additive_expr()));
+                result = std::shared_ptr<Node>(new LTNode(result->line, result, additive_expr()));
             }
             else if (current().type == GT)
             {
                 advance();
-                result = std::unique_ptr<Node>(new GTNode(result->line, std::move(result), additive_expr()));
+                result = std::shared_ptr<Node>(new GTNode(result->line, result, additive_expr()));
             }
             else if (current().type == LTE)
             {
                 advance();
-                result = std::unique_ptr<Node>(new LTENode(result->line, std::move(result), additive_expr()));
+                result = std::shared_ptr<Node>(new LTENode(result->line, result, additive_expr()));
             }
             else if (current().type == GTE)
             {
                 advance();
-                result = std::unique_ptr<Node>(new LTENode(result->line, std::move(result), additive_expr()));
+                result = std::shared_ptr<Node>(new LTENode(result->line, result, additive_expr()));
             }
         }
 
         return result;
     }
 
-    std::unique_ptr<Node> Parser::additive_expr()
+    std::shared_ptr<Node> Parser::additive_expr()
     {
-        std::unique_ptr<Node> result = multiplicative_expr();
+        std::shared_ptr<Node> result = multiplicative_expr();
 
         while (pos < tokens.size() && (current().type == PLUS || current().type == MINUS))
         {
             if (current().type == PLUS)
             {
                 advance();
-                result = std::unique_ptr<Node>(new AddNode(result->line, std::move(result), multiplicative_expr()));
+                result = std::shared_ptr<Node>(new AddNode(result->line, result, multiplicative_expr()));
             }
             else if (current().type == MINUS)
             {
                 advance();
-                result = std::unique_ptr<Node>(new SubtractNode(result->line, std::move(result), multiplicative_expr()));
+                result = std::shared_ptr<Node>(new SubtractNode(result->line, result, multiplicative_expr()));
             }
         }
 
         return result;
     }
 
-    std::unique_ptr<Node> Parser::multiplicative_expr()
+    std::shared_ptr<Node> Parser::multiplicative_expr()
     {
-        std::unique_ptr<Node> result = prefix_expr();
+        std::shared_ptr<Node> result = prefix_expr();
 
         while (pos < tokens.size() && (current().type == MULTIPLY || current().type == DIVIDE || current().type == MOD))
         {
             if (current().type == MULTIPLY)
             {
                 advance();
-                result = std::unique_ptr<Node>(new MultiplyNode(result->line, std::move(result), prefix_expr()));
+                result = std::shared_ptr<Node>(new MultiplyNode(result->line, result, prefix_expr()));
             }
             else if (current().type == DIVIDE)
             {
                 advance();
-                result = std::unique_ptr<Node>(new DivideNode(result->line, std::move(result), prefix_expr()));
+                result = std::shared_ptr<Node>(new DivideNode(result->line, result, prefix_expr()));
             }
             else if (current().type == MOD)
             {
                 advance();
-                result = std::unique_ptr<Node>(new ModNode(result->line, std::move(result), prefix_expr()));
+                result = std::shared_ptr<Node>(new ModNode(result->line, result, prefix_expr()));
             }
         }
 
         return result;
     }
 
-    std::unique_ptr<Node> Parser::prefix_expr()
+    std::shared_ptr<Node> Parser::prefix_expr()
     {
         Token current_token = current();
 
         if (current_token.type == PLUS)
         {
             advance();
-            return std::unique_ptr<Node>(new PlusNode(current_token.line, prefix_expr()));
+            return std::shared_ptr<Node>(new PlusNode(current_token.line, prefix_expr()));
         }
         else if (current_token.type == MINUS)
         {
             advance();
-            return std::unique_ptr<Node>(new MinusNode(current_token.line, prefix_expr()));
+            return std::shared_ptr<Node>(new MinusNode(current_token.line, prefix_expr()));
         }
         else if (current_token.type == NOT)
         {
             advance();
-            return std::unique_ptr<Node>(new NotNode(current_token.line, prefix_expr()));
+            return std::shared_ptr<Node>(new NotNode(current_token.line, prefix_expr()));
         }
         else if (current_token.type == BNOT)
         {
             advance();
-            return std::unique_ptr<Node>(new BNotNode(current_token.line, prefix_expr()));
+            return std::shared_ptr<Node>(new BNotNode(current_token.line, prefix_expr()));
         }
 
         return postfix_expr();
     }
 
-    std::unique_ptr<Node> Parser::postfix_expr()
+    std::shared_ptr<Node> Parser::postfix_expr()
     {
-        std::unique_ptr<Node> result = leaf_expr();
+        std::shared_ptr<Node> result = leaf_expr();
 
         return result;
     }
 
-    std::unique_ptr<Node> Parser::leaf_expr()
+    std::shared_ptr<Node> Parser::leaf_expr()
     {
 
         Token current_token = current();
@@ -322,7 +336,7 @@ namespace pluto
         {
             advance();
 
-            std::unique_ptr<Node> result = expr();
+            std::shared_ptr<Node> result = expr();
 
             if (current().type != RPAREN)
             {
@@ -337,39 +351,39 @@ namespace pluto
         {
             advance();
 
-            std::unique_ptr<Node> result = std::unique_ptr<Node>(new IntNode(current_token.line, current_token.int_val));
+            std::shared_ptr<Node> result = std::shared_ptr<Node>(new IntNode(current_token.line, current_token.int_val));
 
             return result;
         }
         else if (current_token.type == DOUBLE)
         {
             advance();
-            return std::unique_ptr<Node>(new DoubleNode(current_token.line, current_token.double_val));
+            return std::shared_ptr<Node>(new DoubleNode(current_token.line, current_token.double_val));
         }
         else if (current_token.type == STRING)
         {
             advance();
-            return std::unique_ptr<Node>(new StringNode(current_token.line, current_token.string_val));
+            return std::shared_ptr<Node>(new StringNode(current_token.line, current_token.string_val));
         }
         else if (current_token.type == NAME)
         {
             advance();
-            return std::unique_ptr<Node>(new NameNode(current_token.line, current_token.name));
+            return std::shared_ptr<Node>(new NameNode(current_token.line, current_token.name));
         }
         else if (current_token.type == TRUE)
         {
             advance();
-            return std::unique_ptr<Node>(new TrueNode(current_token.line));
+            return std::shared_ptr<Node>(new TrueNode(current_token.line));
         }
         else if (current_token.type == FALSE)
         {
             advance();
-            return std::unique_ptr<Node>(new FalseNode(current_token.line));
+            return std::shared_ptr<Node>(new FalseNode(current_token.line));
         }
         else if (current_token.type == NIL)
         {
             advance();
-            return std::unique_ptr<Node>(new NilNode(current_token.line));
+            return std::shared_ptr<Node>(new NilNode(current_token.line));
         }
 
         raise_error();

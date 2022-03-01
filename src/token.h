@@ -14,6 +14,7 @@ namespace pluto
         TRUE,
         FALSE,
         NIL,
+        VAR,
         PLUS,
         MINUS,
         MULTIPLY,

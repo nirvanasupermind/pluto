@@ -1,11 +1,28 @@
 #include <string>
 #include <memory>
+#include <vector>
 
 #include "token.h"
 #include "node.h"
 
+
 namespace pluto
 {
+    ProgramNode::ProgramNode(int line, std::vector<std::shared_ptr<Node> > nodes)
+    {
+        this->line = line;
+        this->nodes = nodes;
+    }
+
+    NodeKind ProgramNode::kind()
+    {
+        return PROGRAM_NODE;
+    }
+
+    std::string ProgramNode::to_string()
+    {
+        return "program";
+    }
 
     IntNode::IntNode(int line, int int_val)
     {
@@ -116,11 +133,11 @@ namespace pluto
         return "nil";
     } 
 
-    AddNode::AddNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
+    AddNode::AddNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b)
     {
         this->line = line;
-        this->node_a = std::move(node_a);
-        this->node_b = std::move(node_b);
+        this->node_a = node_a;
+        this->node_b = node_b;
     }
 
     NodeKind AddNode::kind()
@@ -133,11 +150,11 @@ namespace pluto
         return "("+node_a.get()->to_string()+" + "+node_b.get()->to_string()+")";
     }
 
-    SubtractNode::SubtractNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
+    SubtractNode::SubtractNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b)
     {
         this->line = line;
-        this->node_a = std::move(node_a);
-        this->node_b = std::move(node_b);
+        this->node_a = node_a;
+        this->node_b = node_b;
     }
 
     NodeKind SubtractNode::kind()
@@ -150,11 +167,11 @@ namespace pluto
         return "("+node_a.get()->to_string()+" - "+node_b.get()->to_string()+")";
     }
 
-    MultiplyNode::MultiplyNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
+    MultiplyNode::MultiplyNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b)
     {
         this->line = line;
-        this->node_a = std::move(node_a);
-        this->node_b = std::move(node_b);
+        this->node_a = node_a;
+        this->node_b = node_b;
     }
 
     NodeKind MultiplyNode::kind()
@@ -167,11 +184,11 @@ namespace pluto
         return "("+node_a.get()->to_string()+" * "+node_b.get()->to_string()+")";
     }    
 
-    DivideNode::DivideNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
+    DivideNode::DivideNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b)
     {
         this->line = line;
-        this->node_a = std::move(node_a);
-        this->node_b = std::move(node_b);
+        this->node_a = node_a;
+        this->node_b = node_b;
     }
 
     NodeKind DivideNode::kind()
@@ -184,11 +201,11 @@ namespace pluto
         return "("+node_a.get()->to_string()+" / "+node_b.get()->to_string()+")";
     } 
 
-    ModNode::ModNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
+    ModNode::ModNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b)
     {
         this->line = line;
-        this->node_a = std::move(node_a);
-        this->node_b = std::move(node_b);
+        this->node_a = node_a;
+        this->node_b = node_b;
     }
 
     NodeKind ModNode::kind()
@@ -201,11 +218,11 @@ namespace pluto
         return "("+node_a.get()->to_string()+" % "+node_b.get()->to_string()+")";
     } 
 
-    OrNode::OrNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
+    OrNode::OrNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b)
     {
         this->line = line;
-        this->node_a = std::move(node_a);
-        this->node_b = std::move(node_b);
+        this->node_a = node_a;
+        this->node_b = node_b;
     }
 
     NodeKind OrNode::kind()
@@ -218,11 +235,11 @@ namespace pluto
         return "("+node_a.get()->to_string()+" || "+node_b.get()->to_string()+")";
     } 
 
-    AndNode::AndNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
+    AndNode::AndNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b)
     {
         this->line = line;
-        this->node_a = std::move(node_a);
-        this->node_b = std::move(node_b);
+        this->node_a = node_a;
+        this->node_b = node_b;
     }
 
     NodeKind AndNode::kind()
@@ -235,11 +252,11 @@ namespace pluto
         return "("+node_a.get()->to_string()+" && "+node_b.get()->to_string()+")";
     } 
 
-    XorNode::XorNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
+    XorNode::XorNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b)
     {
         this->line = line;
-        this->node_a = std::move(node_a);
-        this->node_b = std::move(node_b);
+        this->node_a = node_a;
+        this->node_b = node_b;
     }
 
     NodeKind XorNode::kind()
@@ -252,11 +269,11 @@ namespace pluto
         return "("+node_a.get()->to_string()+" ^^ "+node_b.get()->to_string()+")";
     } 
 
-    BOrNode::BOrNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
+    BOrNode::BOrNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b)
     {
         this->line = line;
-        this->node_a = std::move(node_a);
-        this->node_b = std::move(node_b);
+        this->node_a = node_a;
+        this->node_b = node_b;
     }
 
     NodeKind BOrNode::kind()
@@ -269,11 +286,11 @@ namespace pluto
         return "("+node_a.get()->to_string()+" | "+node_b.get()->to_string()+")";
     } 
 
-    BAndNode::BAndNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
+    BAndNode::BAndNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b)
     {
         this->line = line;
-        this->node_a = std::move(node_a);
-        this->node_b = std::move(node_b);
+        this->node_a = node_a;
+        this->node_b = node_b;
     }
 
     NodeKind BAndNode::kind()
@@ -286,11 +303,11 @@ namespace pluto
         return "("+node_a.get()->to_string()+" & "+node_b.get()->to_string()+")";
     } 
 
-    BXorNode::BXorNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
+    BXorNode::BXorNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b)
     {
         this->line = line;
-        this->node_a = std::move(node_a);
-        this->node_b = std::move(node_b);
+        this->node_a = node_a;
+        this->node_b = node_b;
     }
 
     NodeKind BXorNode::kind()
@@ -303,11 +320,11 @@ namespace pluto
         return "("+node_a.get()->to_string()+" ^ "+node_b.get()->to_string()+")";
     } 
 
-    LShiftNode::LShiftNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
+    LShiftNode::LShiftNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b)
     {
         this->line = line;
-        this->node_a = std::move(node_a);
-        this->node_b = std::move(node_b);
+        this->node_a = node_a;
+        this->node_b = node_b;
     }
 
     NodeKind LShiftNode::kind()
@@ -320,11 +337,11 @@ namespace pluto
         return "("+node_a.get()->to_string()+" << "+node_b.get()->to_string()+")";
     } 
     
-    RShiftNode::RShiftNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
+    RShiftNode::RShiftNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b)
     {
         this->line = line;
-        this->node_a = std::move(node_a);
-        this->node_b = std::move(node_b);
+        this->node_a = node_a;
+        this->node_b = node_b;
     }
 
     NodeKind RShiftNode::kind()
@@ -337,11 +354,11 @@ namespace pluto
         return "("+node_a.get()->to_string()+" >> "+node_b.get()->to_string()+")";
     } 
 
-    EENode::EENode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
+    EENode::EENode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b)
     {
         this->line = line;
-        this->node_a = std::move(node_a);
-        this->node_b = std::move(node_b);
+        this->node_a = node_a;
+        this->node_b = node_b;
     }
 
     NodeKind EENode::kind()
@@ -354,11 +371,11 @@ namespace pluto
         return "("+node_a.get()->to_string()+" == "+node_b.get()->to_string()+")";
     } 
 
-    NENode::NENode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
+    NENode::NENode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b)
     {
         this->line = line;
-        this->node_a = std::move(node_a);
-        this->node_b = std::move(node_b);
+        this->node_a = node_a;
+        this->node_b = node_b;
     }
 
     NodeKind NENode::kind()
@@ -371,11 +388,11 @@ namespace pluto
         return "("+node_a.get()->to_string()+" != "+node_b.get()->to_string()+")";
     } 
 
-    LTNode::LTNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
+    LTNode::LTNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b)
     {
         this->line = line;
-        this->node_a = std::move(node_a);
-        this->node_b = std::move(node_b);
+        this->node_a = node_a;
+        this->node_b = node_b;
     }
 
     NodeKind LTNode::kind()
@@ -388,11 +405,11 @@ namespace pluto
         return "("+node_a.get()->to_string()+" < "+node_b.get()->to_string()+")";
     } 
 
-    LTENode::LTENode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
+    LTENode::LTENode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b)
     {
         this->line = line;
-        this->node_a = std::move(node_a);
-        this->node_b = std::move(node_b);
+        this->node_a = node_a;
+        this->node_b = node_b;
     }
 
     NodeKind LTENode::kind()
@@ -405,11 +422,11 @@ namespace pluto
         return "("+node_a.get()->to_string()+" <= "+node_b.get()->to_string()+")";
     } 
 
-    GTNode::GTNode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
+    GTNode::GTNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b)
     {
         this->line = line;
-        this->node_a = std::move(node_a);
-        this->node_b = std::move(node_b);
+        this->node_a = node_a;
+        this->node_b = node_b;
     }
 
     NodeKind GTNode::kind()
@@ -422,11 +439,11 @@ namespace pluto
         return "("+node_a.get()->to_string()+" > "+node_b.get()->to_string()+")";
     } 
 
-    GTENode::GTENode(int line, std::unique_ptr<Node> node_a, std::unique_ptr<Node> node_b)
+    GTENode::GTENode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b)
     {
         this->line = line;
-        this->node_a = std::move(node_a);
-        this->node_b = std::move(node_b);
+        this->node_a = node_a;
+        this->node_b = node_b;
     }
 
     NodeKind GTENode::kind()
@@ -439,9 +456,9 @@ namespace pluto
         return "("+node_a.get()->to_string()+" >= "+node_b.get()->to_string()+")";
     } 
 
-    PlusNode::PlusNode(int line, std::unique_ptr<Node> node)
+    PlusNode::PlusNode(int line, std::shared_ptr<Node> node)
     {
-        this->node = std::move(node);
+        this->node = node;
     }
 
     NodeKind PlusNode::kind()
@@ -454,9 +471,9 @@ namespace pluto
         return "(+ "+node.get()->to_string()+")";
     } 
 
-    MinusNode::MinusNode(int line, std::unique_ptr<Node> node)
+    MinusNode::MinusNode(int line, std::shared_ptr<Node> node)
     {
-        this->node = std::move(node);
+        this->node = node;
     }
 
     NodeKind MinusNode::kind()
@@ -469,9 +486,9 @@ namespace pluto
         return "(- "+node.get()->to_string()+")";
     }   
     
-    NotNode::NotNode(int line, std::unique_ptr<Node> node)
+    NotNode::NotNode(int line, std::shared_ptr<Node> node)
     {
-        this->node = std::move(node);
+        this->node = node;
     }
 
     NodeKind NotNode::kind()
@@ -484,9 +501,9 @@ namespace pluto
         return "(! "+node.get()->to_string()+")";
     }  
 
-    BNotNode::BNotNode(int line, std::unique_ptr<Node> node)
+    BNotNode::BNotNode(int line, std::shared_ptr<Node> node)
     {
-        this->node = std::move(node);
+        this->node = node;
     }
 
     NodeKind BNotNode::kind()

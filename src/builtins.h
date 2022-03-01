@@ -13,8 +13,8 @@ namespace pluto
     class Builtins
     {
     public:
-        static std::unique_ptr<Entity> class_object;
-        static std::unique_ptr<Entity> class_string;
+        static std::shared_ptr<Entity> class_object;
+        static std::shared_ptr<Entity> class_string;
     };
 }
 
