@@ -90,6 +90,8 @@ namespace pluto
             return visit((NotNode *)node, env);
         case BNOT_NODE:
             return visit((BNotNode *)node, env);
+        case VAR_ASSIGN_NODE:
+            return visit((VarAssignNode *)node, env);
         default:
             raise_error(node->line, "invalid node");
         }
@@ -552,5 +554,20 @@ std::shared_ptr<Entity> Interpreter::visit(NENode *node, std::shared_ptr<Env> en
         {
             raise_error(node->line, "invalid operand for unary operator '~'");
         }
+    }
+
+
+    std::shared_ptr<Entity> Interpreter::visit(VarAssignNode *node, std::shared_ptr<Env> env)
+    {
+        if(env->map.count(node->key) == 1) {
+            raise_error(node->line, "'" + node->key + "' is already defined"); 
+        }
+
+        std::shared_ptr<Entity> val = visit(node->val, env);
+
+        env->set(node->key, val);
+
+        return val;
+
     }
 }

@@ -19,6 +19,7 @@ namespace pluto
         TRUE_NODE,
         FALSE_NODE,
         NIL_NODE,
+        VAR_ASSIGN_NODE,
         ADD_NODE,
         SUBTRACT_NODE,
         MULTIPLY_NODE,
@@ -138,6 +139,19 @@ namespace pluto
     {
     public:
         NilNode(int line);
+
+        NodeKind kind();
+
+        std::string to_string();
+    };
+
+    class VarAssignNode : public Node
+    {
+    public:
+        std::string key;
+        std::shared_ptr<Node> val;
+
+        VarAssignNode(int line, std::string key, std::shared_ptr<Node> val);
 
         NodeKind kind();
 

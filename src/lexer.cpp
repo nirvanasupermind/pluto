@@ -310,6 +310,10 @@ namespace pluto
         {
             return Token(line, NIL);
         }
+        else if (name == "var")
+        {
+            return Token(line, VAR);
+        }
         else
         {
             return Token(line, NAME, name, true);

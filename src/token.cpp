@@ -58,6 +58,8 @@ namespace pluto
             return "FALSE";
         case NIL:
             return "NIL";
+        case VAR:
+            return "VAR";
         case PLUS:
             return "PLUS";
         case MINUS:

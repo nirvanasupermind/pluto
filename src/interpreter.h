@@ -51,6 +51,7 @@ namespace pluto
         std::shared_ptr<Entity> visit(MinusNode *node, std::shared_ptr<Env> env);
         std::shared_ptr<Entity> visit(NotNode *node, std::shared_ptr<Env> env);
         std::shared_ptr<Entity> visit(BNotNode *node, std::shared_ptr<Env> env);
+        std::shared_ptr<Entity> visit(VarAssignNode *node, std::shared_ptr<Env> env);
     };
 }
 

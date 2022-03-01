@@ -59,6 +59,11 @@ namespace pluto
 
     std::shared_ptr<Node> Parser::stmt()
     {
+        if (current().type == VAR)
+        {
+            return var_assign_stmt();
+        }
+
         std::shared_ptr<Node> result = expr();
 
         if (current().type != SEMICOLON)
@@ -69,6 +74,46 @@ namespace pluto
         advance();
 
         return result;
+    }
+
+    std::shared_ptr<Node> Parser::var_assign_stmt()
+    {
+        int ln = current().line;
+
+        if (current().type != VAR)
+        {
+            raise_error();
+        }
+
+        advance();
+
+        if (current().type != NAME)
+        {
+            raise_error();
+        }
+
+
+        std::string key = current().name;
+
+        advance();
+
+        if (current().type != EQ)
+        {
+            raise_error();
+        }
+
+        advance();
+
+        std::shared_ptr<Node> val = expr();
+        
+        if (current().type != SEMICOLON)
+        {
+            raise_error();
+        }
+
+        advance();
+
+        return std::shared_ptr<Node>(new VarAssignNode(ln, key, val));
     }
 
     std::shared_ptr<Node> Parser::expr()

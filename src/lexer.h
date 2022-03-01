@@ -33,7 +33,6 @@ namespace pluto
         Token generate_string();
         
         Token generate_name();
-
     };
 }
 

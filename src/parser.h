@@ -27,6 +27,7 @@ namespace pluto
         std::shared_ptr<Node> parse();
         std::shared_ptr<Node> program();
         std::shared_ptr<Node> stmt();
+        std::shared_ptr<Node> var_assign_stmt();
         std::shared_ptr<Node> expr();
         std::shared_ptr<Node> band_expr();
         std::shared_ptr<Node> bxor_expr();

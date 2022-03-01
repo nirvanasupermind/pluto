@@ -133,6 +133,23 @@ namespace pluto
         return "nil";
     } 
 
+    VarAssignNode::VarAssignNode(int line, std::string key, std::shared_ptr<Node> val)
+    {
+        this->line = line;
+        this->key = key;
+        this->val = val;
+    }
+
+    NodeKind VarAssignNode::kind()
+    {
+        return VAR_ASSIGN_NODE;
+    }
+
+    std::string VarAssignNode::to_string()
+    {
+        return "(var "+key+" "+val->to_string()+")";
+    }
+
     AddNode::AddNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b)
     {
         this->line = line;
@@ -147,7 +164,7 @@ namespace pluto
 
     std::string AddNode::to_string()
     {
-        return "("+node_a.get()->to_string()+" + "+node_b.get()->to_string()+")";
+        return "("+node_a->to_string()+" + "+node_b->to_string()+")";
     }
 
     SubtractNode::SubtractNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b)
@@ -164,7 +181,7 @@ namespace pluto
 
     std::string SubtractNode::to_string()
     {
-        return "("+node_a.get()->to_string()+" - "+node_b.get()->to_string()+")";
+        return "("+node_a->to_string()+" - "+node_b->to_string()+")";
     }
 
     MultiplyNode::MultiplyNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b)
@@ -181,7 +198,7 @@ namespace pluto
 
     std::string MultiplyNode::to_string()
     {
-        return "("+node_a.get()->to_string()+" * "+node_b.get()->to_string()+")";
+        return "("+node_a->to_string()+" * "+node_b->to_string()+")";
     }    
 
     DivideNode::DivideNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b)
@@ -198,7 +215,7 @@ namespace pluto
 
     std::string DivideNode::to_string()
     {
-        return "("+node_a.get()->to_string()+" / "+node_b.get()->to_string()+")";
+        return "("+node_a->to_string()+" / "+node_b->to_string()+")";
     } 
 
     ModNode::ModNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b)
@@ -215,7 +232,7 @@ namespace pluto
 
     std::string ModNode::to_string()
     {
-        return "("+node_a.get()->to_string()+" % "+node_b.get()->to_string()+")";
+        return "("+node_a->to_string()+" % "+node_b->to_string()+")";
     } 
 
     OrNode::OrNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b)
@@ -232,7 +249,7 @@ namespace pluto
 
     std::string OrNode::to_string()
     {
-        return "("+node_a.get()->to_string()+" || "+node_b.get()->to_string()+")";
+        return "("+node_a->to_string()+" || "+node_b->to_string()+")";
     } 
 
     AndNode::AndNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b)
@@ -249,7 +266,7 @@ namespace pluto
 
     std::string AndNode::to_string()
     {
-        return "("+node_a.get()->to_string()+" && "+node_b.get()->to_string()+")";
+        return "("+node_a->to_string()+" && "+node_b->to_string()+")";
     } 
 
     XorNode::XorNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b)
@@ -266,7 +283,7 @@ namespace pluto
 
     std::string XorNode::to_string()
     {
-        return "("+node_a.get()->to_string()+" ^^ "+node_b.get()->to_string()+")";
+        return "("+node_a->to_string()+" ^^ "+node_b->to_string()+")";
     } 
 
     BOrNode::BOrNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b)
@@ -283,7 +300,7 @@ namespace pluto
 
     std::string BOrNode::to_string()
     {
-        return "("+node_a.get()->to_string()+" | "+node_b.get()->to_string()+")";
+        return "("+node_a->to_string()+" | "+node_b->to_string()+")";
     } 
 
     BAndNode::BAndNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b)
@@ -300,7 +317,7 @@ namespace pluto
 
     std::string BAndNode::to_string()
     {
-        return "("+node_a.get()->to_string()+" & "+node_b.get()->to_string()+")";
+        return "("+node_a->to_string()+" & "+node_b->to_string()+")";
     } 
 
     BXorNode::BXorNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b)
@@ -317,7 +334,7 @@ namespace pluto
 
     std::string BXorNode::to_string()
     {
-        return "("+node_a.get()->to_string()+" ^ "+node_b.get()->to_string()+")";
+        return "("+node_a->to_string()+" ^ "+node_b->to_string()+")";
     } 
 
     LShiftNode::LShiftNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b)
@@ -334,7 +351,7 @@ namespace pluto
 
     std::string LShiftNode::to_string()
     {
-        return "("+node_a.get()->to_string()+" << "+node_b.get()->to_string()+")";
+        return "("+node_a->to_string()+" << "+node_b->to_string()+")";
     } 
     
     RShiftNode::RShiftNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b)
@@ -351,7 +368,7 @@ namespace pluto
 
     std::string RShiftNode::to_string()
     {
-        return "("+node_a.get()->to_string()+" >> "+node_b.get()->to_string()+")";
+        return "("+node_a->to_string()+" >> "+node_b->to_string()+")";
     } 
 
     EENode::EENode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b)
@@ -368,7 +385,7 @@ namespace pluto
 
     std::string EENode::to_string()
     {
-        return "("+node_a.get()->to_string()+" == "+node_b.get()->to_string()+")";
+        return "("+node_a->to_string()+" == "+node_b->to_string()+")";
     } 
 
     NENode::NENode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b)
@@ -385,7 +402,7 @@ namespace pluto
 
     std::string NENode::to_string()
     {
-        return "("+node_a.get()->to_string()+" != "+node_b.get()->to_string()+")";
+        return "("+node_a->to_string()+" != "+node_b->to_string()+")";
     } 
 
     LTNode::LTNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b)
@@ -402,7 +419,7 @@ namespace pluto
 
     std::string LTNode::to_string()
     {
-        return "("+node_a.get()->to_string()+" < "+node_b.get()->to_string()+")";
+        return "("+node_a->to_string()+" < "+node_b->to_string()+")";
     } 
 
     LTENode::LTENode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b)
@@ -419,7 +436,7 @@ namespace pluto
 
     std::string LTENode::to_string()
     {
-        return "("+node_a.get()->to_string()+" <= "+node_b.get()->to_string()+")";
+        return "("+node_a->to_string()+" <= "+node_b->to_string()+")";
     } 
 
     GTNode::GTNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b)
@@ -436,7 +453,7 @@ namespace pluto
 
     std::string GTNode::to_string()
     {
-        return "("+node_a.get()->to_string()+" > "+node_b.get()->to_string()+")";
+        return "("+node_a->to_string()+" > "+node_b->to_string()+")";
     } 
 
     GTENode::GTENode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b)
@@ -453,7 +470,7 @@ namespace pluto
 
     std::string GTENode::to_string()
     {
-        return "("+node_a.get()->to_string()+" >= "+node_b.get()->to_string()+")";
+        return "("+node_a->to_string()+" >= "+node_b->to_string()+")";
     } 
 
     PlusNode::PlusNode(int line, std::shared_ptr<Node> node)
@@ -468,7 +485,7 @@ namespace pluto
 
     std::string PlusNode::to_string()
     {
-        return "(+ "+node.get()->to_string()+")";
+        return "(+ "+node->to_string()+")";
     } 
 
     MinusNode::MinusNode(int line, std::shared_ptr<Node> node)
@@ -483,7 +500,7 @@ namespace pluto
 
     std::string MinusNode::to_string()
     {
-        return "(- "+node.get()->to_string()+")";
+        return "(- "+node->to_string()+")";
     }   
     
     NotNode::NotNode(int line, std::shared_ptr<Node> node)
@@ -498,7 +515,7 @@ namespace pluto
 
     std::string NotNode::to_string()
     {
-        return "(! "+node.get()->to_string()+")";
+        return "(! "+node->to_string()+")";
     }  
 
     BNotNode::BNotNode(int line, std::shared_ptr<Node> node)
@@ -513,6 +530,6 @@ namespace pluto
 
     std::string BNotNode::to_string()
     {
-        return "(~ "+node.get()->to_string()+")";
+        return "(~ "+node->to_string()+")";
     }  
 }
