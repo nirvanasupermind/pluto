@@ -40,6 +40,8 @@ namespace pluto
         SEMICOLON,
         LPAREN,
         RPAREN,
+        LCURLY,
+        RCURLY,
         EOF_
     };
 

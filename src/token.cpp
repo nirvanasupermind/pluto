@@ -108,6 +108,10 @@ namespace pluto
             return "LPAREN";
         case RPAREN:
             return "RPAREN";
+        case LCURLY:
+            return "LCURLY";
+        case RCURLY:
+            return "RCURLY";
         case SEMICOLON:
             return "SEMICOLON";
         case EOF_:

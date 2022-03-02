@@ -218,6 +218,16 @@ namespace pluto
                 tokens.push_back(Token(line, RPAREN));
                 advance();
             }
+            else if (current_char() == '{')
+            {
+                tokens.push_back(Token(line, LCURLY));
+                advance();
+            }
+            else if (current_char() == '}')
+            {
+                tokens.push_back(Token(line, RCURLY));
+                advance();
+            }
             else if (current_char() == ';')
             {
                 tokens.push_back(Token(line, SEMICOLON));
