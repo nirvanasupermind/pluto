@@ -133,19 +133,19 @@ namespace pluto
         return "nil";
     } 
 
-    VarAssignNode::VarAssignNode(int line, std::string key, std::shared_ptr<Node> val)
+    VarDefNode::VarDefNode(int line, std::string key, std::shared_ptr<Node> val)
     {
         this->line = line;
         this->key = key;
         this->val = val;
     }
 
-    NodeKind VarAssignNode::kind()
+    NodeKind VarDefNode::kind()
     {
-        return VAR_ASSIGN_NODE;
+        return VAR_DEF_NODE;
     }
 
-    std::string VarAssignNode::to_string()
+    std::string VarDefNode::to_string()
     {
         return "(var "+key+" "+val->to_string()+")";
     }
@@ -473,6 +473,24 @@ namespace pluto
         return "("+node_a->to_string()+" >= "+node_b->to_string()+")";
     } 
 
+    AssignNode::AssignNode(int line, std::shared_ptr<Node> key, std::shared_ptr<Node> val)
+    {
+        this->line = line;
+        this->key = key;
+        this->val = val;
+    }
+
+    NodeKind AssignNode::kind()
+    {
+        return ASSIGN_NODE;
+    }
+
+    std::string AssignNode::to_string()
+    {
+        return "("+key->to_string()+" = "+val->to_string()+")";
+    }
+       
+    
     PlusNode::PlusNode(int line, std::shared_ptr<Node> node)
     {
         this->node = node;

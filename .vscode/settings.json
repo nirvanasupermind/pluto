@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "*.pluto": "pluto",
+        "memory": "cpp",
+        "iosfwd": "cpp"
+    }
+}

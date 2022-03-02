@@ -19,7 +19,7 @@ namespace pluto
         TRUE_NODE,
         FALSE_NODE,
         NIL_NODE,
-        VAR_ASSIGN_NODE,
+        VAR_DEF_NODE,
         ADD_NODE,
         SUBTRACT_NODE,
         MULTIPLY_NODE,
@@ -39,6 +39,7 @@ namespace pluto
         GT_NODE,
         LTE_NODE,
         GTE_NODE,
+        ASSIGN_NODE,
         PLUS_NODE,
         MINUS_NODE,
         NOT_NODE,
@@ -145,13 +146,13 @@ namespace pluto
         std::string to_string();
     };
 
-    class VarAssignNode : public Node
+    class VarDefNode : public Node
     {
     public:
         std::string key;
         std::shared_ptr<Node> val;
 
-        VarAssignNode(int line, std::string key, std::shared_ptr<Node> val);
+        VarDefNode(int line, std::string key, std::shared_ptr<Node> val);
 
         NodeKind kind();
 
@@ -400,6 +401,19 @@ namespace pluto
         std::shared_ptr<Node> node_b;
 
         GTENode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b);
+
+        NodeKind kind();
+
+        std::string to_string();
+    };
+
+    class AssignNode : public Node
+    {
+    public:
+        std::shared_ptr<Node> key;
+        std::shared_ptr<Node> val;
+
+        AssignNode(int line, std::shared_ptr<Node> key, std::shared_ptr<Node> val);
 
         NodeKind kind();
 

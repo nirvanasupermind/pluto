@@ -61,7 +61,7 @@ namespace pluto
     {
         if (current().type == VAR)
         {
-            return var_assign_stmt();
+            return var_def_stmt();
         }
 
         std::shared_ptr<Node> result = expr();
@@ -76,7 +76,7 @@ namespace pluto
         return result;
     }
 
-    std::shared_ptr<Node> Parser::var_assign_stmt()
+    std::shared_ptr<Node> Parser::var_def_stmt()
     {
         int ln = current().line;
 
@@ -91,7 +91,6 @@ namespace pluto
         {
             raise_error();
         }
-
 
         std::string key = current().name;
 
@@ -113,12 +112,25 @@ namespace pluto
 
         advance();
 
-        return std::shared_ptr<Node>(new VarAssignNode(ln, key, val));
+        return std::shared_ptr<Node>(new VarDefNode(ln, key, val));
     }
 
     std::shared_ptr<Node> Parser::expr()
     {
-        return band_expr();
+        return assign_expr();
+    }
+
+    std::shared_ptr<Node> Parser::assign_expr()
+    {
+        std::shared_ptr<Node> result = band_expr();
+
+        if (current().type == EQ)
+        {
+            advance();
+            result = std::shared_ptr<Node>(new AssignNode(result->line, result, assign_expr()));
+        }
+
+        return result;
     }
 
     std::shared_ptr<Node> Parser::band_expr()

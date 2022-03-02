@@ -82,6 +82,8 @@ namespace pluto
             return visit((LTENode *)node, env);
         case GTE_NODE:
             return visit((GTENode *)node, env);
+        case ASSIGN_NODE:
+            return visit((AssignNode *)node, env);
         case PLUS_NODE:
             return visit((PlusNode *)node, env);
         case MINUS_NODE:
@@ -90,8 +92,8 @@ namespace pluto
             return visit((NotNode *)node, env);
         case BNOT_NODE:
             return visit((BNotNode *)node, env);
-        case VAR_ASSIGN_NODE:
-            return visit((VarAssignNode *)node, env);
+        case VAR_DEF_NODE:
+            return visit((VarDefNode *)node, env);
         default:
             raise_error(node->line, "invalid node");
         }
@@ -492,6 +494,25 @@ std::shared_ptr<Entity> Interpreter::visit(NENode *node, std::shared_ptr<Env> en
         }
     }
 
+    std::shared_ptr<Entity> Interpreter::visit(AssignNode *node, std::shared_ptr<Env> env)
+    {
+        if(node->key->kind() != NAME_NODE) {
+            raise_error(node->line, "invalid left-hand side in assignment"); 
+        }
+
+        std::string key = ((NameNode *)node->key.get())->name;
+
+        if(!env->has(key)) {
+            raise_error(node->line, "'" + key + "' is not defined"); 
+        }
+
+        std::shared_ptr<Entity> val = visit(node->val, env);
+
+        env->set(key, val);
+
+        return val;
+    }
+
     std::shared_ptr<Entity> Interpreter::visit(PlusNode *node, std::shared_ptr<Env> env)
     {
         std::shared_ptr<Entity> a = visit(node->node, env);
@@ -557,7 +578,7 @@ std::shared_ptr<Entity> Interpreter::visit(NENode *node, std::shared_ptr<Env> en
     }
 
 
-    std::shared_ptr<Entity> Interpreter::visit(VarAssignNode *node, std::shared_ptr<Env> env)
+    std::shared_ptr<Entity> Interpreter::visit(VarDefNode *node, std::shared_ptr<Env> env)
     {
         if(env->map.count(node->key) == 1) {
             raise_error(node->line, "'" + node->key + "' is already defined"); 
@@ -568,6 +589,5 @@ std::shared_ptr<Entity> Interpreter::visit(NENode *node, std::shared_ptr<Env> en
         env->set(node->key, val);
 
         return val;
-
     }
 }

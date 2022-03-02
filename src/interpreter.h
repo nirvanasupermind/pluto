@@ -46,12 +46,13 @@ namespace pluto
         std::shared_ptr<Entity> visit(GTNode *node, std::shared_ptr<Env> env);
         std::shared_ptr<Entity> visit(LTENode *node, std::shared_ptr<Env> env);
         std::shared_ptr<Entity> visit(GTENode *node, std::shared_ptr<Env> env);
+        std::shared_ptr<Entity> visit(AssignNode *node, std::shared_ptr<Env> env);
         std::shared_ptr<Entity> visit(ModNode *node, std::shared_ptr<Env> env);
         std::shared_ptr<Entity> visit(PlusNode *node, std::shared_ptr<Env> env);
         std::shared_ptr<Entity> visit(MinusNode *node, std::shared_ptr<Env> env);
         std::shared_ptr<Entity> visit(NotNode *node, std::shared_ptr<Env> env);
         std::shared_ptr<Entity> visit(BNotNode *node, std::shared_ptr<Env> env);
-        std::shared_ptr<Entity> visit(VarAssignNode *node, std::shared_ptr<Env> env);
+        std::shared_ptr<Entity> visit(VarDefNode *node, std::shared_ptr<Env> env);
     };
 }
 
