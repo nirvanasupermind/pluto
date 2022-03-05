@@ -19,7 +19,6 @@ namespace pluto
         TRUE_NODE,
         FALSE_NODE,
         NIL_NODE,
-        VAR_DEF_NODE,
         ADD_NODE,
         SUBTRACT_NODE,
         MULTIPLY_NODE,
@@ -43,7 +42,10 @@ namespace pluto
         PLUS_NODE,
         MINUS_NODE,
         NOT_NODE,
-        BNOT_NODE
+        BNOT_NODE,
+        VAR_DEF_NODE,
+        BLOCK_NODE,
+        IF_NODE
     };
 
     class Node
@@ -140,19 +142,6 @@ namespace pluto
     {
     public:
         NilNode(int line);
-
-        NodeKind kind();
-
-        std::string to_string();
-    };
-
-    class VarDefNode : public Node
-    {
-    public:
-        std::string key;
-        std::shared_ptr<Node> val;
-
-        VarDefNode(int line, std::string key, std::shared_ptr<Node> val);
 
         NodeKind kind();
 
@@ -462,6 +451,44 @@ namespace pluto
         std::shared_ptr<Node> node;
 
         BNotNode(int line, std::shared_ptr<Node> node);
+
+        NodeKind kind();
+
+        std::string to_string();
+    };
+
+    class VarDefNode : public Node
+    {
+    public:
+        std::string key;
+        std::shared_ptr<Node> val;
+
+        VarDefNode(int line, std::string key, std::shared_ptr<Node> val);
+
+        NodeKind kind();
+
+        std::string to_string();
+    };
+
+    class BlockNode : public Node
+    {
+    public:
+        std::shared_ptr<Node> node;
+
+        BlockNode(int line, std::shared_ptr<Node> node);
+
+        NodeKind kind();
+
+        std::string to_string();
+    };
+
+    class IfNode : public Node
+    {
+    public:
+        std::shared_ptr<Node> cond;
+        std::shared_ptr<Node> body;
+
+        IfNode(int line, std::shared_ptr<Node> cond, std::shared_ptr<Node> body);
 
         NodeKind kind();
 

@@ -94,6 +94,10 @@ namespace pluto
             return visit((BNotNode *)node, env);
         case VAR_DEF_NODE:
             return visit((VarDefNode *)node, env);
+        case BLOCK_NODE:
+            return visit((BlockNode *)node, env);
+        case IF_NODE:
+            return visit((IfNode *)node, env);
         default:
             raise_error(node->line, "invalid node");
         }
@@ -101,6 +105,10 @@ namespace pluto
 
     std::shared_ptr<Entity> Interpreter::visit(ProgramNode *node, std::shared_ptr<Env> env)
     {
+        if(node->nodes.size() == 0) {
+            return std::shared_ptr<Entity>(new Nil());
+        }
+
         for(int i = 0; i < node->nodes.size() - 1; i++) {
             visit(node->nodes.at(i), env);
         }
@@ -120,6 +128,7 @@ namespace pluto
 
     std::shared_ptr<Entity> Interpreter::visit(StringNode *node, std::shared_ptr<Env> env)
     {
+        std::cout << "DEBUG " << Builtins::class_string.get() << '\n';
         std::shared_ptr<Env> string_env = ((Class *)(Builtins::class_string.get()))->env;
         return std::shared_ptr<Entity>(new Object(string_env));
     }
@@ -508,7 +517,7 @@ std::shared_ptr<Entity> Interpreter::visit(NENode *node, std::shared_ptr<Env> en
 
         std::shared_ptr<Entity> val = visit(node->val, env);
 
-        env->set(key, val);
+        env->resolve(key)->set(key, val);
 
         return val;
     }
@@ -577,7 +586,6 @@ std::shared_ptr<Entity> Interpreter::visit(NENode *node, std::shared_ptr<Env> en
         }
     }
 
-
     std::shared_ptr<Entity> Interpreter::visit(VarDefNode *node, std::shared_ptr<Env> env)
     {
         if(env->map.count(node->key) == 1) {
@@ -589,5 +597,23 @@ std::shared_ptr<Entity> Interpreter::visit(NENode *node, std::shared_ptr<Env> en
         env->set(node->key, val);
 
         return val;
+    }
+
+    std::shared_ptr<Entity> Interpreter::visit(BlockNode *node, std::shared_ptr<Env> env)
+    {
+        std::shared_ptr<Env> child_env = std::shared_ptr<Env>(new Env(env));
+
+        return visit(node->node, child_env);
+    }
+
+    std::shared_ptr<Entity> Interpreter::visit(IfNode *node, std::shared_ptr<Env> env)
+    {
+        std::shared_ptr<Entity> cond = visit(node->cond, env);
+
+        if(cond->is_true()) {
+            return visit(node->body, env);
+        } else {
+            return std::shared_ptr<Entity>(new Nil());
+        }
     }
 }

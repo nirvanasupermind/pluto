@@ -44,4 +44,14 @@ namespace pluto
             return map.count(key) == 1;
         }
     }
+
+    Env *Env::resolve(std::string key)
+    {        
+        if (map.count(key) == 0)
+        {
+            return this->parent.get();
+        } else {
+            return this;
+        }
+    }
 }

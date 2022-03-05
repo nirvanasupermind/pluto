@@ -17,7 +17,7 @@ namespace pluto
         Concept();
         Concept(std::shared_ptr<Env> env);
 
-        // std::string to_string();
+        bool is_true();
     };
 
     class Object : public Concept

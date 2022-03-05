@@ -17,6 +17,11 @@ namespace pluto
         this->env = env;
     }
 
+    bool Concept::is_true()
+    {
+        return true;
+    }
+
     Object::Object(std::shared_ptr<Env> env, std::string string_val) {
         this->env = env;
         this->string_val = string_val;

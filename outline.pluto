@@ -1,91 +1,91 @@
 class Object {
-    func constructor();
-    func clone();
+    def constructor();
+    def clone();
 }
 
-class Bool {
-    static const TRUE = Bool(true);
-    static const FALSE = Bool(false);
-    func constructor(val);
-    func equals(other);
-    func toString();
+class Boolean {
+    const TRUE = Boolean(true);
+    const FALSE = Boolean(false);
+    def constructor(val);
+    def equals(other);
+    def toString();
 }
 
-class Int {
-    func constructor(val);
-    func equals(other);
-    func intVal();
-    func doubleVal();
-    func toString();
-    static func parse(s);
+class Integer {
+    def constructor(val);
+    def equals(other);
+    def intVal();
+    def doubleVal();
+    def toString();
+    def parse(s);
 }
 
 class Double {
-    static const POSITIVE_INFINITY = Infinity;
-    static const NEGATIVE_INFINITY = -Infinity;
-    static const NaN = NaN;
-    func constructor(val);
-    func equals(other);
-    func intVal();
-    func doubleVal();
-    func toString();
-    static func parse(s);
+    const POSITIVE_INFINITY = Infinity;
+    const NEGATIVE_INFINITY = -Infinity;
+    const NaN = NaN;
+    def constructor(val);
+    def equals(other);
+    def intVal();
+    def doubleVal();
+    def toString();
+    def parse(s);
 }
 
 class Math {
-    static const E = 2.7182818284590452354;
-    static const PI = 3.14159265358979323846;
-    static func abs(a);
-    static func acos(a);
-    static func asin(a);
-    static func atan(a);
-    static func ceil(a);
-    static func cos(a);
-    static func floor(a);
-    static func log(a);
-    static func exp(a);
-    static func max(a, b);
-    static func min(a, b);
-    static func rand();
-    static func round(a);
-    static func sin(a);
-    static func sqrt(a);
-    static func tan(a);
+    const E = 2.7182818284590452354;
+    const PI = 3.14159265358979323846;
+    def abs(a);
+    def acos(a);
+    def asin(a);
+    def atan(a);
+    def ceil(a);
+    def cos(a);
+    def floor(a);
+    def log(a);
+    def exp(a);
+    def max(a, b);
+    def min(a, b);
+    def rand();
+    def round(a);
+    def sin(a);
+    def sqrt(a);
+    def tan(a);
 }
 
 class String {
-    func constructor();
-    func concat(other);
-    func contains(other);
-    func charAt(index);
-    func endsWith(suffix);
-    func equals(other);
-    func indexOf(search);
-    func length();
-    func repeat(amount);
-    func replace(search, replacement);
-    func split(separator);
-    func startsWith(prefix);
-    func toString();
+    def constructor();
+    def concat(other);
+    def contains(other);
+    def charAt(index);
+    def endsWith(suffix);
+    def equals(other);
+    def indexOf(search);
+    def length();
+    def repeat(amount);
+    def replace(search, replacement);
+    def split(separator);
+    def startsWith(prefix);
+    def toString();
 }
 
 class List {
-    func constructor();
-    func add(element);
-    func clear();
-    func get(index);
-    func remove(index);
-    func set(index, element);
-    func size();
-    func toString();
+    def constructor();
+    def add(element);
+    def clear();
+    def get(index);
+    def remove(index);
+    def set(index, element);
+    def size();
+    def toString();
 }
 
-class Func {
-    func constructor();  
+class Function {
+    def constructor();  
 }
 
 class System {
-    static func clock();
-    static func read();        
-    static func write(data);
+    def clock();
+    def read();        
+    def write(data);
 }

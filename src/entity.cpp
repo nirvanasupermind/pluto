@@ -9,6 +9,11 @@ namespace pluto
         this->int_val = int_val;
     }
 
+    bool Int::is_true()
+    {
+        return true;
+    }
+
     EntityKind Int::kind()
     {
         return INT_ENTITY;
@@ -22,6 +27,11 @@ namespace pluto
     Double::Double(double double_val)
     {
         this->double_val = double_val;
+    }
+
+    bool Double::is_true()
+    {
+        return true;
     }
 
     EntityKind Double::kind()
@@ -39,6 +49,11 @@ namespace pluto
         this->bool_val = bool_val;
     }
 
+    bool Bool::is_true()
+    {
+        return bool_val;
+    }
+
     EntityKind Bool::kind()
     {
         return BOOL_ENTITY;
@@ -49,17 +64,20 @@ namespace pluto
         return (bool_val ? "true": "false");
     }
 
-
     Nil::Nil()
     {
     }
 
+    bool Nil::is_true()
+    {
+        return false;
+    }
 
     EntityKind Nil::kind()
     {
         return NIL_ENTITY;
     }
-    
+
     std::string Nil::to_string()
     {
         return "nil";

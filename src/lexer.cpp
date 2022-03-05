@@ -324,6 +324,10 @@ namespace pluto
         {
             return Token(line, VAR);
         }
+        else if (name == "if")
+        {
+            return Token(line, IF);
+        }
         else
         {
             return Token(line, NAME, name, true);

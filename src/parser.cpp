@@ -43,13 +43,13 @@ namespace pluto
         return result;
     }
 
-    std::shared_ptr<Node> Parser::program()
+    std::shared_ptr<Node> Parser::program(TokenType end)
     {
         int ln = current().line;
 
         std::vector<std::shared_ptr<Node> > nodes;
 
-        while (current().type != EOF_)
+        while (current().type != end)
         {
             nodes.push_back(stmt());
         }
@@ -64,6 +64,16 @@ namespace pluto
             return var_def_stmt();
         }
 
+        if (current().type == LCURLY)
+        {
+            return block_stmt();
+        }
+
+        if (current().type == IF)
+        {
+            return if_stmt();
+        }
+
         std::shared_ptr<Node> result = expr();
 
         if (current().type != SEMICOLON)
@@ -76,6 +86,59 @@ namespace pluto
         return result;
     }
 
+    std::shared_ptr<Node> Parser::if_stmt()
+    {
+        int ln = current().line;
+
+        if (current().type != IF)
+        {
+            raise_error();
+        }
+
+        advance();
+
+        if (current().type != LPAREN) {
+            raise_error();
+        }
+
+        advance();
+
+        std::shared_ptr<Node> cond = expr();
+
+        if (current().type != RPAREN) {
+            raise_error();
+        }
+
+        advance();
+
+        std::shared_ptr<Node> body = block_stmt();
+
+        return std::shared_ptr<Node>(new IfNode(ln, cond, body));
+    }
+
+    std::shared_ptr<Node> Parser::block_stmt()
+    {
+        int ln = current().line;
+
+        if (current().type != LCURLY)
+        {
+            raise_error();
+        }
+
+        advance();
+
+        std::shared_ptr<Node> node = program(RCURLY);
+        
+        if (current().type != RCURLY)
+        {
+            raise_error();
+        }
+
+        advance();
+
+        return std::shared_ptr<Node>(new BlockNode(ln, node));
+    }
+    
     std::shared_ptr<Node> Parser::var_def_stmt()
     {
         int ln = current().line;

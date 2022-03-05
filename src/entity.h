@@ -19,6 +19,8 @@ namespace pluto
     class Entity
     {
     public:
+        virtual bool is_true() = 0;
+
         virtual EntityKind kind() = 0;
         
         virtual std::string to_string() = 0;
@@ -30,6 +32,8 @@ namespace pluto
         int int_val;
 
         Int(int int_val);
+
+        bool is_true();
 
         EntityKind kind();
 
@@ -43,6 +47,8 @@ namespace pluto
 
         Double(double double_val);
 
+        bool is_true();
+
         EntityKind kind();
 
         std::string to_string();
@@ -55,6 +61,8 @@ namespace pluto
 
         Bool(bool bool_val);
 
+        bool is_true();
+
         EntityKind kind();
 
         std::string to_string();
@@ -64,6 +72,8 @@ namespace pluto
     {
     public:
         Nil();
+
+        bool is_true();
 
         EntityKind kind();
 
