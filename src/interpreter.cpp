@@ -128,7 +128,6 @@ namespace pluto
 
     std::shared_ptr<Entity> Interpreter::visit(StringNode *node, std::shared_ptr<Env> env)
     {
-        std::cout << "DEBUG " << Builtins::class_string.get() << '\n';
         std::shared_ptr<Env> string_env = ((Class *)(Builtins::class_string.get()))->env;
         return std::shared_ptr<Entity>(new Object(string_env));
     }

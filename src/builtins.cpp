@@ -1,5 +1,6 @@
 #include <string>
 #include <memory>
+#include <iostream>
 
 #include "env.h"
 #include "entity.h"
@@ -8,6 +9,6 @@
 
 namespace pluto
 {
-    std::shared_ptr<Entity> Builtins::class_object(new Class());
-    std::shared_ptr<Entity> Builtins::class_string(new Class(((Class *)(Builtins::class_object.get()))->env));
+    const std::shared_ptr<Entity> Builtins::class_object = std::shared_ptr<Entity>(new Class());
+    const std::shared_ptr<Entity> Builtins::class_string = std::shared_ptr<Entity>(new Class(((Class *)(Builtins::class_object.get()))->env));
 }

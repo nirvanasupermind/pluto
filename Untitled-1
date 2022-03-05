@@ -1,0 +1,12 @@
+# entity
+#   nil
+#   integer
+#   double
+#   boolean
+#   concept
+#       object
+#           instances of Object
+#           instances of String
+#       class
+#       module
+
