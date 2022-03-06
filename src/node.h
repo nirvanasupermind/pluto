@@ -45,7 +45,9 @@ namespace pluto
         BNOT_NODE,
         VAR_DEF_NODE,
         BLOCK_NODE,
-        IF_NODE
+        IF_NODE,
+        IF_ELSE_NODE,
+        FOR_NODE
     };
 
     class Node
@@ -489,6 +491,35 @@ namespace pluto
         std::shared_ptr<Node> body;
 
         IfNode(int line, std::shared_ptr<Node> cond, std::shared_ptr<Node> body);
+
+        NodeKind kind();
+
+        std::string to_string();
+    };
+
+    class IfElseNode : public Node
+    {
+    public:
+        std::shared_ptr<Node> cond;
+        std::shared_ptr<Node> body;
+        std::shared_ptr<Node> else_body;
+
+        IfElseNode(int line, std::shared_ptr<Node> cond, std::shared_ptr<Node> body, std::shared_ptr<Node> else_body);
+
+        NodeKind kind();
+
+        std::string to_string();
+    };
+
+    class ForNode : public Node
+    {
+    public:
+        std::shared_ptr<Node> stmt_a;
+        std::shared_ptr<Node> stmt_b;
+        std::shared_ptr<Node> stmt_c;
+        std::shared_ptr<Node> body;
+
+        ForNode(int line, std::shared_ptr<Node> stmt_a, std::shared_ptr<Node> stmt_b, std::shared_ptr<Node> stmt_c, std::shared_ptr<Node> body);
 
         NodeKind kind();
 

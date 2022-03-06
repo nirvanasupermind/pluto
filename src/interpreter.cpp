@@ -98,6 +98,10 @@ namespace pluto
             return visit((BlockNode *)node, env);
         case IF_NODE:
             return visit((IfNode *)node, env);
+        case IF_ELSE_NODE:
+            return visit((IfElseNode *)node, env);
+        case FOR_NODE:
+            return visit((ForNode *)node, env);
         default:
             raise_error(node->line, "invalid node");
         }
@@ -105,11 +109,13 @@ namespace pluto
 
     std::shared_ptr<Entity> Interpreter::visit(ProgramNode *node, std::shared_ptr<Env> env)
     {
-        if(node->nodes.size() == 0) {
+        if (node->nodes.size() == 0)
+        {
             return std::shared_ptr<Entity>(new Nil());
         }
 
-        for(int i = 0; i < node->nodes.size() - 1; i++) {
+        for (int i = 0; i < node->nodes.size() - 1; i++)
+        {
             visit(node->nodes.at(i), env);
         }
 
@@ -134,10 +140,13 @@ namespace pluto
 
     std::shared_ptr<Entity> Interpreter::visit(NameNode *node, std::shared_ptr<Env> env)
     {
-        if(env->has(node->name)) {
+        if (env->has(node->name))
+        {
             return env->get(node->name);
-        } else {
-            raise_error(node->line, "'" + node->name + "' is not defined"); 
+        }
+        else
+        {
+            raise_error(node->line, "'" + node->name + "' is not defined");
         }
     }
 
@@ -426,8 +435,8 @@ namespace pluto
             raise_error(node->line, "invalid operands for binary operator '=='");
         }
     }
-    
-std::shared_ptr<Entity> Interpreter::visit(NENode *node, std::shared_ptr<Env> env)
+
+    std::shared_ptr<Entity> Interpreter::visit(NENode *node, std::shared_ptr<Env> env)
     {
         std::shared_ptr<Entity> a = visit(node->node_a, env);
         std::shared_ptr<Entity> b = visit(node->node_b, env);
@@ -504,18 +513,21 @@ std::shared_ptr<Entity> Interpreter::visit(NENode *node, std::shared_ptr<Env> en
 
     std::shared_ptr<Entity> Interpreter::visit(AssignNode *node, std::shared_ptr<Env> env)
     {
-        if(node->key->kind() != NAME_NODE) {
-            raise_error(node->line, "invalid left-hand side in assignment"); 
+        if (node->key->kind() != NAME_NODE)
+        {
+            raise_error(node->line, "invalid left-hand side in assignment");
         }
 
         std::string key = ((NameNode *)node->key.get())->name;
 
-        if(!env->has(key)) {
-            raise_error(node->line, "'" + key + "' is not defined"); 
+        if (!env->has(key))
+        {
+            raise_error(node->line, "'" + key + "' is not defined");
         }
 
         std::shared_ptr<Entity> val = visit(node->val, env);
 
+        // std::cout << "DBG " << (env->resolve(key) == env.get()) << '\n';
         env->resolve(key)->set(key, val);
 
         return val;
@@ -587,8 +599,9 @@ std::shared_ptr<Entity> Interpreter::visit(NENode *node, std::shared_ptr<Env> en
 
     std::shared_ptr<Entity> Interpreter::visit(VarDefNode *node, std::shared_ptr<Env> env)
     {
-        if(env->map.count(node->key) == 1) {
-            raise_error(node->line, "'" + node->key + "' is already defined"); 
+        if (env->map.count(node->key) == 1)
+        {
+            raise_error(node->line, "'" + node->key + "' is already defined");
         }
 
         std::shared_ptr<Entity> val = visit(node->val, env);
@@ -609,10 +622,47 @@ std::shared_ptr<Entity> Interpreter::visit(NENode *node, std::shared_ptr<Env> en
     {
         std::shared_ptr<Entity> cond = visit(node->cond, env);
 
-        if(cond->is_true()) {
+        if (cond->is_true())
+        {
             return visit(node->body, env);
-        } else {
+        }
+        else
+        {
             return std::shared_ptr<Entity>(new Nil());
         }
+    }
+
+    std::shared_ptr<Entity> Interpreter::visit(IfElseNode *node, std::shared_ptr<Env> env)
+    {
+        std::shared_ptr<Entity> cond = visit(node->cond, env);
+
+        if (cond->is_true())
+        {
+            return visit(node->body, env);
+        }
+        else
+        {
+            return visit(node->else_body, env);
+        }
+    }
+
+    std::shared_ptr<Entity> Interpreter::visit(ForNode *node, std::shared_ptr<Env> env)
+    {
+        visit(node->stmt_a, env);
+
+        while(true) {
+            std::shared_ptr<Entity> cond = visit(node->stmt_b, env);
+
+            if (!cond->is_true())
+            {
+                break;
+            }
+
+            visit(node->stmt_c, env);
+
+            visit(node->body, env);
+        }
+
+        return std::shared_ptr<Entity>(new Nil());
     }
 }

@@ -62,6 +62,10 @@ namespace pluto
             return "VAR";
         case IF:
             return "IF";
+        case ELSE:
+            return "ELSE";
+        case FOR:
+            return "FOR";
         case PLUS:
             return "PLUS";
         case MINUS:

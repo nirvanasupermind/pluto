@@ -328,6 +328,14 @@ namespace pluto
         {
             return Token(line, IF);
         }
+        else if (name == "else")
+        {
+            return Token(line, ELSE);
+        }
+        else if (name == "for")
+        {
+            return Token(line, FOR);
+        }
         else
         {
             return Token(line, NAME, name, true);

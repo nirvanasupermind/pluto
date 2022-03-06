@@ -591,4 +591,41 @@ namespace pluto
     {
         return "(if "+cond->to_string()+ " "+body->to_string()+")";
     }
+        
+    IfElseNode::IfElseNode(int line, std::shared_ptr<Node> cond, std::shared_ptr<Node> body, std::shared_ptr<Node> else_body)
+    {
+        this->line = line;
+        this->cond = cond;
+        this->body = body;
+        this->else_body = else_body;
+    }
+
+    NodeKind IfElseNode::kind()
+    {
+        return IF_ELSE_NODE;
+    }
+
+    std::string IfElseNode::to_string()
+    {
+        return "(if-else "+cond->to_string()+ " "+body->to_string()+")";
+    }
+
+    ForNode::ForNode(int line, std::shared_ptr<Node> stmt_a, std::shared_ptr<Node> stmt_b, std::shared_ptr<Node> stmt_c, std::shared_ptr<Node> body)
+    {
+        this->line = line;
+        this->stmt_a = stmt_a;
+        this->stmt_b = stmt_b;
+        this->stmt_c = stmt_c;
+        this->body = body;
+    }
+
+    NodeKind ForNode::kind()
+    {
+        return FOR_NODE;
+    }
+
+    std::string ForNode::to_string()
+    {
+        return "(for "+stmt_a->to_string()+ " "+stmt_b->to_string()+ " "+stmt_c->to_string()+ " "+body->to_string()+")";
+    }
 }

@@ -74,6 +74,11 @@ namespace pluto
             return if_stmt();
         }
 
+        if (current().type == FOR)
+        {
+            return for_stmt();
+        }
+
         std::shared_ptr<Node> result = expr();
 
         if (current().type != SEMICOLON)
@@ -85,6 +90,39 @@ namespace pluto
 
         return result;
     }
+
+    std::shared_ptr<Node> Parser::for_stmt()
+    {
+        int ln = current().line;
+
+        if (current().type != FOR)
+        {
+            raise_error();
+        }
+
+        advance();
+
+        if (current().type != LPAREN) {
+            raise_error();
+        }
+
+        advance();
+
+        std::shared_ptr<Node> stmt_a = stmt();
+        std::shared_ptr<Node> stmt_b = stmt();
+        std::shared_ptr<Node> stmt_c = stmt();
+
+        if (current().type != RPAREN) {
+            raise_error();
+        }
+
+        advance();
+
+        std::shared_ptr<Node> body = block_stmt();
+
+        return std::shared_ptr<Node>(new ForNode(ln, stmt_a, stmt_b, stmt_c, body));
+    }
+
 
     std::shared_ptr<Node> Parser::if_stmt()
     {
@@ -112,6 +150,14 @@ namespace pluto
         advance();
 
         std::shared_ptr<Node> body = block_stmt();
+
+        if (current().type == ELSE) {
+            advance();
+
+            std::shared_ptr<Node> else_body = block_stmt();
+
+            return std::shared_ptr<Node>(new IfElseNode(ln, cond, body, else_body));
+        }
 
         return std::shared_ptr<Node>(new IfNode(ln, cond, body));
     }

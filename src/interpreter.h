@@ -54,7 +54,9 @@ namespace pluto
         std::shared_ptr<Entity> visit(BNotNode *node, std::shared_ptr<Env> env);
         std::shared_ptr<Entity> visit(VarDefNode *node, std::shared_ptr<Env> env);
         std::shared_ptr<Entity> visit(BlockNode *node, std::shared_ptr<Env> env);
-        std::shared_ptr<Entity> visit(IfNode *node, std::shared_ptr<Env> env);        
+        std::shared_ptr<Entity> visit(IfNode *node, std::shared_ptr<Env> env);
+        std::shared_ptr<Entity> visit(IfElseNode *node, std::shared_ptr<Env> env); 
+        std::shared_ptr<Entity> visit(ForNode *node, std::shared_ptr<Env> env);                               
     };
 }
 
