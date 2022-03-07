@@ -4,6 +4,26 @@
 
 namespace pluto
 {
+    Byte::Byte(signed char byte_val)
+    {
+        this->byte_val = byte_val;
+    }
+
+    bool Byte::is_true()
+    {
+        return true;
+    }
+
+    EntityKind Byte::kind()
+    {
+        return BYTE_ENTITY;
+    }
+
+    std::string Byte::to_string()
+    {
+        return std::to_string((int)byte_val);
+    }
+
     Int::Int(long int int_val)
     {
         this->int_val = int_val;

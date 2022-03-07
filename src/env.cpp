@@ -19,7 +19,7 @@ namespace pluto
     void Env::set(std::string key, std::shared_ptr<Entity> val, bool is_const)
     {
         map[key] = val;
-        constness[key] = is_const;
+        constness_map[key] = is_const;
     }
 
     std::shared_ptr<Entity> Env::get(std::string key)
@@ -31,6 +31,18 @@ namespace pluto
         else
         {
             return map.at(key);
+        }
+    }
+
+    bool Env::get_constness(std::string key)
+    {
+        if (!constness_map.at(key) && parent.get() != nullptr)
+        {
+            return parent.get()->get_constness(key);
+        }
+        else
+        {
+            return constness_map.at(key);
         }
     }
 

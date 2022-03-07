@@ -7,6 +7,7 @@ namespace pluto
 {
     enum TokenType
     {
+        BYTE,
         INT,
         DOUBLE,
         STRING,
@@ -55,12 +56,14 @@ namespace pluto
     public:
         int line;
         TokenType type;
+        signed char byte_val;
         long int int_val;
         double double_val;
         std::string string_val;
         std::string name;
 
         Token(int line, TokenType type);
+            Token(int line, TokenType type, signed char byte_val);
         Token(int line, TokenType type, long int int_val);
         Token(int line, TokenType type, double double_val);
         Token(int line, TokenType type, std::string string_val, bool is_name = false);

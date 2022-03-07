@@ -12,6 +12,7 @@ namespace pluto
     enum NodeKind
     {
         PROGRAM_NODE,
+        BYTE_NODE,
         INT_NODE,
         DOUBLE_NODE,
         STRING_NODE,
@@ -68,6 +69,18 @@ namespace pluto
         std::vector<std::shared_ptr<Node> > nodes;
 
         ProgramNode(int line, std::vector<std::shared_ptr<Node> > nodes);
+
+        NodeKind kind();
+
+        std::string to_string();
+    };
+
+    class ByteNode : public Node
+    {
+    public:
+        signed char byte_val;
+
+        ByteNode(int line, signed char byte_val);
 
         NodeKind kind();
 

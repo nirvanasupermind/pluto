@@ -131,7 +131,7 @@ namespace pluto
             }
             else if (current_char() == '!')
             {
-                 int ln = line;
+                int ln = line;
 
                 advance();
 
@@ -249,12 +249,21 @@ namespace pluto
     {
         std::string val;
         int dot_count = 0;
+        int y_count = 0;
 
-        while (pos < text.length() && (std::isdigit(current_char()) || current_char() == '.'))
+        while (pos < text.length() && (std::isdigit(current_char()) || current_char() == '.' || current_char() == 'y' || current_char() == 'Y'))
         {
             if (current_char() == '.')
             {
-                if (++dot_count >= 2)
+                if (++dot_count >= 2 || y_count >= 1)
+                {
+                    break;
+                }
+            }
+
+            if (current_char() == 'y' || current_char() == 'Y')
+            {
+                if (++y_count >= 2 || dot_count >= 1)
                 {
                     break;
                 }
@@ -264,13 +273,16 @@ namespace pluto
             advance();
         }
 
-        if (dot_count == 0)
+        if (y_count == 1)
         {
-            return Token(line, INT, std::stol(val));
+            return Token(line, BYTE, (signed char)std::stoi(val));
         }
-        else
+        else if(dot_count == 1)
         {
             return Token(line, DOUBLE, std::stod(val));
+        } 
+        else {
+            return Token(line, INT, std::stol(val));
         }
     }
 

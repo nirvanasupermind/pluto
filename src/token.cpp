@@ -11,6 +11,13 @@ namespace pluto
         this->type = type;
     }
 
+    Token::Token(int line, TokenType type, signed char byte_val)
+    {
+        this->line = line;
+        this->type = type;
+        this->byte_val = byte_val;
+    }
+
     Token::Token(int line, TokenType type, long int int_val)
     {
         this->line = line;
@@ -44,6 +51,8 @@ namespace pluto
     {
         switch (type)
         {
+        case BYTE:
+            return "BYTE:" + std::to_string(byte_val);
         case INT:
             return "INT:" + std::to_string(int_val);
         case DOUBLE:

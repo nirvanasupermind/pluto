@@ -13,13 +13,14 @@ namespace pluto
     {
     public:
         std::map<std::string, std::shared_ptr<Entity> > map;
-        std::map<std::string, bool > constness;
+        std::map<std::string, bool > constness_map;
         std::shared_ptr<Env> parent;
         Env();
         Env(std::shared_ptr<Env> parent);
         void set(std::string key, std::shared_ptr<Entity> val, bool is_const = false);
         void set_const(std::string key, std::shared_ptr<Entity> val);
         std::shared_ptr<Entity> get(std::string key);
+        bool get_constness(std::string key);
         bool has(std::string key);
         Env *resolve(std::string key);
     };

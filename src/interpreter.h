@@ -23,6 +23,7 @@ namespace pluto
         std::shared_ptr<Entity> visit(std::shared_ptr<Node> node, std::shared_ptr<Env> env);
         std::shared_ptr<Entity> visit(Node *node, std::shared_ptr<Env> env);
         std::shared_ptr<Entity> visit(ProgramNode *node, std::shared_ptr<Env> env);
+        std::shared_ptr<Entity> visit(ByteNode *node, std::shared_ptr<Env> env);
         std::shared_ptr<Entity> visit(IntNode *node, std::shared_ptr<Env> env);
         std::shared_ptr<Entity> visit(DoubleNode *node, std::shared_ptr<Env> env);
         std::shared_ptr<Entity> visit(StringNode *node, std::shared_ptr<Env> env);

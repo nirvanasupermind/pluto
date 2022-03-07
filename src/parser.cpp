@@ -591,6 +591,14 @@ namespace pluto
 
             return result;
         }
+        else if (current_token.type == BYTE)
+        {
+            advance();
+
+            std::shared_ptr<Node> result = std::shared_ptr<Node>(new ByteNode(current_token.line, current_token.byte_val));
+
+            return result;
+        }
         else if (current_token.type == INT)
         {
             advance();
