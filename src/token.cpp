@@ -11,7 +11,7 @@ namespace pluto
         this->type = type;
     }
 
-    Token::Token(int line, TokenType type, std::int32_t int_val)
+    Token::Token(int line, TokenType type, long int int_val)
     {
         this->line = line;
         this->type = type;
@@ -60,6 +60,8 @@ namespace pluto
             return "NIL";
         case VAR:
             return "VAR";
+        case CONST:
+            return "CONST";
         case IF:
             return "IF";
         case ELSE:

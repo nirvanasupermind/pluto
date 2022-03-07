@@ -44,10 +44,12 @@ namespace pluto
         NOT_NODE,
         BNOT_NODE,
         VAR_DEF_NODE,
+        CONST_DEF_NODE,
         BLOCK_NODE,
         IF_NODE,
         IF_ELSE_NODE,
-        FOR_NODE
+        FOR_NODE,
+        WHILE_NODE
     };
 
     class Node
@@ -75,9 +77,9 @@ namespace pluto
     class IntNode : public Node
     {
     public:
-        int int_val;
+        long int int_val;
 
-        IntNode(int line, int int_val);
+        IntNode(int line, long int int_val);
 
         NodeKind kind();
 
@@ -472,6 +474,19 @@ namespace pluto
         std::string to_string();
     };
 
+    class ConstDefNode : public Node
+    {
+    public:
+        std::string key;
+        std::shared_ptr<Node> val;
+
+        ConstDefNode(int line, std::string key, std::shared_ptr<Node> val);
+
+        NodeKind kind();
+
+        std::string to_string();
+    };
+
     class BlockNode : public Node
     {
     public:
@@ -520,6 +535,19 @@ namespace pluto
         std::shared_ptr<Node> body;
 
         ForNode(int line, std::shared_ptr<Node> stmt_a, std::shared_ptr<Node> stmt_b, std::shared_ptr<Node> stmt_c, std::shared_ptr<Node> body);
+
+        NodeKind kind();
+
+        std::string to_string();
+    };
+
+    class WhileNode : public Node
+    {
+    public:
+        std::shared_ptr<Node> cond;
+        std::shared_ptr<Node> body;
+
+        WhileNode(int line, std::shared_ptr<Node> cond, std::shared_ptr<Node> body);
 
         NodeKind kind();
 

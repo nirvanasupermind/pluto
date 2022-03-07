@@ -1,91 +1,91 @@
 class Object {
-    def constructor();
-    def clone();
+    func constructor();
+    func clone();
 }
 
 class Boolean {
     const TRUE = Boolean(true);
     const FALSE = Boolean(false);
-    def constructor(val);
-    def equals(other);
-    def toString();
+    func constructor(val);
+    func equals(other);
+    func toString();
 }
 
 class Integer {
-    def constructor(val);
-    def equals(other);
-    def intVal();
-    def doubleVal();
-    def toString();
-    def parse(s);
+    func constructor(val);
+    func equals(other);
+    func intVal();
+    func doubleVal();
+    func toString();
+    func parse(s);
 }
 
 class Double {
     const POSITIVE_INFINITY = Infinity;
     const NEGATIVE_INFINITY = -Infinity;
     const NaN = NaN;
-    def constructor(val);
-    def equals(other);
-    def intVal();
-    def doubleVal();
-    def toString();
-    def parse(s);
+    func constructor(val);
+    func equals(other);
+    func intVal();
+    func doubleVal();
+    func toString();
+    func parse(s);
 }
 
 class Math {
     const E = 2.7182818284590452354;
     const PI = 3.14159265358979323846;
-    def abs(a);
-    def acos(a);
-    def asin(a);
-    def atan(a);
-    def ceil(a);
-    def cos(a);
-    def floor(a);
-    def log(a);
-    def exp(a);
-    def max(a, b);
-    def min(a, b);
-    def rand();
-    def round(a);
-    def sin(a);
-    def sqrt(a);
-    def tan(a);
+    func abs(a);
+    func acos(a);
+    func asin(a);
+    func atan(a);
+    func ceil(a);
+    func cos(a);
+    func floor(a);
+    func log(a);
+    func exp(a);
+    func max(a, b);
+    func min(a, b);
+    func rand();
+    func round(a);
+    func sin(a);
+    func sqrt(a);
+    func tan(a);
 }
 
 class String {
-    def constructor();
-    def concat(other);
-    def contains(other);
-    def charAt(index);
-    def endsWith(suffix);
-    def equals(other);
-    def indexOf(search);
-    def length();
-    def repeat(amount);
-    def replace(search, replacement);
-    def split(separator);
-    def startsWith(prefix);
-    def toString();
+    func constructor();
+    func concat(other);
+    func contains(other);
+    func charAt(index);
+    func endsWith(suffix);
+    func equals(other);
+    func indexOf(search);
+    func length();
+    func repeat(amount);
+    func replace(search, replacement);
+    func split(separator);
+    func startsWith(prefix);
+    func toString();
 }
 
 class List {
-    def constructor();
-    def add(element);
-    def clear();
-    def get(index);
-    def remove(index);
-    def set(index, element);
-    def size();
-    def toString();
+    func constructor();
+    func add(element);
+    func clear();
+    func get(index);
+    func remove(index);
+    func set(index, element);
+    func size();
+    func toString();
 }
 
 class Function {
-    def constructor();  
+    func constructor();  
 }
 
 class System {
-    def clock();
-    def read();        
-    def write(data);
+    func clock();
+    func read();        
+    func write(data);
 }

@@ -27,9 +27,11 @@ namespace pluto
         std::shared_ptr<Node> parse();
         std::shared_ptr<Node> program(TokenType end = EOF_);
         std::shared_ptr<Node> stmt();
+        std::shared_ptr<Node> while_stmt();
         std::shared_ptr<Node> for_stmt();
         std::shared_ptr<Node> if_stmt();
         std::shared_ptr<Node> block_stmt();
+        std::shared_ptr<Node> const_def_stmt();
         std::shared_ptr<Node> var_def_stmt();
         std::shared_ptr<Node> expr();
         std::shared_ptr<Node> assign_expr();

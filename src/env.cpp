@@ -16,9 +16,10 @@ namespace pluto
         this->parent = parent;
     }
 
-    void Env::set(std::string key, std::shared_ptr<Entity> val)
+    void Env::set(std::string key, std::shared_ptr<Entity> val, bool is_const)
     {
         map[key] = val;
+        constness[key] = is_const;
     }
 
     std::shared_ptr<Entity> Env::get(std::string key)

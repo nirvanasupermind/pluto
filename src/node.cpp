@@ -33,7 +33,7 @@ namespace pluto
         return result;
     }
 
-    IntNode::IntNode(int line, int int_val)
+    IntNode::IntNode(int line, long int int_val)
     {
         this->line = line;
         this->int_val = int_val;
@@ -157,6 +157,23 @@ namespace pluto
     std::string VarDefNode::to_string()
     {
         return "(var "+key+" "+val->to_string()+")";
+    }
+
+    ConstDefNode::ConstDefNode(int line, std::string key, std::shared_ptr<Node> val)
+    {
+        this->line = line;
+        this->key = key;
+        this->val = val;
+    }
+
+    NodeKind ConstDefNode::kind()
+    {
+        return CONST_DEF_NODE;
+    }
+
+    std::string ConstDefNode::to_string()
+    {
+        return "(const "+key+" "+val->to_string()+")";
     }
 
     AddNode::AddNode(int line, std::shared_ptr<Node> node_a, std::shared_ptr<Node> node_b)
@@ -627,5 +644,22 @@ namespace pluto
     std::string ForNode::to_string()
     {
         return "(for "+stmt_a->to_string()+ " "+stmt_b->to_string()+ " "+stmt_c->to_string()+ " "+body->to_string()+")";
+    }
+
+    WhileNode::WhileNode(int line, std::shared_ptr<Node> cond, std::shared_ptr<Node> body)
+    {
+        this->line = line;
+        this->cond = cond;
+        this->body = body;
+    }
+
+    NodeKind WhileNode::kind()
+    {
+        return WHILE_NODE;
+    }
+
+    std::string WhileNode::to_string()
+    {
+        return "(while "+cond->to_string()+ " "+body->to_string()+")";
     }
 }

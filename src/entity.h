@@ -29,9 +29,9 @@ namespace pluto
     class Int : public Entity
     {
     public:
-        int int_val;
+        long int int_val;
 
-        Int(int int_val);
+        Int(long int int_val);
 
         bool is_true();
 

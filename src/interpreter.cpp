@@ -94,6 +94,8 @@ namespace pluto
             return visit((BNotNode *)node, env);
         case VAR_DEF_NODE:
             return visit((VarDefNode *)node, env);
+        case CONST_DEF_NODE:
+            return visit((ConstDefNode *)node, env);
         case BLOCK_NODE:
             return visit((BlockNode *)node, env);
         case IF_NODE:
@@ -102,6 +104,8 @@ namespace pluto
             return visit((IfElseNode *)node, env);
         case FOR_NODE:
             return visit((ForNode *)node, env);
+        case WHILE_NODE:
+            return visit((WhileNode *)node, env);
         default:
             raise_error(node->line, "invalid node");
         }
@@ -257,6 +261,9 @@ namespace pluto
         }
         else if (a->kind() == INT_ENTITY && b->kind() == DOUBLE_ENTITY)
         {
+            if(((Double *)b.get())->double_val == 0.0) {
+                return std::shared_ptr<Entity>(new Double(inf));
+            }
             return std::shared_ptr<Entity>(new Double(((Int *)a.get())->int_val / ((Double *)b.get())->double_val));
         }
         else if (a->kind() == DOUBLE_ENTITY && b->kind() == INT_ENTITY)
@@ -426,9 +433,29 @@ namespace pluto
         std::shared_ptr<Entity> a = visit(node->node_a, env);
         std::shared_ptr<Entity> b = visit(node->node_b, env);
 
-        if (a->kind() == INT_ENTITY && b->kind() == INT_ENTITY)
+        if (a->kind() == BOOL_ENTITY && b->kind() == BOOL_ENTITY)
+        {
+            return std::shared_ptr<Entity>(new Bool(((Bool *)a.get())->bool_val == ((Bool *)b.get())->bool_val));
+        } 
+        else if (a->kind() == INT_ENTITY && b->kind() == INT_ENTITY)
         {
             return std::shared_ptr<Entity>(new Bool(((Int *)a.get())->int_val == ((Int *)b.get())->int_val));
+        }
+        else if (a->kind() == INT_ENTITY && b->kind() == DOUBLE_ENTITY)
+        {
+            return std::shared_ptr<Entity>(new Bool(((Int *)a.get())->int_val == ((Double *)b.get())->double_val));
+        }
+        else if (a->kind() == DOUBLE_ENTITY && b->kind() == INT_ENTITY)
+        {
+            return std::shared_ptr<Entity>(new Bool(((Double *)a.get())->double_val == ((Int *)b.get())->int_val));
+        }
+        else if (a->kind() == DOUBLE_ENTITY && b->kind() == DOUBLE_ENTITY)
+        {
+            return std::shared_ptr<Entity>(new Bool(((Double *)a.get())->double_val == ((Double *)b.get())->double_val));
+        }
+        else if (a->kind() == OBJECT_ENTITY && b->kind() == OBJECT_ENTITY)
+        {
+            return std::shared_ptr<Entity>(new Bool(a.get() == b.get()));
         }
         else
         {
@@ -441,13 +468,33 @@ namespace pluto
         std::shared_ptr<Entity> a = visit(node->node_a, env);
         std::shared_ptr<Entity> b = visit(node->node_b, env);
 
-        if (a->kind() == INT_ENTITY && b->kind() == INT_ENTITY)
+        if (a->kind() == BOOL_ENTITY && b->kind() == BOOL_ENTITY)
+        {
+            return std::shared_ptr<Entity>(new Bool(((Bool *)a.get())->bool_val != ((Bool *)b.get())->bool_val));
+        } 
+        else if (a->kind() == INT_ENTITY && b->kind() == INT_ENTITY)
         {
             return std::shared_ptr<Entity>(new Bool(((Int *)a.get())->int_val != ((Int *)b.get())->int_val));
         }
+        else if (a->kind() == INT_ENTITY && b->kind() == DOUBLE_ENTITY)
+        {
+            return std::shared_ptr<Entity>(new Bool(((Int *)a.get())->int_val != ((Double *)b.get())->double_val));
+        }
+        else if (a->kind() == DOUBLE_ENTITY && b->kind() == INT_ENTITY)
+        {
+            return std::shared_ptr<Entity>(new Bool(((Double *)a.get())->double_val != ((Int *)b.get())->int_val));
+        }
+        else if (a->kind() == DOUBLE_ENTITY && b->kind() == DOUBLE_ENTITY)
+        {
+            return std::shared_ptr<Entity>(new Bool(((Double *)a.get())->double_val != ((Double *)b.get())->double_val));
+        }
+        else if (a->kind() == OBJECT_ENTITY && b->kind() == OBJECT_ENTITY)
+        {
+            return std::shared_ptr<Entity>(new Bool(a.get() != b.get()));
+        }
         else
         {
-            raise_error(node->line, "invalid operands for binary operator '=='");
+            raise_error(node->line, "invalid operands for binary operator '!='");
         }
     }
 
@@ -459,6 +506,18 @@ namespace pluto
         if (a->kind() == INT_ENTITY && b->kind() == INT_ENTITY)
         {
             return std::shared_ptr<Entity>(new Bool(((Int *)a.get())->int_val < ((Int *)b.get())->int_val));
+        }
+        else if (a->kind() == INT_ENTITY && b->kind() == DOUBLE_ENTITY)
+        {
+            return std::shared_ptr<Entity>(new Bool(((Int *)a.get())->int_val < ((Double *)b.get())->double_val));
+        }
+        else if (a->kind() == DOUBLE_ENTITY && b->kind() == INT_ENTITY)
+        {
+            return std::shared_ptr<Entity>(new Bool(((Double *)a.get())->double_val < ((Int *)b.get())->int_val));
+        }
+        else if (a->kind() == DOUBLE_ENTITY && b->kind() == DOUBLE_ENTITY)
+        {
+            return std::shared_ptr<Entity>(new Bool(((Double *)a.get())->double_val < ((Double *)b.get())->double_val));
         }
         else
         {
@@ -475,6 +534,18 @@ namespace pluto
         {
             return std::shared_ptr<Entity>(new Bool(((Int *)a.get())->int_val > ((Int *)b.get())->int_val));
         }
+        else if (a->kind() == INT_ENTITY && b->kind() == DOUBLE_ENTITY)
+        {
+            return std::shared_ptr<Entity>(new Bool(((Int *)a.get())->int_val > ((Double *)b.get())->double_val));
+        }
+        else if (a->kind() == DOUBLE_ENTITY && b->kind() == INT_ENTITY)
+        {
+            return std::shared_ptr<Entity>(new Bool(((Double *)a.get())->double_val > ((Int *)b.get())->int_val));
+        }
+        else if (a->kind() == DOUBLE_ENTITY && b->kind() == DOUBLE_ENTITY)
+        {
+            return std::shared_ptr<Entity>(new Bool(((Double *)a.get())->double_val > ((Double *)b.get())->double_val));
+        }
         else
         {
             raise_error(node->line, "invalid operands for binary operator '>'");
@@ -490,9 +561,21 @@ namespace pluto
         {
             return std::shared_ptr<Entity>(new Bool(((Int *)a.get())->int_val <= ((Int *)b.get())->int_val));
         }
+        else if (a->kind() == INT_ENTITY && b->kind() == DOUBLE_ENTITY)
+        {
+            return std::shared_ptr<Entity>(new Bool(((Int *)a.get())->int_val <= ((Double *)b.get())->double_val));
+        }
+        else if (a->kind() == DOUBLE_ENTITY && b->kind() == INT_ENTITY)
+        {
+            return std::shared_ptr<Entity>(new Bool(((Double *)a.get())->double_val <= ((Int *)b.get())->int_val));
+        }
+        else if (a->kind() == DOUBLE_ENTITY && b->kind() == DOUBLE_ENTITY)
+        {
+            return std::shared_ptr<Entity>(new Bool(((Double *)a.get())->double_val <= ((Double *)b.get())->double_val));
+        }
         else
         {
-            raise_error(node->line, "invalid operands for binary operator '<='");
+            raise_error(node->line, "invalid operands for binary operator '>'");
         }
     }
 
@@ -505,9 +588,21 @@ namespace pluto
         {
             return std::shared_ptr<Entity>(new Bool(((Int *)a.get())->int_val >= ((Int *)b.get())->int_val));
         }
+        else if (a->kind() == INT_ENTITY && b->kind() == DOUBLE_ENTITY)
+        {
+            return std::shared_ptr<Entity>(new Bool(((Int *)a.get())->int_val >= ((Double *)b.get())->double_val));
+        }
+        else if (a->kind() == DOUBLE_ENTITY && b->kind() == INT_ENTITY)
+        {
+            return std::shared_ptr<Entity>(new Bool(((Double *)a.get())->double_val >= ((Int *)b.get())->int_val));
+        }
+        else if (a->kind() == DOUBLE_ENTITY && b->kind() == DOUBLE_ENTITY)
+        {
+            return std::shared_ptr<Entity>(new Bool(((Double *)a.get())->double_val >= ((Double *)b.get())->double_val));
+        }
         else
         {
-            raise_error(node->line, "invalid operands for binary operator '>='");
+            raise_error(node->line, "invalid operands for binary operator '>'");
         }
     }
 
@@ -523,6 +618,11 @@ namespace pluto
         if (!env->has(key))
         {
             raise_error(node->line, "'" + key + "' is not defined");
+        }
+
+        if (env->constness[key])
+        {
+            raise_error(node->line,  "cannot assign to constant '"+key+"'");
         }
 
         std::shared_ptr<Entity> val = visit(node->val, env);
@@ -611,6 +711,20 @@ namespace pluto
         return val;
     }
 
+    std::shared_ptr<Entity> Interpreter::visit(ConstDefNode *node, std::shared_ptr<Env> env)
+    {
+        if (env->map.count(node->key) == 1)
+        {
+            raise_error(node->line, "'" + node->key + "' is already defined");
+        }
+
+        std::shared_ptr<Entity> val = visit(node->val, env);
+
+        env->set(node->key, val, true);
+
+        return val;
+    }
+
     std::shared_ptr<Entity> Interpreter::visit(BlockNode *node, std::shared_ptr<Env> env)
     {
         std::shared_ptr<Env> child_env = std::shared_ptr<Env>(new Env(env));
@@ -659,6 +773,22 @@ namespace pluto
             }
 
             visit(node->stmt_c, env);
+
+            visit(node->body, env);
+        }
+
+        return std::shared_ptr<Entity>(new Nil());
+    }
+
+    std::shared_ptr<Entity> Interpreter::visit(WhileNode *node, std::shared_ptr<Env> env)
+    {
+        while(true) {
+            std::shared_ptr<Entity> cond = visit(node->cond, env);
+
+            if (!cond->is_true())
+            {
+                break;
+            }
 
             visit(node->body, env);
         }

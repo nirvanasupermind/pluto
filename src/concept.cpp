@@ -1,5 +1,6 @@
 #include <string>
 #include <sstream>
+#include <functional>
 
 #include "env.h"
 #include "entity.h"

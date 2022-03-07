@@ -266,7 +266,7 @@ namespace pluto
 
         if (dot_count == 0)
         {
-            return Token(line, INT, std::stoi(val));
+            return Token(line, INT, std::stol(val));
         }
         else
         {
@@ -324,6 +324,10 @@ namespace pluto
         {
             return Token(line, VAR);
         }
+        else if (name == "const")
+        {
+            return Token(line, CONST);
+        }
         else if (name == "if")
         {
             return Token(line, IF);
@@ -335,6 +339,10 @@ namespace pluto
         else if (name == "for")
         {
             return Token(line, FOR);
+        }
+        else if (name == "while")
+        {
+            return Token(line, WHILE);
         }
         else
         {

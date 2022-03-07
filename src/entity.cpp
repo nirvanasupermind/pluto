@@ -4,7 +4,7 @@
 
 namespace pluto
 {
-    Int::Int(int int_val)
+    Int::Int(long int int_val)
     {
         this->int_val = int_val;
     }

@@ -1,8 +1,10 @@
 #ifndef CONCEPT_H
 #define CONCEPT_H
 
+
 #include <string>
 #include <sstream>
+#include <functional>
 
 #include "env.h"
 #include "entity.h"
@@ -31,7 +33,7 @@ namespace pluto
         Object(std::shared_ptr<Env> env) : Concept(env) {};
 
         Object(std::shared_ptr<Env> env, std::string string_val);
-
+        
         EntityKind kind();
 
         std::string to_string();

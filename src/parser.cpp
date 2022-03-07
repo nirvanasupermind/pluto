@@ -64,6 +64,11 @@ namespace pluto
             return var_def_stmt();
         }
 
+        if (current().type == CONST)
+        {
+            return const_def_stmt();
+        }
+
         if (current().type == LCURLY)
         {
             return block_stmt();
@@ -79,6 +84,11 @@ namespace pluto
             return for_stmt();
         }
 
+        if (current().type == WHILE)
+        {
+            return while_stmt();
+        }
+
         std::shared_ptr<Node> result = expr();
 
         if (current().type != SEMICOLON)
@@ -89,6 +99,36 @@ namespace pluto
         advance();
 
         return result;
+    }
+
+    std::shared_ptr<Node> Parser::while_stmt()
+    {
+        int ln = current().line;
+
+        if (current().type != WHILE)
+        {
+            raise_error();
+        }
+
+        advance();
+
+        if (current().type != LPAREN) {
+            raise_error();
+        }
+
+        advance();
+
+        std::shared_ptr<Node> cond = expr();
+
+        if (current().type != RPAREN) {
+            raise_error();
+        }
+
+        advance();
+
+        std::shared_ptr<Node> body = block_stmt();
+
+        return std::shared_ptr<Node>(new WhileNode(ln, cond, body));
     }
 
     std::shared_ptr<Node> Parser::for_stmt()
@@ -122,7 +162,6 @@ namespace pluto
 
         return std::shared_ptr<Node>(new ForNode(ln, stmt_a, stmt_b, stmt_c, body));
     }
-
 
     std::shared_ptr<Node> Parser::if_stmt()
     {
@@ -222,6 +261,45 @@ namespace pluto
         advance();
 
         return std::shared_ptr<Node>(new VarDefNode(ln, key, val));
+    }
+
+    std::shared_ptr<Node> Parser::const_def_stmt()
+    {
+        int ln = current().line;
+
+        if (current().type != CONST)
+        {
+            raise_error();
+        }
+
+        advance();
+
+        if (current().type != NAME)
+        {
+            raise_error();
+        }
+
+        std::string key = current().name;
+
+        advance();
+
+        if (current().type != EQ)
+        {
+            raise_error();
+        }
+
+        advance();
+
+        std::shared_ptr<Node> val = expr();
+        
+        if (current().type != SEMICOLON)
+        {
+            raise_error();
+        }
+
+        advance();
+
+        return std::shared_ptr<Node>(new ConstDefNode(ln, key, val));
     }
 
     std::shared_ptr<Node> Parser::expr()

@@ -9,6 +9,8 @@
 
 namespace pluto
 {
+    const double inf = std::numeric_limits<double>::infinity();
+
     class Interpreter
     {
     public:
@@ -53,10 +55,12 @@ namespace pluto
         std::shared_ptr<Entity> visit(NotNode *node, std::shared_ptr<Env> env);
         std::shared_ptr<Entity> visit(BNotNode *node, std::shared_ptr<Env> env);
         std::shared_ptr<Entity> visit(VarDefNode *node, std::shared_ptr<Env> env);
+        std::shared_ptr<Entity> visit(ConstDefNode *node, std::shared_ptr<Env> env);
         std::shared_ptr<Entity> visit(BlockNode *node, std::shared_ptr<Env> env);
         std::shared_ptr<Entity> visit(IfNode *node, std::shared_ptr<Env> env);
         std::shared_ptr<Entity> visit(IfElseNode *node, std::shared_ptr<Env> env); 
-        std::shared_ptr<Entity> visit(ForNode *node, std::shared_ptr<Env> env);                               
+        std::shared_ptr<Entity> visit(ForNode *node, std::shared_ptr<Env> env);    
+        std::shared_ptr<Entity> visit(WhileNode *node, std::shared_ptr<Env> env);                                                          
     };
 }
 
