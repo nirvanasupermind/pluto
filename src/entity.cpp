@@ -102,4 +102,6 @@ namespace pluto
     {
         return "nil";
     }
+
+    const std::shared_ptr<Entity> Nil::NIL(new Nil());
 }

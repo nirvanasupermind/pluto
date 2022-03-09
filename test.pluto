@@ -1,4 +1,5 @@
-var n = 50;
-n = n * 3;
+var x = 5;
 
-n;
+func f() {
+    x = 6;
+}

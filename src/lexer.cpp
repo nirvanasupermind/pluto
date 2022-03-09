@@ -228,6 +228,11 @@ namespace pluto
                 tokens.push_back(Token(line, RCURLY));
                 advance();
             }
+            else if (current_char() == ',')
+            {
+                tokens.push_back(Token(line, COMMA));
+                advance();
+            }
             else if (current_char() == ';')
             {
                 tokens.push_back(Token(line, SEMICOLON));
@@ -355,6 +360,10 @@ namespace pluto
         else if (name == "while")
         {
             return Token(line, WHILE);
+        }
+        else if (name == "func")
+        {
+            return Token(line, FUNC);
         }
         else
         {

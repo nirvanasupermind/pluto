@@ -1,7 +1,6 @@
 #ifndef PARSER_H
 #define PARSER_H
 
-#include <iostream>
 #include <string>
 #include <memory>
 #include <vector>
@@ -27,6 +26,7 @@ namespace pluto
         std::shared_ptr<Node> parse();
         std::shared_ptr<Node> program(TokenType end = EOF_);
         std::shared_ptr<Node> stmt();
+        std::shared_ptr<Node> func_def_stmt();
         std::shared_ptr<Node> while_stmt();
         std::shared_ptr<Node> for_stmt();
         std::shared_ptr<Node> if_stmt();

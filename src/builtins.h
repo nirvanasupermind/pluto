@@ -15,6 +15,7 @@ namespace pluto
     public:
         static const std::shared_ptr<Entity> class_object;
         static const std::shared_ptr<Entity> class_string;
+        static const std::shared_ptr<Entity> class_func;
     };
 }
 

@@ -7,13 +7,13 @@ list.add("c");
 
 var first = Thread(func () {
     for(var i = 0; i < list.size(); i = i + 1;) {
-        System.write(first.hashCode(), " ", list.get(i), "\n");
+        stdout.write(first.hashCode(), " ", list.get(i), "\n");
     }
 });
 
 var second = Thread(func () {
     for(var i = 0; i < list.size(); i = i + 1;) {
-        System.write(second.hashCode(), " ", list.get(i), "\n");
+        stdout.write(second.hashCode(), " ", list.get(i), "\n");
     }
 });
 

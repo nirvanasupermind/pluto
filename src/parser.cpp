@@ -1,4 +1,3 @@
-#include <iostream>
 #include <string>
 #include <memory>
 #include <vector>
@@ -89,6 +88,11 @@ namespace pluto
             return while_stmt();
         }
 
+        if (current().type == FUNC)
+        {
+            return func_def_stmt();
+        }
+
         std::shared_ptr<Node> result = expr();
 
         if (current().type != SEMICOLON)
@@ -99,6 +103,67 @@ namespace pluto
         advance();
 
         return result;
+    }
+
+    std::shared_ptr<Node> Parser::func_def_stmt()
+    {
+        int ln = current().line;
+
+        if (current().type != FUNC)
+        {
+            raise_error();
+        }
+
+        advance();
+
+        if (current().type != NAME) {
+            raise_error();
+        }        
+
+        Token token = current();
+
+        std::string name = token.name;
+
+        advance();
+
+        if (current().type != LPAREN) {
+            raise_error();
+        }
+
+        advance();
+
+        std::vector<std::string> args;
+
+        if (current().type != RPAREN) {
+            while (current().type != RPAREN) {
+                Token token = current();
+
+                if(current().type != NAME) {
+                    raise_error();
+                }
+
+                args.push_back(token.name);
+
+                advance();    
+
+                if(current().type != COMMA && current().type != RPAREN) {
+                    raise_error();
+                }            
+            }
+    
+            if(current().type != RPAREN) {
+                raise_error();
+            }        
+
+            advance();   
+        } else {
+            advance();
+        }
+ 
+        
+        std::shared_ptr<Node> body = block_stmt();
+
+        return std::shared_ptr<Node>(new FuncDefNode(ln, name, args, body));
     }
 
     std::shared_ptr<Node> Parser::while_stmt()

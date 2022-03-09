@@ -86,6 +86,8 @@ namespace pluto
     class Nil : public Entity
     {
     public:
+        static const std::shared_ptr<Entity> NIL;
+
         Nil();
 
         bool is_true();

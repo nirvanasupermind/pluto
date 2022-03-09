@@ -12,6 +12,7 @@
 #include "src/entity.cpp"
 #include "src/concept.cpp"
 #include "src/builtins.cpp"
+#include "src/arguments.cpp"
 #include "src/interpreter.cpp"
 
 void run(std::string filename, std::string text)
@@ -22,9 +23,10 @@ void run(std::string filename, std::string text)
     pluto::Parser parser(filename, tokens);
     std::shared_ptr<pluto::Node> tree = parser.parse();
 
-    std::shared_ptr<pluto::Env> global_env = std::shared_ptr<pluto::Env>(new pluto::Env());
+    std::shared_ptr<pluto::Env> global_env(new pluto::Env());
     global_env->set("Object", std::move(pluto::Builtins::class_object));
     global_env->set("String", std::move(pluto::Builtins::class_string));
+    global_env->set("Func", std::move(pluto::Builtins::class_func));
 
     pluto::Interpreter interpreter(filename);
     // final result is stored in entity

@@ -28,7 +28,7 @@ namespace pluto
 
         result.pop_back();
 
-        result += ")";
+        result += ')';
 
         return result;
     }
@@ -677,5 +677,33 @@ namespace pluto
     std::string WhileNode::to_string()
     {
         return "(while "+cond->to_string()+ " "+body->to_string()+")";
+    }
+
+    FuncDefNode::FuncDefNode(int line, std::string name, std::vector<std::string> args, std::shared_ptr<Node> body)
+    {
+        this->line = line;
+        this->name = name;
+        this->args = args;
+        this->body = body;
+    }
+
+    NodeKind FuncDefNode::kind()
+    {
+        return FUNC_DEF_NODE;
+    }
+
+    std::string FuncDefNode::to_string()
+    {
+        std::string result = "(func (" + name;
+
+        for(int i = 0; i < args.size(); i++) {
+            result += " " + args[i];
+        }
+
+        result += ')';
+        result += body;
+        result += ')';
+
+        return result;
     }
 }

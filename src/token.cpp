@@ -77,6 +77,8 @@ namespace pluto
             return "ELSE";
         case FOR:
             return "FOR";
+        case FUNC:
+            return "FUNC";
         case PLUS:
             return "PLUS";
         case MINUS:
@@ -129,6 +131,8 @@ namespace pluto
             return "LCURLY";
         case RCURLY:
             return "RCURLY";
+        case COMMA:
+            return "COMMA";
         case SEMICOLON:
             return "SEMICOLON";
         case EOF_:
