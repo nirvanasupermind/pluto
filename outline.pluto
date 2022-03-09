@@ -115,3 +115,7 @@ class FileInputStream extends InputStream {
 class FileOutputStream extends OutputStream {
     func constructor(filename);
 }
+
+const stdin = InputStream();
+const stdout = OutputStream();
+const stderr = OutputStream();
