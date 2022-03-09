@@ -1,5 +1,1 @@
-var x = 5;
-
-func f() {
-    x = 6;
-}
+func f(x){}

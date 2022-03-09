@@ -148,18 +148,22 @@ namespace pluto
 
                 if(current().type != COMMA && current().type != RPAREN) {
                     raise_error();
-                }            
+                }  
+
+                if(current().type != RPAREN) {
+                    advance();       
+                }   
             }
     
             if(current().type != RPAREN) {
                 raise_error();
             }        
 
-            advance();   
+            advance();
         } else {
             advance();
         }
- 
+
         
         std::shared_ptr<Node> body = block_stmt();
 
