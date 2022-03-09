@@ -117,7 +117,7 @@ namespace pluto
     {
         if (node->nodes.size() == 0)
         {
-            return std::shared_ptr<Entity>(new Nil());
+            return Nil::NIL;
         }
 
         for (int i = 0; i < node->nodes.size() - 1; i++)
@@ -163,17 +163,17 @@ namespace pluto
 
     std::shared_ptr<Entity> Interpreter::visit(TrueNode *node, std::shared_ptr<Env> env)
     {
-        return std::shared_ptr<Entity>(new Bool(true));
+        return Bool::TRUE;
     }
 
     std::shared_ptr<Entity> Interpreter::visit(FalseNode *node, std::shared_ptr<Env> env)
     {
-        return std::shared_ptr<Entity>(new Bool(false));
+        return Bool::FALSE;
     }
 
     std::shared_ptr<Entity> Interpreter::visit(NilNode *node, std::shared_ptr<Env> env)
     {
-        return std::shared_ptr<Entity>(new Nil());
+        return Nil::NIL;
     }
 
     std::shared_ptr<Entity> Interpreter::visit(AddNode *node, std::shared_ptr<Env> env)
@@ -936,7 +936,7 @@ namespace pluto
         }
         else
         {
-            return std::shared_ptr<Entity>(new Nil());
+            return Nil::NIL;
         }
     }
 
@@ -971,7 +971,7 @@ namespace pluto
             visit(node->body, env);
         }
 
-        return std::shared_ptr<Entity>(new Nil());
+        return Nil::NIL;
     }
 
     std::shared_ptr<Entity> Interpreter::visit(WhileNode *node, std::shared_ptr<Env> env)
@@ -987,6 +987,6 @@ namespace pluto
             visit(node->body, env);
         }
 
-        return std::shared_ptr<Entity>(new Nil());
+        return Nil::NIL;
     }
 }

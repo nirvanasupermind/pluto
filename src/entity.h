@@ -72,6 +72,9 @@ namespace pluto
     class Bool : public Entity
     {
     public:
+        static const std::shared_ptr<Entity> TRUE;
+        static const std::shared_ptr<Entity> FALSE;
+
         bool bool_val;
 
         Bool(bool bool_val);

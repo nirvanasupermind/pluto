@@ -84,6 +84,10 @@ namespace pluto
         return (bool_val ? "true": "false");
     }
 
+    const std::shared_ptr<Entity> Bool::TRUE(new Bool(true));
+    
+    const std::shared_ptr<Entity> Bool::FALSE(new Bool(false));
+
     Nil::Nil()
     {
     }
