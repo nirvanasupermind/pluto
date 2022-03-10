@@ -1,5 +1,6 @@
 #include <string>
 #include <memory>
+#include <vector>
 #include <cmath>
 
 #include "node.h"
@@ -7,6 +8,7 @@
 #include "entity.h"
 #include "concept.h"
 #include "builtins.h"
+#include "arguments.h"
 #include "interpreter.h"
 
 namespace pluto
@@ -108,6 +110,8 @@ namespace pluto
             return visit((ForNode *)node, env);
         case WHILE_NODE:
             return visit((WhileNode *)node, env);
+        case FUNC_DEF_NODE:
+            return visit((FuncDefNode *)node, env);
         default:
             raise_error(node->line, "invalid node");
         }
@@ -921,7 +925,7 @@ namespace pluto
 
     std::shared_ptr<Entity> Interpreter::visit(BlockNode *node, std::shared_ptr<Env> env)
     {
-        std::shared_ptr<Env> child_env = std::shared_ptr<Env>(new Env(env));
+        std::shared_ptr<Env> child_env(new Env(env));
 
         return visit(node->node, child_env);
     }
@@ -986,6 +990,31 @@ namespace pluto
 
             visit(node->body, env);
         }
+
+        return Nil::NIL;
+    }
+
+    std::shared_ptr<Entity> Interpreter::visit(FuncDefNode *node, std::shared_ptr<Env> env)
+    {
+        func_t func = [this, node, env](std::shared_ptr<Arguments> args) {    
+            std::shared_ptr<Env> child_env(new Env(env));
+
+            for(int i = 0; i < node->args.size(); i++) {
+                child_env->set(node->args.at(i), args->at(i));
+            }
+
+            visit(((BlockNode *)node->body.get())->node, child_env);
+
+            return Nil::NIL;
+        };
+
+        if (env->map.count(node->name) == 1)
+        {
+            raise_error(node->line, "'" + node->name + "' is already defined");
+        }
+
+        std::shared_ptr<Env> func_env = ((Class *)(Builtins::class_func.get()))->env;
+        env->set(node->name, std::shared_ptr<Entity>(new Object(func_env, func)));
 
         return Nil::NIL;
     }

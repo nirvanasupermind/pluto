@@ -28,6 +28,11 @@ namespace pluto
         this->string_val = string_val;
     }
 
+    Object::Object(std::shared_ptr<Env> env, func_t func) {
+        this->env = env;
+        this->func = func;
+    }
+
     EntityKind Object::kind() {
         return OBJECT_ENTITY;
     }

@@ -1,11 +1,17 @@
 #ifndef INTERPRETER_H
 #define INTERPRETER_H
 
+#include <string>
+#include <memory>
+#include <vector>
+#include <cmath>
+
 #include "node.h"
 #include "env.h"
 #include "entity.h"
 #include "concept.h"
 #include "builtins.h"
+#include "arguments.h"
 
 namespace pluto
 {
@@ -61,7 +67,8 @@ namespace pluto
         std::shared_ptr<Entity> visit(IfNode *node, std::shared_ptr<Env> env);
         std::shared_ptr<Entity> visit(IfElseNode *node, std::shared_ptr<Env> env); 
         std::shared_ptr<Entity> visit(ForNode *node, std::shared_ptr<Env> env);    
-        std::shared_ptr<Entity> visit(WhileNode *node, std::shared_ptr<Env> env);                                                          
+        std::shared_ptr<Entity> visit(WhileNode *node, std::shared_ptr<Env> env);                       
+        std::shared_ptr<Entity> visit(FuncDefNode *node, std::shared_ptr<Env> env);                                                                                             
     };
 }
 

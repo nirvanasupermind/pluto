@@ -701,7 +701,7 @@ namespace pluto
         }
 
         result += ')';
-        result += body;
+        result += body->to_string();
         result += ')';
 
         return result;

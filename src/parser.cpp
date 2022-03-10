@@ -17,7 +17,7 @@ namespace pluto
 
     void Parser::raise_error()
     {
-        throw std::string(filename + ":" + std::to_string(current().line) + ": invalid syntax (unexpected token '"+current().to_string()+"')");
+        throw std::string(filename + ":" + std::to_string(current().line) + ": invalid syntax (unexpected token '" + current().to_string() + "')");
     }
 
     void Parser::advance()
@@ -116,9 +116,10 @@ namespace pluto
 
         advance();
 
-        if (current().type != NAME) {
+        if (current().type != NAME)
+        {
             raise_error();
-        }        
+        }
 
         Token token = current();
 
@@ -126,7 +127,8 @@ namespace pluto
 
         advance();
 
-        if (current().type != LPAREN) {
+        if (current().type != LPAREN)
+        {
             raise_error();
         }
 
@@ -134,37 +136,44 @@ namespace pluto
 
         std::vector<std::string> args;
 
-        if (current().type != RPAREN) {
-            while (current().type != RPAREN) {
+        if (current().type != RPAREN)
+        {
+            while (current().type != RPAREN)
+            {
                 Token token = current();
 
-                if(current().type != NAME) {
+                if (current().type != NAME)
+                {
                     raise_error();
                 }
 
                 args.push_back(token.name);
 
-                advance();    
+                advance();
 
-                if(current().type != COMMA && current().type != RPAREN) {
+                if (current().type != COMMA && current().type != RPAREN)
+                {
                     raise_error();
-                }  
+                }
 
-                if(current().type != RPAREN) {
-                    advance();       
-                }   
+                if (current().type != RPAREN)
+                {
+                    advance();
+                }
             }
-    
-            if(current().type != RPAREN) {
+
+            if (current().type != RPAREN)
+            {
                 raise_error();
-            }        
+            }
 
             advance();
-        } else {
+        }
+        else
+        {
             advance();
         }
 
-        
         std::shared_ptr<Node> body = block_stmt();
 
         return std::shared_ptr<Node>(new FuncDefNode(ln, name, args, body));
@@ -181,7 +190,8 @@ namespace pluto
 
         advance();
 
-        if (current().type != LPAREN) {
+        if (current().type != LPAREN)
+        {
             raise_error();
         }
 
@@ -189,7 +199,8 @@ namespace pluto
 
         std::shared_ptr<Node> cond = expr();
 
-        if (current().type != RPAREN) {
+        if (current().type != RPAREN)
+        {
             raise_error();
         }
 
@@ -211,7 +222,8 @@ namespace pluto
 
         advance();
 
-        if (current().type != LPAREN) {
+        if (current().type != LPAREN)
+        {
             raise_error();
         }
 
@@ -221,7 +233,8 @@ namespace pluto
         std::shared_ptr<Node> stmt_b = stmt();
         std::shared_ptr<Node> stmt_c = stmt();
 
-        if (current().type != RPAREN) {
+        if (current().type != RPAREN)
+        {
             raise_error();
         }
 
@@ -243,7 +256,8 @@ namespace pluto
 
         advance();
 
-        if (current().type != LPAREN) {
+        if (current().type != LPAREN)
+        {
             raise_error();
         }
 
@@ -251,7 +265,8 @@ namespace pluto
 
         std::shared_ptr<Node> cond = expr();
 
-        if (current().type != RPAREN) {
+        if (current().type != RPAREN)
+        {
             raise_error();
         }
 
@@ -259,7 +274,8 @@ namespace pluto
 
         std::shared_ptr<Node> body = block_stmt();
 
-        if (current().type == ELSE) {
+        if (current().type == ELSE)
+        {
             advance();
 
             std::shared_ptr<Node> else_body = block_stmt();
@@ -282,7 +298,7 @@ namespace pluto
         advance();
 
         std::shared_ptr<Node> node = program(RCURLY);
-        
+
         if (current().type != RCURLY)
         {
             raise_error();
@@ -292,7 +308,7 @@ namespace pluto
 
         return std::shared_ptr<Node>(new BlockNode(ln, node));
     }
-    
+
     std::shared_ptr<Node> Parser::var_def_stmt()
     {
         int ln = current().line;
@@ -321,7 +337,7 @@ namespace pluto
         advance();
 
         std::shared_ptr<Node> val = expr();
-        
+
         if (current().type != SEMICOLON)
         {
             raise_error();
@@ -360,7 +376,7 @@ namespace pluto
         advance();
 
         std::shared_ptr<Node> val = expr();
-        
+
         if (current().type != SEMICOLON)
         {
             raise_error();
