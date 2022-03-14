@@ -1,8 +1,6 @@
 #include <fstream>
 #include <iostream>
 #include <sstream> //std::stringstream
-#include <vector>
-#include <string>
 
 #include "src/token.cpp"
 #include "src/lexer.cpp"

@@ -1,19 +1,16 @@
 # This does not run yet
 
-var list = List();
-list.add("a");
-list.add("b");
-list.add("c");
+var list = ["a", "b", "c"];
 
 var first = Thread(lambda () {
     for(var i = 0; i < list.size(); i = i + 1;) {
-        stdout.write(first.hashCode(), " ", list.get(i), "\n");
+        System.write(first.hashCode(), " ", list.get(i), "\n");
     }
 });
 
 var second = Thread(lambda () {
     for(var i = 0; i < list.size(); i = i + 1;) {
-        stdout.write(second.hashCode(), " ", list.get(i), "\n");
+        System.write(second.hashCode(), " ", list.get(i), "\n");
     }
 });
 

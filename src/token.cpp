@@ -77,8 +77,12 @@ namespace pluto
             return "ELSE";
         case FOR:
             return "FOR";
+        case WHILE:
+            return "WHILE";
         case DEF:
             return "DEF";
+        case RETURN:
+            return "RETURN";
         case PLUS:
             return "PLUS";
         case MINUS:

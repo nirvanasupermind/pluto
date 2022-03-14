@@ -16,6 +16,7 @@ namespace pluto
         std::string filename;
         std::vector<Token> tokens;
         std::size_t pos;
+        bool spotted_return_stmt;
 
         Parser(std::string filename, std::vector<Token> tokens);
 
@@ -26,6 +27,7 @@ namespace pluto
         std::shared_ptr<Node> parse();
         std::shared_ptr<Node> program(TokenType end = EOF_);
         std::shared_ptr<Node> stmt();
+        std::shared_ptr<Node> return_stmt();
         std::shared_ptr<Node> func_def_stmt();
         std::shared_ptr<Node> while_stmt();
         std::shared_ptr<Node> for_stmt();

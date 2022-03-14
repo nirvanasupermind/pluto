@@ -13,6 +13,7 @@ namespace pluto
         this->filename = filename;
         this->tokens = tokens;
         pos = 0;
+        spotted_return_stmt = false;
     }
 
     void Parser::raise_error()
@@ -51,7 +52,14 @@ namespace pluto
         while (current().type != end)
         {
             nodes.push_back(stmt());
+            if (spotted_return_stmt)
+            {
+                spotted_return_stmt = false;
+                break;
+            }
         }
+
+        // std::cout << "Debug ehmmm... " << current().to_string() << '\n';
 
         return std::shared_ptr<Node>(new ProgramNode(ln, nodes));
     }
@@ -93,6 +101,11 @@ namespace pluto
             return func_def_stmt();
         }
 
+        if (current().type == RETURN)
+        {
+            return return_stmt();
+        }
+
         std::shared_ptr<Node> result = expr();
 
         if (current().type != SEMICOLON)
@@ -103,6 +116,29 @@ namespace pluto
         advance();
 
         return result;
+    }
+
+    std::shared_ptr<Node> Parser::return_stmt()
+    {
+        if (current().type != RETURN)
+        {
+            raise_error();
+        }
+
+        advance();
+
+        std::shared_ptr<Node> result = expr();
+
+        if (current().type != SEMICOLON)
+        {
+            raise_error();
+        }
+
+        advance();
+
+        spotted_return_stmt = true;
+
+        return std::shared_ptr<Node>(new ReturnNode(result->line, result));
     }
 
     std::shared_ptr<Node> Parser::func_def_stmt()
@@ -421,7 +457,7 @@ namespace pluto
         {
             advance();
         }
-        
+
         return nodes;
     }
 
@@ -691,13 +727,14 @@ namespace pluto
     {
         std::shared_ptr<Node> result = leaf_expr();
 
-        while(current().type == LPAREN) {
+        while (current().type == LPAREN)
+        {
             advance();
             std::vector<std::shared_ptr<Node> > args = expr_list();
 
             result = std::shared_ptr<Node>(new CallNode(result->line, result, args));
         }
-        
+
         return result;
     }
 

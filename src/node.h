@@ -52,7 +52,8 @@ namespace pluto
         IF_ELSE_NODE,
         FOR_NODE,
         WHILE_NODE,
-        FUNC_DEF_NODE
+        FUNC_DEF_NODE,
+        RETURN_NODE
     };
 
     class Node
@@ -591,6 +592,18 @@ namespace pluto
         std::shared_ptr<Node> body;
 
         FuncDefNode(int line, std::string name, std::vector<std::string> &args, std::shared_ptr<Node> body);
+
+        NodeKind kind();
+
+        std::string to_string();
+    };
+
+    class ReturnNode : public Node
+    {
+    public:
+        std::shared_ptr<Node> node;
+
+        ReturnNode(int line, std::shared_ptr<Node> node);
 
         NodeKind kind();
 

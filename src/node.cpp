@@ -732,4 +732,19 @@ namespace pluto
 
         return result;
     }
+
+    ReturnNode::ReturnNode(int line, std::shared_ptr<Node> node)
+    {
+        this->node = node;
+    }
+
+    NodeKind ReturnNode::kind()
+    {
+        return RETURN_NODE;
+    }
+
+    std::string ReturnNode::to_string()
+    {
+        return "(return "+node->to_string()+")";
+    }  
 }

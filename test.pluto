@@ -1,7 +1,9 @@
-var x = 1;
-
-def f() {
-    x = x * 2;
+def fact(x) {
+    if(x == 0.0) {
+        return 1.0;
+    } else {
+        return x * fact(x - 1.0);
+    }
 }
 
-f;
+fact(6.0);

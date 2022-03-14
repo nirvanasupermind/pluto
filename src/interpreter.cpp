@@ -16,6 +16,7 @@ namespace pluto
     Interpreter::Interpreter(std::string filename)
     {
         this->filename = filename;
+        spotted_return_stmt = false;
     }
 
     void Interpreter::raise_error(int line, std::string message)
@@ -114,6 +115,8 @@ namespace pluto
             return visit((WhileNode *)node, env);
         case FUNC_DEF_NODE:
             return visit((FuncDefNode *)node, env);
+        case RETURN_NODE:
+            return visit((ReturnNode *)node, env);
         default:
             raise_error(node->line, "invalid node");
         }
@@ -1084,7 +1087,15 @@ namespace pluto
                 child_env->set(node->args.at(i), args->at(i));
             }
             
-            visit(((BlockNode *)node->body.get())->node, child_env);
+            std::vector<std::shared_ptr<Node> > nodes = ((ProgramNode *)((((BlockNode *)node->body.get())->node).get()))->nodes;
+
+            for (int i = 0; i < nodes.size(); i++)
+            {
+                std::shared_ptr<Entity> val = visit(nodes.at(i), child_env);
+                if(spotted_return_stmt) {
+                    return val;
+                }
+            }
 
             return Nil::NIL;
         };
@@ -1098,5 +1109,11 @@ namespace pluto
         env->set(node->name, o2);
  
         return Nil::NIL;
+    }
+
+    std::shared_ptr<Entity> Interpreter::visit(ReturnNode *node, std::shared_ptr<Env> env)
+    {
+        spotted_return_stmt = true;
+        return visit(node->node, env);        
     }
 }

@@ -20,12 +20,10 @@ namespace pluto
     class Interpreter
     {
     public:
+        bool spotted_return_stmt;
         std::string filename;
-        
         Interpreter(std::string filename);
-
         void raise_error(int line, std::string message);
-        
         std::shared_ptr<Entity> visit(std::shared_ptr<Node> node, std::shared_ptr<Env> env);
         std::shared_ptr<Entity> visit(Node *node, std::shared_ptr<Env> env);
         std::shared_ptr<Entity> visit(ProgramNode *node, std::shared_ptr<Env> env);
@@ -69,7 +67,8 @@ namespace pluto
         std::shared_ptr<Entity> visit(IfElseNode *node, std::shared_ptr<Env> env); 
         std::shared_ptr<Entity> visit(ForNode *node, std::shared_ptr<Env> env);    
         std::shared_ptr<Entity> visit(WhileNode *node, std::shared_ptr<Env> env);                       
-        std::shared_ptr<Entity> visit(FuncDefNode *node, std::shared_ptr<Env> env);                                                                                             
+        std::shared_ptr<Entity> visit(FuncDefNode *node, std::shared_ptr<Env> env); 
+        std::shared_ptr<Entity> visit(ReturnNode *node, std::shared_ptr<Env> env);                                                                                                                                                                                         
     };
 }
 

@@ -22,6 +22,7 @@ namespace pluto
         FOR,
         WHILE,
         DEF,
+        RETURN,
         PLUS,
         MINUS,
         MULTIPLY,
@@ -65,7 +66,7 @@ namespace pluto
         std::string name;
 
         Token(int line, TokenType type);
-            Token(int line, TokenType type, signed char byte_val);
+        Token(int line, TokenType type, signed char byte_val);
         Token(int line, TokenType type, long int int_val);
         Token(int line, TokenType type, double double_val);
         Token(int line, TokenType type, std::string string_val, bool is_name = false);
