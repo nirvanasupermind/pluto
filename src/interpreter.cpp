@@ -117,6 +117,8 @@ namespace pluto
             return visit((FuncDefNode *)node, env);
         case RETURN_NODE:
             return visit((ReturnNode *)node, env);
+        case LAMBDA_NODE:
+            return visit((LambdaNode *)node, env);
         default:
             raise_error(node->line, "invalid node");
         }
@@ -962,7 +964,7 @@ namespace pluto
 
         std::shared_ptr<Arguments> args(new Arguments(filename, node->line, data));
 
-        if (node->callee->kind() != OBJECT_ENTITY)
+        if (callee->kind() != OBJECT_ENTITY)
         {
             raise_error(node->line, "invalid call");
         }
@@ -1115,5 +1117,39 @@ namespace pluto
     {
         spotted_return_stmt = true;
         return visit(node->node, env);        
+    }
+
+
+    std::shared_ptr<Entity> Interpreter::visit(LambdaNode *node, std::shared_ptr<Env> env)
+    {
+        func_t new_func = [this, node, env](std::shared_ptr<Arguments> args)
+        {            
+            std::shared_ptr<Env> child_env(new Env(env));
+
+            for (int i = 0; i < node->args.size(); i++)
+            {
+                child_env->set(node->args.at(i), args->at(i));
+            }
+            
+            std::vector<std::shared_ptr<Node> > nodes = ((ProgramNode *)((((BlockNode *)node->body.get())->node).get()))->nodes;
+
+            for (int i = 0; i < nodes.size(); i++)
+            {
+                std::shared_ptr<Entity> val = visit(nodes.at(i), child_env);
+                if(spotted_return_stmt) {
+                    return val;
+                }
+            }
+
+            return Nil::NIL;
+        };
+
+
+        std::shared_ptr<Env> func_env = ((Class *)(Builtins::class_func.get()))->env;
+        Object *o1 = new Object(func_env, new_func);
+        
+        std::shared_ptr<Object> o2(o1);
+ 
+        return o2;
     }
 }

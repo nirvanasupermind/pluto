@@ -1,9 +1,3 @@
-def fact(x) {
-    if(x == 0.0) {
-        return 1.0;
-    } else {
-        return x * fact(x - 1.0);
-    }
-}
-
-fact(6.0);
+(lambda (x) {
+    return x * x;
+})(20);

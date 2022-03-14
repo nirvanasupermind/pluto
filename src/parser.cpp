@@ -13,7 +13,6 @@ namespace pluto
         this->filename = filename;
         this->tokens = tokens;
         pos = 0;
-        spotted_return_stmt = false;
     }
 
     void Parser::raise_error()
@@ -52,14 +51,7 @@ namespace pluto
         while (current().type != end)
         {
             nodes.push_back(stmt());
-            if (spotted_return_stmt)
-            {
-                spotted_return_stmt = false;
-                break;
-            }
         }
-
-        // std::cout << "Debug ehmmm... " << current().to_string() << '\n';
 
         return std::shared_ptr<Node>(new ProgramNode(ln, nodes));
     }
@@ -135,8 +127,6 @@ namespace pluto
         }
 
         advance();
-
-        spotted_return_stmt = true;
 
         return std::shared_ptr<Node>(new ReturnNode(result->line, result));
     }
@@ -803,6 +793,61 @@ namespace pluto
         {
             advance();
             return std::shared_ptr<Node>(new NilNode(current_token.line));
+        }
+        else if (current_token.type == LAMBDA)
+        {
+            advance();
+
+            if (current().type != LPAREN)
+            {
+                raise_error();
+            }
+
+            advance();
+
+            std::vector<std::string> args;
+
+            if (current().type != RPAREN)
+            {
+                while (current().type != RPAREN)
+                {
+                    Token token = current();
+
+                    if (current().type != NAME)
+                    {
+                        raise_error();
+                    }
+
+                    args.push_back(token.name);
+
+                    advance();
+
+                    if (current().type != COMMA && current().type != RPAREN)
+                    {
+                        raise_error();
+                    }
+
+                    if (current().type != RPAREN)
+                    {
+                        advance();
+                    }
+                }
+
+                if (current().type != RPAREN)
+                {
+                    raise_error();
+                }
+
+                advance();
+            }
+            else
+            {
+                advance();
+            }
+
+            std::shared_ptr<Node> body = block_stmt();
+
+            return std::shared_ptr<Node>(new LambdaNode(current_token.line, args, body));
         }
 
         raise_error();

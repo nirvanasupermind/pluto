@@ -23,6 +23,7 @@ namespace pluto
         WHILE,
         DEF,
         RETURN,
+        LAMBDA,
         PLUS,
         MINUS,
         MULTIPLY,

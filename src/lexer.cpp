@@ -369,6 +369,10 @@ namespace pluto
         {
             return Token(line, RETURN);
         }
+        else if (name == "lambda")
+        {
+            return Token(line, LAMBDA);
+        }
         else
         {
             return Token(line, NAME, name, true);

@@ -83,6 +83,8 @@ namespace pluto
             return "DEF";
         case RETURN:
             return "RETURN";
+        case LAMBDA:
+            return "LAMBDA";
         case PLUS:
             return "PLUS";
         case MINUS:
