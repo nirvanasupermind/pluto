@@ -278,7 +278,9 @@ namespace pluto
             advance();
         }
 
-        if (y_count == 1)
+        if(val == ".") {
+            return Token(line, DOT);
+        } else if (y_count == 1)
         {
             return Token(line, BYTE, (signed char)std::stoi(val));
         }
@@ -372,6 +374,10 @@ namespace pluto
         else if (name == "lambda")
         {
             return Token(line, LAMBDA);
+        }
+        else if (name == "class")
+        {
+            return Token(line, CLASS);
         }
         else
         {

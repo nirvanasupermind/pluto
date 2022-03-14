@@ -119,6 +119,8 @@ namespace pluto
             return visit((ReturnNode *)node, env);
         case LAMBDA_NODE:
             return visit((LambdaNode *)node, env);
+        case CLASS_DEF_NODE:
+            return visit((ClassDefNode *)node, env);
         default:
             raise_error(node->line, "invalid node");
         }
@@ -964,6 +966,14 @@ namespace pluto
 
         std::shared_ptr<Arguments> args(new Arguments(filename, node->line, data));
 
+        if (callee->kind() == CLASS_ENTITY)
+        {
+            std::shared_ptr<Env> class_env = ((Class *)(callee.get()))->env;
+            std::shared_ptr<Entity> obj(new Object(class_env));
+
+            return obj;
+        }
+
         if (callee->kind() != OBJECT_ENTITY)
         {
             raise_error(node->line, "invalid call");
@@ -1081,20 +1091,21 @@ namespace pluto
         }
 
         func_t new_func = [this, node, env](std::shared_ptr<Arguments> args)
-        {            
+        {
             std::shared_ptr<Env> child_env(new Env(env));
 
             for (int i = 0; i < node->args.size(); i++)
             {
                 child_env->set(node->args.at(i), args->at(i));
             }
-            
+
             std::vector<std::shared_ptr<Node> > nodes = ((ProgramNode *)((((BlockNode *)node->body.get())->node).get()))->nodes;
 
             for (int i = 0; i < nodes.size(); i++)
             {
                 std::shared_ptr<Entity> val = visit(nodes.at(i), child_env);
-                if(spotted_return_stmt) {
+                if (spotted_return_stmt)
+                {
                     return val;
                 }
             }
@@ -1102,41 +1113,39 @@ namespace pluto
             return Nil::NIL;
         };
 
-
         std::shared_ptr<Env> func_env = ((Class *)(Builtins::class_func.get()))->env;
-        Object *o1 = new Object(func_env, new_func);
-        
-        std::shared_ptr<Object> o2(o1);
 
-        env->set(node->name, o2);
- 
+        std::shared_ptr<Entity> obj(new Object(func_env, new_func));
+
+        env->set(node->name, obj);
+
         return Nil::NIL;
     }
 
     std::shared_ptr<Entity> Interpreter::visit(ReturnNode *node, std::shared_ptr<Env> env)
     {
         spotted_return_stmt = true;
-        return visit(node->node, env);        
+        return visit(node->node, env);
     }
-
 
     std::shared_ptr<Entity> Interpreter::visit(LambdaNode *node, std::shared_ptr<Env> env)
     {
         func_t new_func = [this, node, env](std::shared_ptr<Arguments> args)
-        {            
+        {
             std::shared_ptr<Env> child_env(new Env(env));
 
             for (int i = 0; i < node->args.size(); i++)
             {
                 child_env->set(node->args.at(i), args->at(i));
             }
-            
+
             std::vector<std::shared_ptr<Node> > nodes = ((ProgramNode *)((((BlockNode *)node->body.get())->node).get()))->nodes;
 
             for (int i = 0; i < nodes.size(); i++)
             {
                 std::shared_ptr<Entity> val = visit(nodes.at(i), child_env);
-                if(spotted_return_stmt) {
+                if (spotted_return_stmt)
+                {
                     return val;
                 }
             }
@@ -1144,12 +1153,33 @@ namespace pluto
             return Nil::NIL;
         };
 
-
         std::shared_ptr<Env> func_env = ((Class *)(Builtins::class_func.get()))->env;
         Object *o1 = new Object(func_env, new_func);
-        
+
         std::shared_ptr<Object> o2(o1);
- 
+
         return o2;
+    }
+
+    std::shared_ptr<Entity> Interpreter::visit(ClassDefNode *node, std::shared_ptr<Env> env)
+    {
+        if (env->map.count(node->name) == 1)
+        {
+            raise_error(node->line, "'" + node->name + "' is already defined");
+        }
+
+        std::shared_ptr<Env> class_env(new Env(env));
+
+        std::shared_ptr<Node> body = ((((BlockNode *)node->body.get())->node));
+
+        visit(body, class_env);
+
+        Class *c1 = new Class(class_env);
+
+        std::shared_ptr<Entity> c2(c1);
+
+        env->set(node->name, c2);
+
+        return Nil::NIL;
     }
 }

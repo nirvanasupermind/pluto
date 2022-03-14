@@ -1,6 +1,7 @@
 #ifndef BUILTINS_H
 #define BUILTINS_H
 
+#include <iostream>
 #include <string>
 #include <memory>
 
@@ -16,6 +17,7 @@ namespace pluto
         static const std::shared_ptr<Entity> class_object;
         static const std::shared_ptr<Entity> class_string;
         static const std::shared_ptr<Entity> class_func;
+        static const std::shared_ptr<Entity> class_system;
     };
 }
 

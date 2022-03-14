@@ -777,4 +777,27 @@ namespace pluto
 
         return result;
     }
+
+
+    ClassDefNode::ClassDefNode(int line, std::string name, std::shared_ptr<Node> body)
+    {
+        this->line = line;
+        this->name = name;
+        this->body = body;
+    }
+
+    NodeKind ClassDefNode::kind()
+    {
+        return CLASS_DEF_NODE;
+    }
+
+    std::string ClassDefNode::to_string()
+    {
+        std::string result = "(class " + name + " ";
+
+        result += body->to_string();
+        result += ')';
+
+        return result;
+    }
 }

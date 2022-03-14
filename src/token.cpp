@@ -85,6 +85,8 @@ namespace pluto
             return "RETURN";
         case LAMBDA:
             return "LAMBDA";
+        case CLASS:
+            return "CLASS";
         case PLUS:
             return "PLUS";
         case MINUS:
@@ -139,6 +141,8 @@ namespace pluto
             return "RCURLY";
         case COMMA:
             return "COMMA";
+        case DOT:
+            return "DOT";
         case SEMICOLON:
             return "SEMICOLON";
         case EOF_:

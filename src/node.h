@@ -54,7 +54,8 @@ namespace pluto
         WHILE_NODE,
         FUNC_DEF_NODE,
         RETURN_NODE,
-        LAMBDA_NODE
+        LAMBDA_NODE,
+        CLASS_DEF_NODE
     };
 
     class Node
@@ -618,6 +619,19 @@ namespace pluto
         std::shared_ptr<Node> body;
 
         LambdaNode(int line, std::vector<std::string> &args, std::shared_ptr<Node> body);
+
+        NodeKind kind();
+
+        std::string to_string();
+    };
+
+    class ClassDefNode : public Node
+    {
+    public:
+        std::string name;
+        std::shared_ptr<Node> body;
+
+        ClassDefNode(int line, std::string name, std::shared_ptr<Node> body);
 
         NodeKind kind();
 

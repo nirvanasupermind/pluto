@@ -1,3 +1,5 @@
-(lambda (x) {
-    return x * x;
-})(20);
+class Foo {
+    var x = 2;
+}
+
+Foo();

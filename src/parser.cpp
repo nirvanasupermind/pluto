@@ -98,6 +98,11 @@ namespace pluto
             return return_stmt();
         }
 
+        if (current().type == CLASS)
+        {
+            return class_def_stmt();
+        }
+
         std::shared_ptr<Node> result = expr();
 
         if (current().type != SEMICOLON)
@@ -108,6 +113,31 @@ namespace pluto
         advance();
 
         return result;
+    }
+
+    std::shared_ptr<Node> Parser::class_def_stmt()
+    {
+        int ln = current().line;
+
+        if (current().type != CLASS)
+        {
+            raise_error();
+        }
+
+        advance();
+
+        if (current().type != NAME)
+        {
+            raise_error();
+        }
+
+        std::string name = current().name;
+
+        advance();
+
+        std::shared_ptr<Node> body = block_stmt();
+
+        return std::shared_ptr<Node>(new ClassDefNode(ln, name, body));
     }
 
     std::shared_ptr<Node> Parser::return_stmt()
