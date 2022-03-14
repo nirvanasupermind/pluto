@@ -36,7 +36,7 @@ namespace pluto
 
     bool Env::get_constness(std::string key)
     {
-        if (!constness_map.at(key) && parent.get() != nullptr)
+        if (constness_map.count(key) == 0 && parent.get() != nullptr)
         {
             return parent.get()->get_constness(key);
         }
@@ -47,7 +47,7 @@ namespace pluto
     }
 
     bool Env::has(std::string key)
-    {        
+    {
         if (map.count(key) == 0 && parent.get() != nullptr)
         {
             return parent.get()->has(key);
@@ -59,11 +59,17 @@ namespace pluto
     }
 
     Env *Env::resolve(std::string key)
-    {        
-        if (map.count(key) == 0)
+    {
+        if (parent.get() == nullptr)
         {
-            return this->parent.get();
-        } else {
+            return nullptr;
+        }
+        else if (map.count(key) == 0 && parent.get() != nullptr)
+        {
+            return parent.get();
+        }
+        else
+        {
             return this;
         }
     }

@@ -23,49 +23,57 @@ namespace pluto
         return true;
     }
 
-    Object::Object(std::shared_ptr<Env> env, std::string string_val) {
+    Object::Object(std::shared_ptr<Env> env, std::string string_val)
+    {
         this->env = env;
         this->string_val = string_val;
     }
 
-    Object::Object(std::shared_ptr<Env> env, func_t func) {
+    Object::Object(std::shared_ptr<Env> env, func_t func)
+    {
         this->env = env;
         this->func = func;
     }
 
-    EntityKind Object::kind() {
+    EntityKind Object::kind()
+    {
         return OBJECT_ENTITY;
     }
-    
-    std::string Object::to_string() {
+
+    std::string Object::to_string()
+    {
         std::ostringstream oss;
-        oss << (void*)this;
+        oss << (void *)this;
         std::string s(oss.str());
 
-        return "(object : "+s+")";
+        return "(object : " + s + ")";
     }
 
-    EntityKind Class::kind() {
+    EntityKind Class::kind()
+    {
         return CLASS_ENTITY;
     }
-    
-    std::string Class::to_string() {
+
+    std::string Class::to_string()
+    {
         std::ostringstream oss;
-        oss << (void*)this;
+        oss << (void *)this;
         std::string s(oss.str());
 
-        return "(class : "+s+")";
+        return "(class : " + s + ")";
     }
 
-    EntityKind Module::kind() {
+    EntityKind Module::kind()
+    {
         return MODULE_ENTITY;
     }
-    
-    std::string Module::to_string() {
+
+    std::string Module::to_string()
+    {
         std::ostringstream oss;
-        oss << (void*)this;
+        oss << (void *)this;
         std::string s(oss.str());
 
-        return "(class : "+s+")";
+        return "(class : " + s + ")";
     }
 }

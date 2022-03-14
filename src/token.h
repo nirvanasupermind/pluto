@@ -21,7 +21,7 @@ namespace pluto
         ELSE,
         FOR,
         WHILE,
-        FUNC,
+        DEF,
         PLUS,
         MINUS,
         MULTIPLY,

@@ -1,2 +1,7 @@
-func f(x){}
+var x = 1;
+
+def f() {
+    x = x * 2;
+}
+
 f;

@@ -44,6 +44,7 @@ namespace pluto
         MINUS_NODE,
         NOT_NODE,
         BNOT_NODE,
+        CALL_NODE,
         VAR_DEF_NODE,
         CONST_DEF_NODE,
         BLOCK_NODE,
@@ -231,6 +232,7 @@ namespace pluto
 
         std::string to_string();
     };
+
 
     class OrNode : public Node
     {
@@ -475,6 +477,19 @@ namespace pluto
         std::string to_string();
     };
 
+    class CallNode : public Node
+    {
+    public:
+        std::shared_ptr<Node> callee;
+        std::vector<std::shared_ptr<Node> > args;
+
+        CallNode(int line, std::shared_ptr<Node> callee, std::vector<std::shared_ptr<Node> > args);
+
+        NodeKind kind();
+
+        std::string to_string();
+    };
+
     class VarDefNode : public Node
     {
     public:
@@ -575,7 +590,7 @@ namespace pluto
         std::vector<std::string> args;
         std::shared_ptr<Node> body;
 
-        FuncDefNode(int line, std::string name, std::vector<std::string> args, std::shared_ptr<Node> body);
+        FuncDefNode(int line, std::string name, std::vector<std::string> &args, std::shared_ptr<Node> body);
 
         NodeKind kind();
 

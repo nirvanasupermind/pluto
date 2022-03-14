@@ -361,9 +361,9 @@ namespace pluto
         {
             return Token(line, WHILE);
         }
-        else if (name == "func")
+        else if (name == "def")
         {
-            return Token(line, FUNC);
+            return Token(line, DEF);
         }
         else
         {

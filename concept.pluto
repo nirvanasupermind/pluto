@@ -5,13 +5,13 @@ list.add("a");
 list.add("b");
 list.add("c");
 
-var first = Thread(func () {
+var first = Thread(lambda () {
     for(var i = 0; i < list.size(); i = i + 1;) {
         stdout.write(first.hashCode(), " ", list.get(i), "\n");
     }
 });
 
-var second = Thread(func () {
+var second = Thread(lambda () {
     for(var i = 0; i < list.size(); i = i + 1;) {
         stdout.write(second.hashCode(), " ", list.get(i), "\n");
     }

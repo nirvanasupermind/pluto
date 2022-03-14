@@ -88,7 +88,7 @@ namespace pluto
             return while_stmt();
         }
 
-        if (current().type == FUNC)
+        if (current().type == DEF)
         {
             return func_def_stmt();
         }
@@ -109,7 +109,7 @@ namespace pluto
     {
         int ln = current().line;
 
-        if (current().type != FUNC)
+        if (current().type != DEF)
         {
             raise_error();
         }
@@ -387,6 +387,44 @@ namespace pluto
         return std::shared_ptr<Node>(new ConstDefNode(ln, key, val));
     }
 
+    std::vector<std::shared_ptr<Node> > Parser::expr_list()
+    {
+        std::vector<std::shared_ptr<Node> > nodes;
+
+        if (current().type != RPAREN)
+        {
+            while (current().type != RPAREN)
+            {
+                Token token = current();
+
+                nodes.push_back(expr());
+
+                if (current().type != COMMA && current().type != RPAREN)
+                {
+                    raise_error();
+                }
+
+                if (current().type != RPAREN)
+                {
+                    advance();
+                }
+            }
+
+            if (current().type != RPAREN)
+            {
+                raise_error();
+            }
+
+            advance();
+        }
+        else
+        {
+            advance();
+        }
+        
+        return nodes;
+    }
+
     std::shared_ptr<Node> Parser::expr()
     {
         return assign_expr();
@@ -653,6 +691,13 @@ namespace pluto
     {
         std::shared_ptr<Node> result = leaf_expr();
 
+        while(current().type == LPAREN) {
+            advance();
+            std::vector<std::shared_ptr<Node> > args = expr_list();
+
+            result = std::shared_ptr<Node>(new CallNode(result->line, result, args));
+        }
+        
         return result;
     }
 

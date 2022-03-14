@@ -592,6 +592,32 @@ namespace pluto
         return "(~ "+node->to_string()+")";
     }  
 
+    CallNode::CallNode(int line, std::shared_ptr<Node> callee, std::vector<std::shared_ptr<Node> > args)
+    {
+        this->line = line;
+        this->callee = callee;
+        this->args = args;
+    }
+
+    NodeKind CallNode::kind()
+    {
+        return CALL_NODE;
+    }
+
+    std::string CallNode::to_string()
+    {
+        std::string result = "(" + callee->to_string();
+        for(int i = 0; i < args.size(); i++) {
+            result +=  " " + args[i]->to_string() + "\n";
+        }
+
+        result.pop_back();
+
+        result += ')';
+
+        return result;
+    }
+
     BlockNode::BlockNode(int line, std::shared_ptr<Node> node)
     {
         this->line = line;
@@ -679,7 +705,7 @@ namespace pluto
         return "(while "+cond->to_string()+ " "+body->to_string()+")";
     }
 
-    FuncDefNode::FuncDefNode(int line, std::string name, std::vector<std::string> args, std::shared_ptr<Node> body)
+    FuncDefNode::FuncDefNode(int line, std::string name, std::vector<std::string>& args, std::shared_ptr<Node> body)
     {
         this->line = line;
         this->name = name;
