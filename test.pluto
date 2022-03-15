@@ -1,4 +1,4 @@
 var a = Pluto.Object();
 a.x = 5;
 
-Pluto.print(a.x);
+Pluto.print(a.x, a);
