@@ -1,9 +1,4 @@
-def factorial(x) {
-    if(x == 0) {
-        return 1;
-    } else {
-        return x * factorial(x - 1);
-    }
-}
+var a = Pluto.Object();
+a.x = 5;
 
-Pluto.print(factorial(5));
+Pluto.print(a.x);

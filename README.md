@@ -8,12 +8,12 @@ Once completed, Pluto will be a lightweight, dynamic programming language with m
 # Running example
 ```
 def factorial(x) {
-    if(x == 0) {
-        return 1;
+    if(x == 0.0) {
+        return 1.0;
     } else {
-        return x * factorial(x - 1);
+        return x * factorial(x - 1.0);
     }
 }
 
-Pluto.print(factorial(5));
+Pluto.print(factorial(5.0));
 ```
