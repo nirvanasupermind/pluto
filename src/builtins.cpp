@@ -16,7 +16,7 @@ namespace pluto
     const std::shared_ptr<Env> Builtins::func_env = ((Class *)(Builtins::class_func.get()))->env;
     const std::shared_ptr<Entity> Builtins::func_print(new Object(Builtins::func_env, [](std::shared_ptr<Arguments> args) {
         for(int i = 0; i < args->data.size(); i++) {
-            std::cout << args->at(i)->to_string() << " ";
+            std::cout << args->at(i)->to_string();
         }
         
         std::cout << '\n';
