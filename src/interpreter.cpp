@@ -99,6 +99,8 @@ namespace pluto
             return visit((BNotNode *)node, env);
         case CALL_NODE:
             return visit((CallNode *)node, env);
+        case MEMBER_ACCESS_NODE:
+            return visit((MemberAccessNode *)node, env);
         case VAR_DEF_NODE:
             return visit((VarDefNode *)node, env);
         case CONST_DEF_NODE:
@@ -170,7 +172,7 @@ namespace pluto
         }
         else
         {
-            raise_error(node->line, "'" + node->name + "' is not defined");
+            raise_error(node->line, "cannot find symbol '" + node->name + "'");
         }
     }
 
@@ -865,6 +867,28 @@ namespace pluto
 
     std::shared_ptr<Entity> Interpreter::visit(AssignNode *node, std::shared_ptr<Env> env)
     {
+        if (node->key->kind() == MEMBER_ACCESS_NODE)
+        {
+            MemberAccessNode *key_node = (MemberAccessNode *)(node->key.get());
+
+            std::shared_ptr<Entity> subject = visit(key_node->subject, env);
+
+            if (subject->kind() != OBJECT_ENTITY && subject->kind() != CLASS_ENTITY && subject->kind() != MODULE_ENTITY)
+            {
+                raise_error(node->line, subject->to_string() + " is not an object, class or module");
+            }
+
+            std::string member = key_node->member;
+
+            std::shared_ptr<Env> subject_env = ((Concept *)subject.get())->env;
+
+            std::shared_ptr<Entity> val = visit(node->val, env);
+
+            subject_env->set(member, val);
+
+            return Nil::NIL;
+        }
+
         if (node->key->kind() != NAME_NODE)
         {
             raise_error(node->line, "invalid left-hand side in assignment");
@@ -874,7 +898,7 @@ namespace pluto
 
         if (!env->has(key))
         {
-            raise_error(node->line, "'" + key + "' is not defined");
+            raise_error(node->line, "cannot find symbol '" + key + "'");
         }
 
         if (env->get_constness(key))
@@ -955,7 +979,44 @@ namespace pluto
 
     std::shared_ptr<Entity> Interpreter::visit(CallNode *node, std::shared_ptr<Env> env)
     {
+        std::shared_ptr<Entity> self;
+
+        if (node->callee->kind() == MEMBER_ACCESS_NODE)
+        {
+            self = visit(((MemberAccessNode *)node->callee.get())->subject, env);
+        }
+
         std::shared_ptr<Entity> callee = visit(node->callee, env);
+
+        if (callee->kind() == CLASS_ENTITY)
+        {
+            std::shared_ptr<Env> class_env = ((Class *)(callee.get()))->env;
+
+            std::shared_ptr<Entity> obj(new Object(class_env));
+
+            if (class_env->has("constructor"))
+            {
+                std::shared_ptr<Entity> constructor = class_env->get("constructor");
+
+                if (constructor->kind() == OBJECT_ENTITY && (((Object *)(constructor.get()))->func))
+                {
+                    std::vector<std::shared_ptr<Entity> > data;
+
+                    std::shared_ptr<Arguments> args(new Arguments(filename, node->line, data));
+
+                    args->self = obj;
+
+                    ((Object *)constructor.get())->func(args);
+                }
+            }
+
+            return obj;
+        }
+
+        if (callee->kind() != OBJECT_ENTITY || !(((Object *)(callee.get()))->func))
+        {
+            raise_error(node->line, callee->to_string() + " is not callable");
+        }
 
         std::vector<std::shared_ptr<Entity> > data;
 
@@ -966,27 +1027,39 @@ namespace pluto
 
         std::shared_ptr<Arguments> args(new Arguments(filename, node->line, data));
 
-        if (callee->kind() == CLASS_ENTITY)
-        {
-            std::shared_ptr<Env> class_env = ((Class *)(callee.get()))->env;
-            std::shared_ptr<Entity> obj(new Object(class_env));
-
-            return obj;
-        }
-
-        if (callee->kind() != OBJECT_ENTITY)
-        {
-            raise_error(node->line, "invalid call");
-        }
+        args->self = self;
 
         return ((Object *)callee.get())->func(args);
+    }
+
+    std::shared_ptr<Entity> Interpreter::visit(MemberAccessNode *node, std::shared_ptr<Env> env)
+    {
+        std::shared_ptr<Entity> subject = visit(node->subject, env);
+
+        if (subject->kind() != OBJECT_ENTITY && subject->kind() != CLASS_ENTITY && subject->kind() != MODULE_ENTITY)
+        {
+            raise_error(node->line, subject->to_string() + " is not an object, class or module");
+        }
+
+        std::string member = node->member;
+
+        std::shared_ptr<Env> subject_env = ((Concept *)subject.get())->env;
+
+        if (subject_env->has(member))
+        {
+            return subject_env->get(member);
+        }
+        else
+        {
+            raise_error(node->line, "cannot find member '" + member + "' in " + subject->to_string());
+        }
     }
 
     std::shared_ptr<Entity> Interpreter::visit(VarDefNode *node, std::shared_ptr<Env> env)
     {
         if (env->map.count(node->key) == 1)
         {
-            raise_error(node->line, "'" + node->key + "' is already defined");
+            raise_error(node->line, "name '" + node->key + "' is already defined");
         }
 
         std::shared_ptr<Entity> val = visit(node->val, env);
@@ -1000,7 +1073,7 @@ namespace pluto
     {
         if (env->map.count(node->key) == 1)
         {
-            raise_error(node->line, "'" + node->key + "' is already defined");
+            raise_error(node->line, "name '" + node->key + "' is already defined");
         }
 
         std::shared_ptr<Entity> val = visit(node->val, env);
@@ -1087,7 +1160,7 @@ namespace pluto
     {
         if (env->map.count(node->name) == 1)
         {
-            raise_error(node->line, "'" + node->name + "' is already defined");
+            raise_error(node->line, "name '" + node->name + "' is already defined");
         }
 
         func_t new_func = [this, node, env](std::shared_ptr<Arguments> args)
@@ -1097,6 +1170,11 @@ namespace pluto
             for (int i = 0; i < node->args.size(); i++)
             {
                 child_env->set(node->args.at(i), args->at(i));
+            }
+            
+            if (args->self != nullptr)
+            {
+                child_env->set("self", args->self);
             }
 
             std::vector<std::shared_ptr<Node> > nodes = ((ProgramNode *)((((BlockNode *)node->body.get())->node).get()))->nodes;
@@ -1113,9 +1191,7 @@ namespace pluto
             return Nil::NIL;
         };
 
-        std::shared_ptr<Env> func_env = ((Class *)(Builtins::class_func.get()))->env;
-
-        std::shared_ptr<Entity> obj(new Object(func_env, new_func));
+        std::shared_ptr<Entity> obj(new Object(Builtins::func_env, new_func));
 
         env->set(node->name, obj);
 
@@ -1165,7 +1241,7 @@ namespace pluto
     {
         if (env->map.count(node->name) == 1)
         {
-            raise_error(node->line, "'" + node->name + "' is already defined");
+            raise_error(node->line, "name '" + node->name + "' is already defined");
         }
 
         std::shared_ptr<Env> class_env(new Env(env));

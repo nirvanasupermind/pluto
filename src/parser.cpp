@@ -747,12 +747,31 @@ namespace pluto
     {
         std::shared_ptr<Node> result = leaf_expr();
 
-        while (current().type == LPAREN)
+        while (current().type == LPAREN || current().type == DOT)
         {
-            advance();
-            std::vector<std::shared_ptr<Node> > args = expr_list();
+            if (current().type == LPAREN)
+            {
+                advance();
 
-            result = std::shared_ptr<Node>(new CallNode(result->line, result, args));
+                std::vector<std::shared_ptr<Node> > args = expr_list();
+
+                result = std::shared_ptr<Node>(new CallNode(result->line, result, args));
+            }
+            else if (current().type == DOT)
+            {
+                advance();
+
+                if (current().type != NAME)
+                {
+                    raise_error();
+                }
+
+                std::string prop = current().name;
+
+                advance();
+
+                result = std::shared_ptr<Node>(new MemberAccessNode(result->line, result, prop));
+            }
         }
 
         return result;
@@ -824,7 +843,7 @@ namespace pluto
             advance();
             return std::shared_ptr<Node>(new NilNode(current_token.line));
         }
-        else if (current_token.type == LAMBDA)
+        else if (current_token.type == ARROW)
         {
             advance();
 

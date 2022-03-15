@@ -45,6 +45,7 @@ namespace pluto
         NOT_NODE,
         BNOT_NODE,
         CALL_NODE,
+        MEMBER_ACCESS_NODE,
         VAR_DEF_NODE,
         CONST_DEF_NODE,
         BLOCK_NODE,
@@ -487,6 +488,19 @@ namespace pluto
         std::vector<std::shared_ptr<Node> > args;
 
         CallNode(int line, std::shared_ptr<Node> callee, std::vector<std::shared_ptr<Node> > args);
+
+        NodeKind kind();
+
+        std::string to_string();
+    };
+
+    class MemberAccessNode : public Node
+    {
+    public:
+        std::shared_ptr<Node> subject;
+        std::string member;
+
+        MemberAccessNode(int line, std::shared_ptr<Node> subject, std::string member);
 
         NodeKind kind();
 

@@ -74,6 +74,6 @@ namespace pluto
         oss << (void *)this;
         std::string s(oss.str());
 
-        return "(class : " + s + ")";
+        return "(module : " + s + ")";
     }
 }

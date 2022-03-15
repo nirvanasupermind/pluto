@@ -25,15 +25,20 @@ void run(std::string filename, std::string text)
     std::shared_ptr<pluto::Node> tree = parser.parse();
 
     std::shared_ptr<pluto::Env> global_env(new pluto::Env());
-    // global_env->set("Object", std::move(pluto::Builtins::class_object));
-    // global_env->set("String", std::move(pluto::Builtins::class_string));
-    // global_env->set("Func", std::move(pluto::Builtins::class_func));
+
+    std::shared_ptr<pluto::Env> pluto_env(new pluto::Env(global_env));
+
+    pluto_env->set("Object", pluto::Builtins::class_object);
+    pluto_env->set("String", pluto::Builtins::class_string);
+    pluto_env->set("Func", pluto::Builtins::class_func);
+    pluto_env->set("print", pluto::Builtins::func_print);
+
+    global_env->set("Pluto", std::shared_ptr<pluto::Entity>(new pluto::Module(pluto_env)));
 
     pluto::Interpreter interpreter(filename);
-    // final result is stored in entity
-    std::shared_ptr<pluto::Entity> entity = interpreter.visit(std::move(tree), std::move(global_env));
+    interpreter.visit(std::move(tree), std::move(global_env));
     
-    std::cout << entity->to_string() << '\n';
+    // std::cout << entity->to_string() << '\n';
 }
 
 int main(int argc, char **argv)

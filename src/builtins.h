@@ -8,6 +8,7 @@
 #include "env.h"
 #include "entity.h"
 #include "concept.h"
+#include "arguments.h"
 
 namespace pluto
 {
@@ -17,7 +18,8 @@ namespace pluto
         static const std::shared_ptr<Entity> class_object;
         static const std::shared_ptr<Entity> class_string;
         static const std::shared_ptr<Entity> class_func;
-        static const std::shared_ptr<Entity> class_system;
+        static const std::shared_ptr<Entity> func_print;
+        static const std::shared_ptr<Env> func_env;
     };
 }
 

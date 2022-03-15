@@ -83,14 +83,14 @@ namespace pluto
             return "DEF";
         case RETURN:
             return "RETURN";
-        case LAMBDA:
-            return "LAMBDA";
         case CLASS:
             return "CLASS";
         case PLUS:
             return "PLUS";
         case MINUS:
             return "MINUS";
+        case ARROW:
+            return "ARROW";
         case MULTIPLY:
             return "MULTIPLY";
         case DIVIDE:

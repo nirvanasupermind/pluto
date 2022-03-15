@@ -28,7 +28,6 @@ namespace pluto
     class Object : public Concept
     {
     public:
-        std::shared_ptr<Env> env;
         std::string string_val;
         func_t func;
 
@@ -48,8 +47,6 @@ namespace pluto
     class Class : public Concept
     {
     public:
-        std::shared_ptr<Env> env;
-
         Class() : Concept() {};
 
         Class(std::shared_ptr<Env> env) : Concept(env) {};

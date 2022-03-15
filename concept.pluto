@@ -2,15 +2,15 @@
 
 var list = ["a", "b", "c"];
 
-var first = Thread(lambda () {
+var first = Thread(-> () {
     for(var i = 0; i < list.size(); i = i + 1;) {
-        System.write(first.hashCode(), " ", list.get(i), "\n");
+        Pluto.print(first.hashCode(), " ", list.get(i), "\n");
     }
 });
 
-var second = Thread(lambda () {
+var second = Thread(-> () {
     for(var i = 0; i < list.size(); i = i + 1;) {
-        System.write(second.hashCode(), " ", list.get(i), "\n");
+        Pluto.print(second.hashCode(), " ", list.get(i), "\n");
     }
 });
 

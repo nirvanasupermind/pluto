@@ -14,6 +14,7 @@ namespace pluto
     public:
         std::string filename;
         int line;
+        std::shared_ptr<Entity> self;
         std::vector<std::shared_ptr<Entity> > data;
         Arguments(std::string filename, int line, std::vector<std::shared_ptr<Entity> > data);
 

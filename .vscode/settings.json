@@ -1,7 +1,7 @@
 {
     "files.associations": {
-        "*.toml": "ini",
         "*.pluto": "coffeescript",
+        "*.toml": "ini",
         "*.vml": "xml",
         "*.pocketlisp": "clojure",
         "memory": "cpp",
@@ -69,6 +69,10 @@
         "typeinfo": "cpp",
         "unordered_map": "cpp",
         "utility": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "clocale": "cpp",
+        "numeric": "cpp",
+        "random": "cpp",
+        "__bits": "cpp"
     }
 }
