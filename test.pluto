@@ -1,4 +1,16 @@
-var a = Pluto.Object();
-a.x = 5;
+class Vec {
+    def constructor(x, y) {
+        self.x = x;
+        self.y = y;
+    }
 
-Pluto.print(a.x, a);
+    def magSquared() {
+        return (self.x * self.x) + (self.y * self.y);
+    }
+}
+
+var vec = Vec(2, 3);
+var magSquared = vec.magSquared();
+
+Stdout.write(vec, "\n");
+Stdout.write(magSquared, "\n");

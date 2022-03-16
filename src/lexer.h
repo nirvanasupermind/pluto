@@ -3,12 +3,14 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 #include "token.h"
 
 namespace pluto
 {
     const std::string WHITESPACE(" \n\t");
+    std::map<char, char> escape {{'b', '\b'}, {'f', '\f'}, {'n', '\n'}, {'r', '\r'}, {'t', '\t'}};
 
     class Lexer
     {

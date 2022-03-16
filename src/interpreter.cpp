@@ -160,8 +160,7 @@ namespace pluto
 
     std::shared_ptr<Entity> Interpreter::visit(StringNode *node, std::shared_ptr<Env> env)
     {
-        std::shared_ptr<Env> string_env = ((Class *)(Builtins::class_string.get()))->env;
-        return std::shared_ptr<Entity>(new Object(string_env));
+        return std::shared_ptr<Entity>(new Object(std::shared_ptr<Env>(new Env(Builtins::string_env)), node->string_val));
     }
 
     std::shared_ptr<Entity> Interpreter::visit(NameNode *node, std::shared_ptr<Env> env)
@@ -988,6 +987,17 @@ namespace pluto
 
         std::shared_ptr<Entity> callee = visit(node->callee, env);
 
+        std::vector<std::shared_ptr<Entity> > data;
+
+        for (int i = 0; i < node->args.size(); i++)
+        {
+            data.push_back(visit(node->args[i], env));
+        }
+
+        std::shared_ptr<Arguments> args(new Arguments(filename, node->line, data));
+
+        args->self = self;
+
         if (callee->kind() == CLASS_ENTITY)
         {
             std::shared_ptr<Env> class_env = ((Class *)(callee.get()))->env;
@@ -1000,8 +1010,6 @@ namespace pluto
 
                 if (constructor->kind() == OBJECT_ENTITY && (((Object *)(constructor.get()))->func))
                 {
-                    std::vector<std::shared_ptr<Entity> > data;
-
                     std::shared_ptr<Arguments> args(new Arguments(filename, node->line, data));
 
                     args->self = obj;
@@ -1017,18 +1025,7 @@ namespace pluto
         {
             raise_error(node->line, callee->to_string() + " is not callable");
         }
-
-        std::vector<std::shared_ptr<Entity> > data;
-
-        for (int i = 0; i < node->args.size(); i++)
-        {
-            data.push_back(visit(node->args[i], env));
-        }
-
-        std::shared_ptr<Arguments> args(new Arguments(filename, node->line, data));
-
-        args->self = self;
-
+        
         return ((Object *)callee.get())->func(args);
     }
 

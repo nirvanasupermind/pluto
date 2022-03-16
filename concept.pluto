@@ -4,13 +4,13 @@ var list = ["a", "b", "c"];
 
 var first = Thread(-> () {
     for(var i = 0; i < list.size(); i = i + 1;) {
-        Pluto.print(first.hashCode(), " ", list.get(i), "\n");
+        Stdout.write(first.hashCode(), " ", list.get(i), "\n");
     }
 });
 
 var second = Thread(-> () {
     for(var i = 0; i < list.size(); i = i + 1;) {
-        Pluto.print(second.hashCode(), " ", list.get(i), "\n");
+        Stdout.write(second.hashCode(), " ", list.get(i), "\n");
     }
 });
 

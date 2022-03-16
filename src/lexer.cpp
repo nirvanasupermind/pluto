@@ -1,5 +1,6 @@
 #include <string>
 #include <vector>
+#include <map>
 
 #include "token.h"
 #include "lexer.h"
@@ -289,17 +290,20 @@ namespace pluto
             advance();
         }
 
-        if(val == ".") {
+        if (val == ".")
+        {
             return Token(line, DOT);
-        } else if (y_count == 1)
+        }
+        else if (y_count == 1)
         {
             return Token(line, BYTE, (signed char)std::stoi(val));
         }
-        else if(dot_count == 1)
+        else if (dot_count == 1)
         {
             return Token(line, DOUBLE, std::stod(val));
-        } 
-        else {
+        }
+        else
+        {
             return Token(line, INT, std::stol(val));
         }
     }
@@ -314,6 +318,18 @@ namespace pluto
 
         while (current_char() != '"')
         {
+            if (current_char() == '\\')
+            {
+                advance();
+                if(escape.count(current_char()) == 0) {
+                    val = val + current_char();
+                } else {
+                    val = val + escape[current_char()];
+                }
+                advance();
+                continue;
+            }
+
             if (pos >= text.length())
             {
                 raise_error("unfinished string literal");
