@@ -123,6 +123,8 @@ namespace pluto
             return visit((LambdaNode *)node, env);
         case CLASS_DEF_NODE:
             return visit((ClassDefNode *)node, env);
+        case MODULE_DEF_NODE:
+            return visit((ModuleDefNode *)node, env);
         default:
             raise_error(node->line, "invalid node");
         }
@@ -427,7 +429,6 @@ namespace pluto
 
     std::shared_ptr<Entity> Interpreter::visit(AndNode *node, std::shared_ptr<Env> env)
     {
-        // std::cout << "    std::shared_ptr<Entity> Interpreter::visit(AndNode *node, env)" << '\n';
         std::shared_ptr<Entity> a = visit(node->node_a, env);
         std::shared_ptr<Entity> b = visit(node->node_b, env);
 
@@ -872,14 +873,14 @@ namespace pluto
 
             std::shared_ptr<Entity> subject = visit(key_node->subject, env);
 
-            if (subject->kind() != OBJECT_ENTITY && subject->kind() != CLASS_ENTITY && subject->kind() != MODULE_ENTITY)
+            if (subject->kind() != OBJECT_ENTITY)
             {
                 raise_error(node->line, subject->to_string() + " is not an object, class or module");
             }
 
             std::string member = key_node->member;
 
-            std::shared_ptr<Env> subject_env = ((Concept *)subject.get())->env;
+            std::shared_ptr<Env> subject_env = ((Object *)subject.get())->env;
 
             std::shared_ptr<Entity> val = visit(node->val, env);
 
@@ -998,49 +999,49 @@ namespace pluto
 
         args->self = self;
 
-        if (callee->kind() == CLASS_ENTITY)
-        {
-            std::shared_ptr<Env> class_env = ((Class *)(callee.get()))->env;
 
-            std::shared_ptr<Entity> obj(new Object(class_env));
-
-            if (class_env->has("constructor"))
-            {
-                std::shared_ptr<Entity> constructor = class_env->get("constructor");
-
-                if (constructor->kind() == OBJECT_ENTITY && (((Object *)(constructor.get()))->func))
-                {
-                    std::shared_ptr<Arguments> args(new Arguments(filename, node->line, data));
-
-                    args->self = obj;
-
-                    ((Object *)constructor.get())->func(args);
-                }
-            }
-
-            return obj;
+        if(((Object *)(callee.get()))->func) {
+            return ((Object *)callee.get())->func(args);
         }
 
-        if (callee->kind() != OBJECT_ENTITY || !(((Object *)(callee.get()))->func))
+        if (callee->kind() != OBJECT_ENTITY)
         {
             raise_error(node->line, callee->to_string() + " is not callable");
         }
-        
-        return ((Object *)callee.get())->func(args);
+
+        std::shared_ptr<Env> class_env = ((Object *)(callee.get()))->env;
+
+        std::shared_ptr<Entity> obj(new Object(class_env));
+
+        if (class_env->has("constructor"))
+        {
+            std::shared_ptr<Entity> constructor = class_env->get("constructor");
+
+            if (constructor->kind() == OBJECT_ENTITY && (((Object *)(constructor.get()))->func))
+            {
+                std::shared_ptr<Arguments> args(new Arguments(filename, node->line, data));
+
+                args->self = obj;
+
+                ((Object *)constructor.get())->func(args);
+            }
+        }
+
+        return obj;
     }
 
     std::shared_ptr<Entity> Interpreter::visit(MemberAccessNode *node, std::shared_ptr<Env> env)
     {
         std::shared_ptr<Entity> subject = visit(node->subject, env);
 
-        if (subject->kind() != OBJECT_ENTITY && subject->kind() != CLASS_ENTITY && subject->kind() != MODULE_ENTITY)
+        if (subject->kind() != OBJECT_ENTITY)
         {
-            raise_error(node->line, subject->to_string() + " is not an object, class or module");
+            raise_error(node->line, subject->to_string() + " is not an object or module");
         }
-
+        
         std::string member = node->member;
 
-        std::shared_ptr<Env> subject_env = ((Concept *)subject.get())->env;
+        std::shared_ptr<Env> subject_env = ((Object *)subject.get())->env;
 
         if (subject_env->has(member))
         {
@@ -1168,7 +1169,7 @@ namespace pluto
             {
                 child_env->set(node->args.at(i), args->at(i));
             }
-            
+
             if (args->self != nullptr)
             {
                 child_env->set("self", args->self);
@@ -1226,7 +1227,7 @@ namespace pluto
             return Nil::NIL;
         };
 
-        std::shared_ptr<Env> func_env = ((Class *)(Builtins::class_func.get()))->env;
+        std::shared_ptr<Env> func_env = ((Object *)(Builtins::class_func.get()))->env;
         Object *o1 = new Object(func_env, new_func);
 
         std::shared_ptr<Object> o2(o1);
@@ -1241,17 +1242,45 @@ namespace pluto
             raise_error(node->line, "name '" + node->name + "' is already defined");
         }
 
-        std::shared_ptr<Env> class_env(new Env(env));
+        std::shared_ptr<Env> child_env(new Env(env));
 
         std::shared_ptr<Node> body = ((((BlockNode *)node->body.get())->node));
 
-        visit(body, class_env);
+        visit(body, child_env);
 
-        Class *c1 = new Class(class_env);
+        Object *c1 = new Object(Builtins::type_env, Builtins::class_object);
+        c1->env->map = child_env->map;
 
         std::shared_ptr<Entity> c2(c1);
 
         env->set(node->name, c2);
+
+        return Nil::NIL;
+    }
+
+    std::shared_ptr<Entity> Interpreter::visit(ModuleDefNode *node, std::shared_ptr<Env> env)
+    {
+        if (env->map.count(node->name) == 1)
+        {
+            std::shared_ptr<Entity> mod = env->get(node->name);
+
+            if(mod->kind() != OBJECT_ENTITY) {
+                raise_error(node->line, "name '" + node->name + "' is already defined");
+            }
+
+            visit(((BlockNode *)(node->body.get()))->node, ((Object *)(mod.get()))->env);
+        }
+        else
+        {
+            std::shared_ptr<Env> child_env(new Env(env));
+
+            visit(((BlockNode *)(node->body.get()))->node, child_env);
+
+            std::shared_ptr<Env> module_env(new Env(Builtins::module_env));
+            module_env->map = child_env->map;
+
+            env->set(node->name, std::shared_ptr<Entity>(new Object(module_env)));
+        }
 
         return Nil::NIL;
     }

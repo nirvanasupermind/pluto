@@ -24,6 +24,7 @@ namespace pluto
         DEF,
         RETURN,
         CLASS,
+        MODULE,
         PLUS,
         MINUS,
         ARROW,

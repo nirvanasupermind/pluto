@@ -13,8 +13,7 @@ namespace pluto
         BOOL_ENTITY,
         NIL_ENTITY,
         OBJECT_ENTITY,
-        CLASS_ENTITY,
-        MODULE_ENTITY
+        CLASS_ENTITY
     };
 
     class Entity

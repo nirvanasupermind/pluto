@@ -26,14 +26,16 @@ void run(std::string filename, std::string text)
 
     std::shared_ptr<pluto::Env> global_env(new pluto::Env());
 
+    global_env->set("Type", pluto::Builtins::class_type);
     global_env->set("Object", pluto::Builtins::class_object);
     global_env->set("String", pluto::Builtins::class_string);
     global_env->set("Func", pluto::Builtins::class_func);
-    global_env->set("Stdout", pluto::Builtins::class_stdout);
+    global_env->set("Module", pluto::Builtins::class_module);    
+    global_env->set("System", pluto::Builtins::class_system);
 
     pluto::Builtins::string_env->set("toString", pluto::Builtins::func_string_tostring);
-    pluto::Builtins::stdout_env->set("flush", pluto::Builtins::func_stdout_flush);
-    pluto::Builtins::stdout_env->set("write", pluto::Builtins::func_stdout_write);
+
+    pluto::Builtins::system_env->set("print", pluto::Builtins::func_system_print);
 
     pluto::Interpreter interpreter(filename);
     interpreter.visit(std::move(tree), std::move(global_env));

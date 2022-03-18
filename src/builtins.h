@@ -15,17 +15,20 @@ namespace pluto
     class Builtins
     {
     public:
+        static const std::shared_ptr<Entity> class_type;
         static const std::shared_ptr<Entity> class_object;
         static const std::shared_ptr<Entity> class_string;
         static const std::shared_ptr<Entity> class_func;
-        static const std::shared_ptr<Entity> class_stdout;
+        static const std::shared_ptr<Entity> class_module;
+        static const std::shared_ptr<Entity> class_system;
+        static const std::shared_ptr<Env> type_env;
         static const std::shared_ptr<Env> object_env;
         static const std::shared_ptr<Env> string_env;
         static const std::shared_ptr<Env> func_env;
-        static const std::shared_ptr<Env> stdout_env;
+        static const std::shared_ptr<Env> module_env;
+        static const std::shared_ptr<Env> system_env;
         static const std::shared_ptr<Entity> func_string_tostring;
-        static const std::shared_ptr<Entity> func_stdout_flush;
-        static const std::shared_ptr<Entity> func_stdout_write;
+        static const std::shared_ptr<Entity> func_system_print;
     };
 }
 

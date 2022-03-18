@@ -35,6 +35,12 @@ namespace pluto
         this->func = func;
     }
 
+    Object::Object(std::shared_ptr<Env> env, std::shared_ptr<Entity> super)
+    {
+        this->env = env;
+        this->super = super;
+    }
+
     EntityKind Object::kind()
     {
         return OBJECT_ENTITY;
@@ -47,33 +53,5 @@ namespace pluto
         std::string s(oss.str());
 
         return "(object : " + s + ")";
-    }
-
-    EntityKind Class::kind()
-    {
-        return CLASS_ENTITY;
-    }
-
-    std::string Class::to_string()
-    {
-        std::ostringstream oss;
-        oss << (void *)this;
-        std::string s(oss.str());
-
-        return "(class : " + s + ")";
-    }
-
-    EntityKind Module::kind()
-    {
-        return MODULE_ENTITY;
-    }
-
-    std::string Module::to_string()
-    {
-        std::ostringstream oss;
-        oss << (void *)this;
-        std::string s(oss.str());
-
-        return "(module : " + s + ")";
     }
 }

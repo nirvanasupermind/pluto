@@ -250,6 +250,13 @@ namespace pluto
                 tokens.push_back(Token(line, SEMICOLON));
                 advance();
             }
+            else if (current_char() == '#')
+            {
+                while (current_char() != '\n')
+                {
+                    advance();
+                }
+            }
             else
             {
                 std::string s(1, current_char());
@@ -321,9 +328,12 @@ namespace pluto
             if (current_char() == '\\')
             {
                 advance();
-                if(escape.count(current_char()) == 0) {
+                if (escape.count(current_char()) == 0)
+                {
                     val = val + current_char();
-                } else {
+                }
+                else
+                {
                     val = val + escape[current_char()];
                 }
                 advance();
@@ -401,6 +411,10 @@ namespace pluto
         else if (name == "class")
         {
             return Token(line, CLASS);
+        }
+        else if (name == "module")
+        {
+            return Token(line, MODULE);
         }
         else
         {

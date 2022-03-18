@@ -85,6 +85,8 @@ namespace pluto
             return "RETURN";
         case CLASS:
             return "CLASS";
+        case MODULE:
+            return "MODULE";
         case PLUS:
             return "PLUS";
         case MINUS:
