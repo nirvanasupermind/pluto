@@ -31,9 +31,14 @@ void run(std::string filename, std::string text)
     global_env->set("String", pluto::Builtins::class_string);
     global_env->set("Func", pluto::Builtins::class_func);
     global_env->set("Module", pluto::Builtins::class_module);    
+    global_env->set("Math", pluto::Builtins::class_math);
     global_env->set("System", pluto::Builtins::class_system);
 
     pluto::Builtins::string_env->set("toString", pluto::Builtins::func_string_tostring);
+
+    pluto::Builtins::math_env->set("acos", pluto::Builtins::func_math_acos);
+    pluto::Builtins::math_env->set("asin", pluto::Builtins::func_math_asin);
+    pluto::Builtins::math_env->set("atan", pluto::Builtins::func_math_asin);
 
     pluto::Builtins::system_env->set("print", pluto::Builtins::func_system_print);
 

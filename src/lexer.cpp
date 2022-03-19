@@ -64,19 +64,8 @@ namespace pluto
             }
             else if (current_char() == '-')
             {
-                int ln = line;
-
+                tokens.push_back(Token(line, MINUS));
                 advance();
-
-                if (current_char() == '>')
-                {
-                    tokens.push_back(Token(ln, ARROW));
-                    advance();
-                }
-                else
-                {
-                    tokens.push_back(Token(ln, MINUS));
-                }
             }
             else if (current_char() == '*')
             {
@@ -408,6 +397,10 @@ namespace pluto
         {
             return Token(line, RETURN);
         }
+        else if (name == "lambda")
+        {
+            return Token(line, LAMBDA);
+        }
         else if (name == "class")
         {
             return Token(line, CLASS);
@@ -415,6 +408,10 @@ namespace pluto
         else if (name == "module")
         {
             return Token(line, MODULE);
+        }
+        else if (name == "include")
+        {
+            return Token(line, INCLUDE);
         }
         else
         {

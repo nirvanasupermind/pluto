@@ -16,16 +16,57 @@ namespace pluto
     const std::shared_ptr<Entity> Builtins::class_string(new Object(std::shared_ptr<Env>(new Env(Builtins::type_env)), Builtins::class_object));
     const std::shared_ptr<Entity> Builtins::class_func(new Object(std::shared_ptr<Env>(new Env(Builtins::type_env)), Builtins::class_object));
     const std::shared_ptr<Entity> Builtins::class_module(new Object(std::shared_ptr<Env>(new Env(Builtins::type_env)), Builtins::class_object));
+    const std::shared_ptr<Entity> Builtins::class_math(new Object(std::shared_ptr<Env>(new Env(Builtins::type_env)), Builtins::class_object));
     const std::shared_ptr<Entity> Builtins::class_system(new Object(std::shared_ptr<Env>(new Env(Builtins::type_env)),Builtins::class_object));
     
     const std::shared_ptr<Env> Builtins::object_env = ((Object *)(Builtins::class_object.get()))->env;
     const std::shared_ptr<Env> Builtins::string_env = ((Object *)(Builtins::class_string.get()))->env;
     const std::shared_ptr<Env> Builtins::func_env = ((Object *)(Builtins::class_func.get()))->env;
     const std::shared_ptr<Env> Builtins::module_env = ((Object *)(Builtins::class_module.get()))->env;
+    const std::shared_ptr<Env> Builtins::math_env = ((Object *)(Builtins::class_math.get()))->env;
     const std::shared_ptr<Env> Builtins::system_env = ((Object *)(Builtins::class_system.get()))->env;
 
     const std::shared_ptr<Entity> Builtins::func_string_tostring(new Object(std::shared_ptr<Env>(new Env(Builtins::func_env)), [](std::shared_ptr<Arguments> args) {
         return args->self;
+    }));
+
+    const std::shared_ptr<Entity> Builtins::func_math_acos(new Object(std::shared_ptr<Env>(new Env(Builtins::func_env)), [](std::shared_ptr<Arguments> args) {
+        std::shared_ptr<Entity> a = args->at(0);
+        if(a->kind() == BYTE) {
+            return std::shared_ptr<Entity>(new Double(std::acos(((Byte *)a.get())->byte_val)));
+        } else if(a->kind() == INT) {
+            return std::shared_ptr<Entity>(new Double(std::acos(((Int *)a.get())->int_val)));
+        } else if(a->kind() == DOUBLE) {
+            return std::shared_ptr<Entity>(new Double(std::acos(((Double *)a.get())->double_val)));
+        } else {
+             throw std::string(args->filename + ":" + std::to_string(args->line) + ": invalid argument to 'acos' (number expected)");
+        }
+    }));
+
+    const std::shared_ptr<Entity> Builtins::func_math_asin(new Object(std::shared_ptr<Env>(new Env(Builtins::func_env)), [](std::shared_ptr<Arguments> args) {
+        std::shared_ptr<Entity> a = args->at(0);
+        if(a->kind() == BYTE) {
+            return std::shared_ptr<Entity>(new Double(std::asin(((Byte *)a.get())->byte_val)));
+        } else if(a->kind() == INT) {
+            return std::shared_ptr<Entity>(new Double(std::asin(((Int *)a.get())->int_val)));
+        } else if(a->kind() == DOUBLE) {
+            return std::shared_ptr<Entity>(new Double(std::asin(((Double *)a.get())->double_val)));
+        } else {
+            throw std::string(args->filename + ":" + std::to_string(args->line) + ": invalid argument to 'acos' (number expected)");
+        }
+    }));
+    
+    const std::shared_ptr<Entity> Builtins::func_math_atan(new Object(std::shared_ptr<Env>(new Env(Builtins::func_env)), [](std::shared_ptr<Arguments> args) {
+        std::shared_ptr<Entity> a = args->at(0);
+        if(a->kind() == BYTE) {
+            return std::shared_ptr<Entity>(new Double(std::atan(((Byte *)a.get())->byte_val)));
+        } else if(a->kind() == INT) {
+            return std::shared_ptr<Entity>(new Double(std::atan(((Int *)a.get())->int_val)));
+        } else if(a->kind() == DOUBLE) {
+            return std::shared_ptr<Entity>(new Double(std::atan(((Double *)a.get())->double_val)));
+        } else {
+            throw std::string(args->filename + ":" + std::to_string(args->line) + ": invalid argument to 'asin'");
+        }
     }));
 
     const std::shared_ptr<Entity> Builtins::func_system_print(new Object(std::shared_ptr<Env>(new Env(Builtins::func_env)), [](std::shared_ptr<Arguments> args) {

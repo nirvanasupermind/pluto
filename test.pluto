@@ -1,7 +1,1 @@
-module math {
-    def sqr(n) {
-        return n * n;
-    }
-}
-
-System.print(math.sqr(5));
+System.print((lambda (x) x * x)(7.0));

@@ -1213,6 +1213,10 @@ namespace pluto
                 child_env->set(node->args.at(i), args->at(i));
             }
 
+            if(node->body->kind() != BLOCK_NODE) {
+                return visit(node->body, child_env);
+            }
+
             std::vector<std::shared_ptr<Node> > nodes = ((ProgramNode *)((((BlockNode *)node->body.get())->node).get()))->nodes;
 
             for (int i = 0; i < nodes.size(); i++)

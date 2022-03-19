@@ -873,7 +873,7 @@ namespace pluto
             advance();
             return std::shared_ptr<Node>(new NilNode(current_token.line));
         }
-        else if (current_token.type == ARROW)
+        else if (current_token.type == LAMBDA)
         {
             advance();
 
@@ -922,6 +922,12 @@ namespace pluto
             else
             {
                 advance();
+            }
+
+            if(current().type != LCURLY) {
+                std::shared_ptr<Node> body = expr();
+
+                return std::shared_ptr<Node>(new LambdaNode(current_token.line, args, body));
             }
 
             std::shared_ptr<Node> body = block_stmt();
