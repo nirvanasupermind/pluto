@@ -19,21 +19,14 @@ namespace pluto
         std::string text;
         std::size_t pos;
         int line;
-
         Lexer(std::string filename, std::string text);
-
         void raise_error(std::string msg);
-
         void advance();
-
         char current_char();
-
         std::vector<Token> generate_tokens();
-
         Token generate_number();
-
         Token generate_string();
-        
+        Token generate_char();
         Token generate_name();
     };
 }

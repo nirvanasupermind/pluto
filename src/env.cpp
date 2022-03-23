@@ -60,13 +60,16 @@ namespace pluto
 
     Env *Env::resolve(std::string key)
     {
-        if (parent.get() == nullptr)
+        if (map.count(key) == 0)
         {
-            return nullptr;
-        }
-        else if (map.count(key) == 0 && parent.get() != nullptr)
-        {
-            return parent.get();
+            if (parent.get() == nullptr)
+            {
+                return nullptr;
+            }
+            else
+            {
+                return parent.get();
+            }
         }
         else
         {

@@ -3,7 +3,7 @@ Work-in-progress C++ interpreter for the Pluto programming language.
 
 Once completed, Pluto will be a lightweight, dynamic programming language with multithreading support.
 
-# Running example
+# Working example
 ```
 class Vec {
     def constructor(x, y) {
@@ -17,7 +17,6 @@ class Vec {
 }
 
 var vec = Vec(2, 3);
-var magSquared = vec.magSquared();
 
-Stdout.write(magSquared, "\n");
+System.print(vec.magSquared()); # 13
 ```

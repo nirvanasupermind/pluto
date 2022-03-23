@@ -33,22 +33,6 @@ namespace pluto
         return result;
     }
 
-    ByteNode::ByteNode(int line, signed char byte_val)
-    {
-        this->line = line;
-        this->byte_val = byte_val;
-    }
-
-    NodeKind ByteNode::kind()
-    {
-        return BYTE_NODE;
-    }
-
-    std::string ByteNode::to_string()
-    {
-        return std::to_string(byte_val);
-    }
-
     IntNode::IntNode(int line, long int int_val)
     {
         this->line = line;
@@ -79,6 +63,22 @@ namespace pluto
     std::string DoubleNode::to_string()
     {
         return std::to_string(double_val);
+    }
+
+    CharNode::CharNode(int line, unsigned char char_val)
+    {
+        this->line = line;
+        this->char_val = char_val;
+    }
+
+    NodeKind CharNode::kind()
+    {
+        return CHAR_NODE;
+    }
+
+    std::string CharNode::to_string()
+    {
+        return std::to_string(char_val);
     }
 
     StringNode::StringNode(int line, std::string string_val)

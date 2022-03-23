@@ -4,24 +4,36 @@
 
 namespace pluto
 {
-    Byte::Byte(signed char byte_val)
+    std::string error_desc(EntityKind kind, bool article)
     {
-        this->byte_val = byte_val;
-    }
+        if (article)
+        {
+            switch (kind)
+            {
+            case INT_ENTITY:
+                return "an int";
+            case OBJECT_ENTITY:
+                return "an object";
+            default:
+                return "a " + error_desc(kind);
+            }
+        }
 
-    bool Byte::is_true()
-    {
-        return true;
-    }
-
-    EntityKind Byte::kind()
-    {
-        return BYTE_ENTITY;
-    }
-
-    std::string Byte::to_string()
-    {
-        return std::to_string((int)byte_val);
+        switch (kind)
+        {
+        case INT_ENTITY:
+            return "int";
+        case DOUBLE_ENTITY:
+            return "double";
+        case CHAR_ENTITY:
+            return "char";
+        case BOOL_ENTITY:
+            return "bool";
+        case NIL_ENTITY:
+            return "nil";
+        case OBJECT_ENTITY:
+            return "object";
+        }
     }
 
     Int::Int(long int int_val)
@@ -64,6 +76,26 @@ namespace pluto
         return std::to_string(double_val);
     }
 
+    Char::Char(unsigned char char_val)
+    {
+        this->char_val = char_val;
+    }
+
+    bool Char::is_true()
+    {
+        return true;
+    }
+
+    EntityKind Char::kind()
+    {
+        return CHAR_ENTITY;
+    }
+
+    std::string Char::to_string()
+    {
+        return std::string(1, char_val);
+    }
+
     Bool::Bool(bool bool_val)
     {
         this->bool_val = bool_val;
@@ -78,14 +110,14 @@ namespace pluto
     {
         return BOOL_ENTITY;
     }
-    
+
     std::string Bool::to_string()
     {
-        return (bool_val ? "true": "false");
+        return (bool_val ? "true" : "false");
     }
 
     const std::shared_ptr<Entity> Bool::TRUE(new Bool(true));
-    
+
     const std::shared_ptr<Entity> Bool::FALSE(new Bool(false));
 
     Nil::Nil()

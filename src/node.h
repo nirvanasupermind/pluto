@@ -12,9 +12,9 @@ namespace pluto
     enum NodeKind
     {
         PROGRAM_NODE,
-        BYTE_NODE,
         INT_NODE,
         DOUBLE_NODE,
+        CHAR_NODE,
         STRING_NODE,
         NAME_NODE,
         TRUE_NODE,
@@ -82,12 +82,12 @@ namespace pluto
         std::string to_string();
     };
 
-    class ByteNode : public Node
+    class CharNode : public Node
     {
     public:
-        signed char byte_val;
+        unsigned char char_val;
 
-        ByteNode(int line, signed char byte_val);
+        CharNode(int line, unsigned char char_val);
 
         NodeKind kind();
 
@@ -184,7 +184,6 @@ namespace pluto
 
         std::string to_string();
     };
-
 
     class SubtractNode : public Node
     {

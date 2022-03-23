@@ -9,7 +9,7 @@
 #include "src/lexer.cpp"
 #include "src/node.cpp"
 #include "src/parser.cpp"
-#include "src/concept.cpp"
+#include "src/object.cpp"
 #include "src/env.cpp"
 #include "src/entity.cpp"
 #include "src/builtins.cpp"
@@ -26,7 +26,7 @@ void run(std::string filename, std::string text)
 
     std::shared_ptr<pluto::Env> global_env(new pluto::Env());
 
-    global_env->set("Type", pluto::Builtins::class_type);
+    global_env->set("Class", pluto::Builtins::class_class);
     global_env->set("Object", pluto::Builtins::class_object);
     global_env->set("String", pluto::Builtins::class_string);
     global_env->set("Func", pluto::Builtins::class_func);
@@ -34,6 +34,7 @@ void run(std::string filename, std::string text)
     global_env->set("Math", pluto::Builtins::class_math);
     global_env->set("System", pluto::Builtins::class_system);
 
+    pluto::Builtins::string_env->set("charAt", pluto::Builtins::func_string_charat);
     pluto::Builtins::string_env->set("toString", pluto::Builtins::func_string_tostring);
 
     pluto::Builtins::math_env->set("acos", pluto::Builtins::func_math_acos);

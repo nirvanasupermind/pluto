@@ -44,7 +44,7 @@ namespace pluto
 
     std::shared_ptr<Node> Parser::program(TokenType end)
     {
-        int ln = current().line;
+        int orig_line = current().line;
 
         std::vector<std::shared_ptr<Node> > nodes;
 
@@ -53,7 +53,7 @@ namespace pluto
             nodes.push_back(stmt());
         }
 
-        return std::shared_ptr<Node>(new ProgramNode(ln, nodes));
+        return std::shared_ptr<Node>(new ProgramNode(orig_line, nodes));
     }
 
     std::shared_ptr<Node> Parser::stmt()
@@ -122,7 +122,7 @@ namespace pluto
 
     std::shared_ptr<Node> Parser::module_def_stmt()
     {
-        int ln = current().line;
+        int orig_line = current().line;
 
         if (current().type != MODULE)
         {
@@ -142,12 +142,12 @@ namespace pluto
 
         std::shared_ptr<Node> body = block_stmt();
 
-        return std::shared_ptr<Node>(new ModuleDefNode(ln, name, body));
+        return std::shared_ptr<Node>(new ModuleDefNode(orig_line, name, body));
     }
 
     std::shared_ptr<Node> Parser::class_def_stmt()
     {
-        int ln = current().line;
+        int orig_line = current().line;
 
         if (current().type != CLASS)
         {
@@ -167,7 +167,7 @@ namespace pluto
 
         std::shared_ptr<Node> body = block_stmt();
 
-        return std::shared_ptr<Node>(new ClassDefNode(ln, name, body));
+        return std::shared_ptr<Node>(new ClassDefNode(orig_line, name, body));
     }
 
     std::shared_ptr<Node> Parser::return_stmt()
@@ -193,7 +193,7 @@ namespace pluto
 
     std::shared_ptr<Node> Parser::func_def_stmt()
     {
-        int ln = current().line;
+        int orig_line = current().line;
 
         if (current().type != DEF)
         {
@@ -262,12 +262,12 @@ namespace pluto
 
         std::shared_ptr<Node> body = block_stmt();
 
-        return std::shared_ptr<Node>(new FuncDefNode(ln, name, args, body));
+        return std::shared_ptr<Node>(new FuncDefNode(orig_line, name, args, body));
     }
 
     std::shared_ptr<Node> Parser::while_stmt()
     {
-        int ln = current().line;
+        int orig_line = current().line;
 
         if (current().type != WHILE)
         {
@@ -294,12 +294,12 @@ namespace pluto
 
         std::shared_ptr<Node> body = block_stmt();
 
-        return std::shared_ptr<Node>(new WhileNode(ln, cond, body));
+        return std::shared_ptr<Node>(new WhileNode(orig_line, cond, body));
     }
 
     std::shared_ptr<Node> Parser::for_stmt()
     {
-        int ln = current().line;
+        int orig_line = current().line;
 
         if (current().type != FOR)
         {
@@ -328,12 +328,12 @@ namespace pluto
 
         std::shared_ptr<Node> body = block_stmt();
 
-        return std::shared_ptr<Node>(new ForNode(ln, stmt_a, stmt_b, stmt_c, body));
+        return std::shared_ptr<Node>(new ForNode(orig_line, stmt_a, stmt_b, stmt_c, body));
     }
 
     std::shared_ptr<Node> Parser::if_stmt()
     {
-        int ln = current().line;
+        int orig_line = current().line;
 
         if (current().type != IF)
         {
@@ -366,15 +366,15 @@ namespace pluto
 
             std::shared_ptr<Node> else_body = block_stmt();
 
-            return std::shared_ptr<Node>(new IfElseNode(ln, cond, body, else_body));
+            return std::shared_ptr<Node>(new IfElseNode(orig_line, cond, body, else_body));
         }
 
-        return std::shared_ptr<Node>(new IfNode(ln, cond, body));
+        return std::shared_ptr<Node>(new IfNode(orig_line, cond, body));
     }
 
     std::shared_ptr<Node> Parser::block_stmt()
     {
-        int ln = current().line;
+        int orig_line = current().line;
 
         if (current().type != LCURLY)
         {
@@ -392,12 +392,12 @@ namespace pluto
 
         advance();
 
-        return std::shared_ptr<Node>(new BlockNode(ln, node));
+        return std::shared_ptr<Node>(new BlockNode(orig_line, node));
     }
 
     std::shared_ptr<Node> Parser::var_def_stmt()
     {
-        int ln = current().line;
+        int orig_line = current().line;
 
         if (current().type != VAR)
         {
@@ -431,12 +431,12 @@ namespace pluto
 
         advance();
 
-        return std::shared_ptr<Node>(new VarDefNode(ln, key, val));
+        return std::shared_ptr<Node>(new VarDefNode(orig_line, key, val));
     }
 
     std::shared_ptr<Node> Parser::const_def_stmt()
     {
-        int ln = current().line;
+        int orig_line = current().line;
 
         if (current().type != CONST)
         {
@@ -470,7 +470,7 @@ namespace pluto
 
         advance();
 
-        return std::shared_ptr<Node>(new ConstDefNode(ln, key, val));
+        return std::shared_ptr<Node>(new ConstDefNode(orig_line, key, val));
     }
 
     std::vector<std::shared_ptr<Node> > Parser::expr_list()
@@ -777,9 +777,11 @@ namespace pluto
     {
         std::shared_ptr<Node> result = leaf_expr();
 
-        while (current().type == LPAREN || current().type == DOT)
+        while (current().type == LPAREN || current().type == DOT || current().type == LBRACKET)
         {
-            if (current().type == LPAREN)
+            TokenType currenttype = current().type;
+
+            if (currenttype == LPAREN)
             {
                 advance();
 
@@ -787,7 +789,7 @@ namespace pluto
 
                 result = std::shared_ptr<Node>(new CallNode(result->line, result, args));
             }
-            else if (current().type == DOT)
+            else if (currenttype == DOT)
             {
                 advance();
 
@@ -827,26 +829,20 @@ namespace pluto
 
             return result;
         }
-        else if (current_token.type == BYTE)
-        {
-            advance();
-
-            std::shared_ptr<Node> result = std::shared_ptr<Node>(new ByteNode(current_token.line, current_token.byte_val));
-
-            return result;
-        }
         else if (current_token.type == INT)
         {
             advance();
-
-            std::shared_ptr<Node> result = std::shared_ptr<Node>(new IntNode(current_token.line, current_token.int_val));
-
-            return result;
+            return std::shared_ptr<Node>(new IntNode(current_token.line, current_token.int_val));
         }
         else if (current_token.type == DOUBLE)
         {
             advance();
             return std::shared_ptr<Node>(new DoubleNode(current_token.line, current_token.double_val));
+        }
+        else if (current_token.type == CHAR)
+        {
+            advance();
+            return std::shared_ptr<Node>(new CharNode(current_token.line, current_token.char_val));
         }
         else if (current_token.type == STRING)
         {

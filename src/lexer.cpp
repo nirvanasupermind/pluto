@@ -45,6 +45,10 @@ namespace pluto
             {
                 advance();
             }
+            else if (current_char() == '\'')
+            {
+                tokens.push_back(generate_char());
+            }
             else if (current_char() == '"')
             {
                 tokens.push_back(generate_string());
@@ -84,66 +88,66 @@ namespace pluto
             }
             else if (current_char() == '|')
             {
-                int ln = line;
+                int orig_line = line;
 
                 advance();
 
                 if (current_char() == '|')
                 {
-                    tokens.push_back(Token(ln, OR));
+                    tokens.push_back(Token(orig_line, OR));
                     advance();
                 }
                 else
                 {
-                    tokens.push_back(Token(ln, BOR));
+                    tokens.push_back(Token(orig_line, BOR));
                 }
             }
             else if (current_char() == '&')
             {
-                int ln = line;
+                int orig_line = line;
 
                 advance();
 
                 if (current_char() == '&')
                 {
-                    tokens.push_back(Token(ln, AND));
+                    tokens.push_back(Token(orig_line, AND));
                     advance();
                 }
                 else
                 {
-                    tokens.push_back(Token(ln, BAND));
+                    tokens.push_back(Token(orig_line, BAND));
                 }
             }
             else if (current_char() == '^')
             {
-                int ln = line;
+                int orig_line = line;
 
                 advance();
 
                 if (current_char() == '^')
                 {
-                    tokens.push_back(Token(ln, XOR));
+                    tokens.push_back(Token(orig_line, XOR));
                     advance();
                 }
                 else
                 {
-                    tokens.push_back(Token(ln, BXOR));
+                    tokens.push_back(Token(orig_line, BXOR));
                 }
             }
             else if (current_char() == '!')
             {
-                int ln = line;
+                int orig_line = line;
 
                 advance();
 
                 if (current_char() == '=')
                 {
-                    tokens.push_back(Token(ln, NE));
+                    tokens.push_back(Token(orig_line, NE));
                     advance();
                 }
                 else
                 {
-                    tokens.push_back(Token(ln, NOT));
+                    tokens.push_back(Token(orig_line, NOT));
                 }
             }
             else if (current_char() == '~')
@@ -153,60 +157,60 @@ namespace pluto
             }
             else if (current_char() == '<')
             {
-                int ln = line;
+                int orig_line = line;
 
                 advance();
 
                 if (current_char() == '<')
                 {
-                    tokens.push_back(Token(ln, LSHIFT));
+                    tokens.push_back(Token(orig_line, LSHIFT));
                     advance();
                 }
                 else if (current_char() == '=')
                 {
-                    tokens.push_back(Token(ln, LTE));
+                    tokens.push_back(Token(orig_line, LTE));
                     advance();
                 }
                 else
                 {
-                    tokens.push_back(Token(ln, LT));
+                    tokens.push_back(Token(orig_line, LT));
                 }
             }
             else if (current_char() == '>')
             {
-                int ln = line;
+                int orig_line = line;
 
                 advance();
 
                 if (current_char() == '>')
                 {
-                    tokens.push_back(Token(ln, RSHIFT));
+                    tokens.push_back(Token(orig_line, RSHIFT));
                     advance();
                 }
                 else if (current_char() == '=')
                 {
-                    tokens.push_back(Token(ln, GTE));
+                    tokens.push_back(Token(orig_line, GTE));
                     advance();
                 }
                 else
                 {
-                    tokens.push_back(Token(ln, GT));
+                    tokens.push_back(Token(orig_line, GT));
                 }
             }
             else if (current_char() == '=')
             {
-                int ln = line;
+                int orig_line = line;
 
                 advance();
 
                 if (current_char() == '=')
                 {
-                    tokens.push_back(Token(ln, EE));
+                    tokens.push_back(Token(orig_line, EE));
                     advance();
                 }
                 else
                 {
-                    tokens.push_back(Token(ln, EQ));
+                    tokens.push_back(Token(orig_line, EQ));
                 }
             }
             else if (current_char() == '(')
@@ -227,6 +231,16 @@ namespace pluto
             else if (current_char() == '}')
             {
                 tokens.push_back(Token(line, RCURLY));
+                advance();
+            }
+            else if (current_char() == '[')
+            {
+                tokens.push_back(Token(line, LBRACKET));
+                advance();
+            }
+            else if (current_char() == ']')
+            {
+                tokens.push_back(Token(line, RBRACKET));
                 advance();
             }
             else if (current_char() == ',')
@@ -262,25 +276,24 @@ namespace pluto
     {
         std::string val;
         int dot_count = 0;
-        int y_count = 0;
 
-        while (pos < text.length() && (std::isdigit(current_char()) || current_char() == '.' || current_char() == 'y' || current_char() == 'Y'))
+        while (pos < text.length() && (std::isdigit(current_char()) || current_char() == '.'))
         {
             if (current_char() == '.')
             {
-                if (++dot_count >= 2 || y_count >= 1)
+                if (++dot_count >= 2)
                 {
                     break;
                 }
             }
 
-            if (current_char() == 'y' || current_char() == 'Y')
-            {
-                if (++y_count >= 2 || dot_count >= 1)
-                {
-                    break;
-                }
-            }
+            // if (current_char() == 'y' || current_char() == 'Y')
+            // {
+            //     if (++y_count >= 2 || dot_count >= 1)
+            //     {
+            //         break;
+            //     }
+            // }
 
             val = val + current_char();
             advance();
@@ -290,10 +303,6 @@ namespace pluto
         {
             return Token(line, DOT);
         }
-        else if (y_count == 1)
-        {
-            return Token(line, BYTE, (signed char)std::stoi(val));
-        }
         else if (dot_count == 1)
         {
             return Token(line, DOUBLE, std::stod(val));
@@ -302,6 +311,52 @@ namespace pluto
         {
             return Token(line, INT, std::stol(val));
         }
+    }
+
+    Token Lexer::generate_char()
+    {
+        int orig_line = line; // Important because strings may be multiline
+
+        unsigned char val;
+
+        advance();
+
+        if (current_char() == '\'')
+        {
+            raise_error("empty character literal");
+        }
+
+        if (current_char() == '\\')
+        {
+            advance();
+            if (escape.count(current_char()) == 0)
+            {
+                val = current_char();
+            }
+            else
+            {
+                val = escape[current_char()];
+            }
+            advance();
+        }
+        else
+        {
+            val = current_char();
+            advance();
+        }
+
+        if (pos >= text.length())
+        {
+            raise_error("unfinished character literal");
+        }
+
+        if(current_char() != '\'') {
+            raise_error("multi-character literal");
+        }
+        
+        advance();
+
+        return Token(orig_line, CHAR, val);
     }
 
     Token Lexer::generate_string()

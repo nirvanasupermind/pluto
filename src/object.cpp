@@ -4,23 +4,18 @@
 
 #include "env.h"
 #include "entity.h"
-#include "concept.h"
+#include "object.h"
 
 namespace pluto
 {
-    Concept::Concept()
+    Object::Object()
     {
         this->env = std::shared_ptr<Env>(new Env());
     }
 
-    Concept::Concept(std::shared_ptr<Env> env)
+    Object::Object(std::shared_ptr<Env> env)
     {
         this->env = env;
-    }
-
-    bool Concept::is_true()
-    {
-        return true;
     }
 
     Object::Object(std::shared_ptr<Env> env, std::string string_val)
@@ -44,6 +39,11 @@ namespace pluto
     EntityKind Object::kind()
     {
         return OBJECT_ENTITY;
+    }
+
+    bool Object::is_true()
+    {
+        return true;
     }
 
     std::string Object::to_string()

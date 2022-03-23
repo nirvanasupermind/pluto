@@ -9,7 +9,7 @@
 #include "node.h"
 #include "env.h"
 #include "entity.h"
-#include "concept.h"
+#include "object.h"
 #include "builtins.h"
 #include "arguments.h"
 
@@ -27,9 +27,9 @@ namespace pluto
         std::shared_ptr<Entity> visit(std::shared_ptr<Node> node, std::shared_ptr<Env> env);
         std::shared_ptr<Entity> visit(Node *node, std::shared_ptr<Env> env);
         std::shared_ptr<Entity> visit(ProgramNode *node, std::shared_ptr<Env> env);
-        std::shared_ptr<Entity> visit(ByteNode *node, std::shared_ptr<Env> env);
         std::shared_ptr<Entity> visit(IntNode *node, std::shared_ptr<Env> env);
         std::shared_ptr<Entity> visit(DoubleNode *node, std::shared_ptr<Env> env);
+        std::shared_ptr<Entity> visit(CharNode *node, std::shared_ptr<Env> env);
         std::shared_ptr<Entity> visit(StringNode *node, std::shared_ptr<Env> env);
         std::shared_ptr<Entity> visit(NameNode *node, std::shared_ptr<Env> env);
         std::shared_ptr<Entity> visit(TrueNode *node, std::shared_ptr<Env> env);

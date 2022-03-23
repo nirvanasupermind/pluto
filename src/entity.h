@@ -7,14 +7,15 @@ namespace pluto
 {
     enum EntityKind
     {
-        BYTE_ENTITY,
         INT_ENTITY,
         DOUBLE_ENTITY,
+        CHAR_ENTITY,
         BOOL_ENTITY,
         NIL_ENTITY,
-        OBJECT_ENTITY,
-        CLASS_ENTITY
+        OBJECT_ENTITY
     };
+    
+    std::string error_desc(EntityKind kind, bool article = false);
 
     class Entity
     {
@@ -24,20 +25,6 @@ namespace pluto
         virtual EntityKind kind() = 0;
         
         virtual std::string to_string() = 0;
-    };
-
-    class Byte : public Entity
-    {
-    public:
-        signed char byte_val;
-
-        Byte(signed char byte_val);
-
-        bool is_true();
-
-        EntityKind kind();
-
-        std::string to_string();
     };
 
     class Int : public Entity
@@ -60,6 +47,20 @@ namespace pluto
         double double_val;
 
         Double(double double_val);
+
+        bool is_true();
+
+        EntityKind kind();
+
+        std::string to_string();
+    };
+
+    class Char : public Entity
+    {
+    public:
+        unsigned char char_val;
+
+        Char(unsigned char char_val);
 
         bool is_true();
 

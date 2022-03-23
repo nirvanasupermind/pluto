@@ -68,6 +68,8 @@
         "type_traits": "cpp",
         "unordered_map": "cpp",
         "vector": "cpp",
-        "__bits": "cpp"
+        "__bits": "cpp",
+        "__functional_base_03": "cpp",
+        "filesystem": "cpp"
     }
 }
