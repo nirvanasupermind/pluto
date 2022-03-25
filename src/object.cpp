@@ -24,6 +24,12 @@ namespace pluto
         this->string_val = string_val;
     }
 
+    Object::Object(std::shared_ptr<Env> env, std::vector<std::shared_ptr<Entity> > collection_elems)
+    {
+        this->env = env;
+        this->collection_elems = collection_elems;
+    }
+
     Object::Object(std::shared_ptr<Env> env, func_t func)
     {
         this->env = env;

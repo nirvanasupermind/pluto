@@ -37,7 +37,7 @@ namespace pluto
         std::shared_ptr<Node> block_stmt();
         std::shared_ptr<Node> const_def_stmt();
         std::shared_ptr<Node> var_def_stmt();
-        std::vector<std::shared_ptr<Node> > expr_list();
+        std::vector<std::shared_ptr<Node> > expr_list(TokenType end = RPAREN);
         std::shared_ptr<Node> expr();
         std::shared_ptr<Node> assign_expr();
         std::shared_ptr<Node> band_expr();

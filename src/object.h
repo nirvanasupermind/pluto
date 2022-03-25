@@ -1,8 +1,8 @@
 #ifndef CONCEPT_H
 #define CONCEPT_H
 
-
 #include <string>
+#include <vector>
 #include <sstream>
 #include <functional>
 
@@ -19,6 +19,7 @@ namespace pluto
     public:
         std::shared_ptr<Env> env;
         std::string string_val;
+        std::vector<std::shared_ptr<Entity> > collection_elems;
         func_t func;
         std::shared_ptr<Entity> super;
 
@@ -26,12 +27,12 @@ namespace pluto
         Object(std::shared_ptr<Env> env);
         Object(std::shared_ptr<Env> env, std::string string_val);
         Object(std::shared_ptr<Env> env, func_t func);
+        Object(std::shared_ptr<Env> env, std::vector<std::shared_ptr<Entity> > collection_elems);
         Object(std::shared_ptr<Env> env, std::shared_ptr<Entity> super);
         bool is_true();
         EntityKind kind();
         std::string to_string();
     };
-
 }
 
 #endif

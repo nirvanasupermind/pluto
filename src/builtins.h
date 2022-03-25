@@ -19,6 +19,7 @@ namespace pluto
         static const std::shared_ptr<Entity> class_class;
         static const std::shared_ptr<Entity> class_object;
         static const std::shared_ptr<Entity> class_string;
+        static const std::shared_ptr<Entity> class_array;
         static const std::shared_ptr<Entity> class_func;
         static const std::shared_ptr<Entity> class_module;
         static const std::shared_ptr<Entity> class_math;
@@ -26,6 +27,7 @@ namespace pluto
         static const std::shared_ptr<Env> class_env;
         static const std::shared_ptr<Env> object_env;
         static const std::shared_ptr<Env> string_env;
+        static const std::shared_ptr<Env> array_env;
         static const std::shared_ptr<Env> func_env;
         static const std::shared_ptr<Env> math_env;
         static const std::shared_ptr<Env> module_env;

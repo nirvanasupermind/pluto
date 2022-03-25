@@ -1,1 +1,2 @@
-System.print(String.charAt());
+var a = { 1, 2, 3 };
+System.print(a);

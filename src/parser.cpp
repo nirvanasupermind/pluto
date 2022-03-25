@@ -58,52 +58,49 @@ namespace pluto
 
     std::shared_ptr<Node> Parser::stmt()
     {
-        if (current().type == VAR)
+        TokenType currenttype = current().type;
+
+        if (currenttype == VAR)
         {
             return var_def_stmt();
         }
 
-        if (current().type == CONST)
+        if (currenttype == CONST)
         {
             return const_def_stmt();
         }
 
-        if (current().type == LCURLY)
-        {
-            return block_stmt();
-        }
-
-        if (current().type == IF)
+        if (currenttype == IF)
         {
             return if_stmt();
         }
 
-        if (current().type == FOR)
+        if (currenttype == FOR)
         {
             return for_stmt();
         }
 
-        if (current().type == WHILE)
+        if (currenttype == WHILE)
         {
             return while_stmt();
         }
 
-        if (current().type == DEF)
+        if (currenttype == DEF)
         {
             return func_def_stmt();
         }
 
-        if (current().type == RETURN)
+        if (currenttype == RETURN)
         {
             return return_stmt();
         }
 
-        if (current().type == CLASS)
+        if (currenttype == CLASS)
         {
             return class_def_stmt();
         }
 
-        if (current().type == MODULE)
+        if (currenttype == MODULE)
         {
             return module_def_stmt();
         }
@@ -473,30 +470,30 @@ namespace pluto
         return std::shared_ptr<Node>(new ConstDefNode(orig_line, key, val));
     }
 
-    std::vector<std::shared_ptr<Node> > Parser::expr_list()
+    std::vector<std::shared_ptr<Node> > Parser::expr_list(TokenType end)
     {
         std::vector<std::shared_ptr<Node> > nodes;
 
-        if (current().type != RPAREN)
+        if (current().type != end)
         {
-            while (current().type != RPAREN)
+            while (current().type != end)
             {
                 Token token = current();
 
                 nodes.push_back(expr());
 
-                if (current().type != COMMA && current().type != RPAREN)
+                if (current().type != COMMA && current().type != end)
                 {
                     raise_error();
                 }
 
-                if (current().type != RPAREN)
+                if (current().type != end)
                 {
                     advance();
                 }
             }
 
-            if (current().type != RPAREN)
+            if (current().type != end)
             {
                 raise_error();
             }
@@ -811,7 +808,6 @@ namespace pluto
 
     std::shared_ptr<Node> Parser::leaf_expr()
     {
-
         Token current_token = current();
 
         if (current_token.type == LPAREN)
@@ -930,7 +926,15 @@ namespace pluto
 
             return std::shared_ptr<Node>(new LambdaNode(current_token.line, args, body));
         }
+        else if (current_token.type == LCURLY)
+        {
+            advance();
 
+            std::vector<std::shared_ptr<Node> > elems = expr_list(RCURLY);            
+            
+            return std::shared_ptr<Node>(new ArrayNode(current_token.line, elems));
+        }
+        
         raise_error();
     }
 }

@@ -16,6 +16,7 @@ namespace pluto
         DOUBLE_NODE,
         CHAR_NODE,
         STRING_NODE,
+        ARRAY_NODE,
         NAME_NODE,
         TRUE_NODE,
         FALSE_NODE,
@@ -124,6 +125,18 @@ namespace pluto
         std::string string_val;
 
         StringNode(int line, std::string string_val);
+
+        NodeKind kind();
+
+        std::string to_string();
+    };
+
+    class ArrayNode : public Node
+    {
+    public:
+        std::vector<std::shared_ptr<Node> > elems;
+
+        ArrayNode(int line, std::vector<std::shared_ptr<Node> > elems);
 
         NodeKind kind();
 

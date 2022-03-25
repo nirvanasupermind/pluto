@@ -29,6 +29,7 @@ void run(std::string filename, std::string text)
     global_env->set("Class", pluto::Builtins::class_class);
     global_env->set("Object", pluto::Builtins::class_object);
     global_env->set("String", pluto::Builtins::class_string);
+    global_env->set("Array", pluto::Builtins::class_array);
     global_env->set("Func", pluto::Builtins::class_func);
     global_env->set("Module", pluto::Builtins::class_module);    
     global_env->set("Math", pluto::Builtins::class_math);

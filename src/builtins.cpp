@@ -14,6 +14,7 @@ namespace pluto
     const std::shared_ptr<Env> Builtins::class_env = ((Object *)(Builtins::class_class.get()))->env;
     const std::shared_ptr<Entity> Builtins::class_object(new Object(std::shared_ptr<Env>(new Env(Builtins::class_env))));
     const std::shared_ptr<Entity> Builtins::class_string(new Object(std::shared_ptr<Env>(new Env(Builtins::class_env)), Builtins::class_object));
+    const std::shared_ptr<Entity> Builtins::class_array(new Object(std::shared_ptr<Env>(new Env(Builtins::class_env)), Builtins::class_object));
     const std::shared_ptr<Entity> Builtins::class_func(new Object(std::shared_ptr<Env>(new Env(Builtins::class_env)), Builtins::class_object));
     const std::shared_ptr<Entity> Builtins::class_module(new Object(std::shared_ptr<Env>(new Env(Builtins::class_env)), Builtins::class_object));
     const std::shared_ptr<Entity> Builtins::class_math(new Object(std::shared_ptr<Env>(new Env(Builtins::class_env)), Builtins::class_object));
@@ -21,6 +22,7 @@ namespace pluto
 
     const std::shared_ptr<Env> Builtins::object_env = ((Object *)(Builtins::class_object.get()))->env;
     const std::shared_ptr<Env> Builtins::string_env = ((Object *)(Builtins::class_string.get()))->env;
+    const std::shared_ptr<Env> Builtins::array_env = ((Object *)(Builtins::class_array.get()))->env;
     const std::shared_ptr<Env> Builtins::func_env = ((Object *)(Builtins::class_func.get()))->env;
     const std::shared_ptr<Env> Builtins::module_env = ((Object *)(Builtins::class_module.get()))->env;
     const std::shared_ptr<Env> Builtins::math_env = ((Object *)(Builtins::class_math.get()))->env;
