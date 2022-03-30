@@ -845,6 +845,11 @@ namespace pluto
             advance();
             return std::shared_ptr<Node>(new StringNode(current_token.line, current_token.string_val));
         }
+        else if (current_token.type == LBRACKET)
+        {
+            advance();
+            return std::shared_ptr<Node>(new ListNode(current_token.line, expr_list(RBRACKET)));
+        }
         else if (current_token.type == NAME)
         {
             advance();

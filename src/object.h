@@ -19,7 +19,7 @@ namespace pluto
     public:
         std::shared_ptr<Env> env;
         std::string string_val;
-        std::vector<std::shared_ptr<Entity> > elems;
+        std::vector<std::shared_ptr<Entity>> elems;
         func_t func;
         std::shared_ptr<Entity> type;
     

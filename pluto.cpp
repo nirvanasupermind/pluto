@@ -39,7 +39,6 @@ void run(std::string filename, std::string text)
     pluto::Builtins::string_env->set("charAt", pluto::Builtins::func_string_charat);
     pluto::Builtins::string_env->set("toString", pluto::Builtins::func_string_tostring);
 
-    pluto::Builtins::list_env->set("constructor", pluto::Builtins::func_list_constructor);
     pluto::Builtins::list_env->set("get", pluto::Builtins::func_list_get);
     pluto::Builtins::list_env->set("set", pluto::Builtins::func_list_set);
     pluto::Builtins::list_env->set("toString", pluto::Builtins::func_list_tostring);

@@ -52,6 +52,8 @@ namespace pluto
             return visit((NilNode *)node, env);
         case STRING_NODE:
             return visit((StringNode *)node, env);
+        case LIST_NODE:
+            return visit((ListNode *)node, env);
         case ADD_NODE:
             return visit((AddNode *)node, env);
         case SUBTRACT_NODE:
@@ -164,6 +166,18 @@ namespace pluto
     std::shared_ptr<Entity> Interpreter::visit(StringNode *node, std::shared_ptr<Env> env)
     {
         return std::shared_ptr<Entity>(new Object(std::shared_ptr<Env>(new Env()), Builtins::class_string, node->string_val));
+    }
+
+    std::shared_ptr<Entity> Interpreter::visit(ListNode *node, std::shared_ptr<Env> env)
+    {
+        std::vector<std::shared_ptr<Entity> > elems;
+
+        for (int i = 0; i < node->elems.size(); i++)
+        {
+            elems.push_back(visit(node->elems[i], env));
+        }
+
+        return std::shared_ptr<Entity>(new Object(std::shared_ptr<Env>(new Env()), Builtins::class_list, elems));
     }
 
     std::shared_ptr<Entity> Interpreter::visit(NameNode *node, std::shared_ptr<Env> env)

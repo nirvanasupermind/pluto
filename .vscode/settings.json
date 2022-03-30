@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "*.toml": "ini",
+        "*.pluto": "coffeescript",
+        "*.vml": "xml",
+        "*.pocketlisp": "clojure",
+        "new": "cpp"
+    }
+}

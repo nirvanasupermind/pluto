@@ -1,14 +1,1 @@
-class Vec {
-    def constructor(x, y) {
-        self.x = x;
-        self.y = y;
-    }
-
-    def magSquared() {
-        return (self.x * self.x) + (self.y * self.y);
-    }
-}
-
-var vec = Vec(2, 3);
-
-println(vec.magSquared()); # 13
+print(2);

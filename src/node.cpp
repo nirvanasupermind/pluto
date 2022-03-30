@@ -98,6 +98,32 @@ namespace pluto
         return "\"" + string_val + "\"";
     }
     
+    ListNode::ListNode(int line, std::vector<std::shared_ptr<Node> > elems)
+    {
+        this->line = line;
+        this->elems = elems;
+    }
+
+    NodeKind ListNode::kind()
+    {
+        return LIST_NODE;
+    }
+
+    std::string ListNode::str()
+    {
+        std::string result = "(list ";
+        for (int i = 0; i < elems.size(); i++)
+        {
+            result += " " + elems[i]->str() + "\n";
+        }
+
+        result.pop_back();
+
+        result += ')';
+
+        return result;
+    }
+
     NameNode::NameNode(int line, std::string name)
     {
         this->line = line;
