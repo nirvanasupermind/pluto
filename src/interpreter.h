@@ -31,7 +31,6 @@ namespace pluto
         std::shared_ptr<Entity> visit(DoubleNode *node, std::shared_ptr<Env> env);
         std::shared_ptr<Entity> visit(CharNode *node, std::shared_ptr<Env> env);
         std::shared_ptr<Entity> visit(StringNode *node, std::shared_ptr<Env> env);
-        std::shared_ptr<Entity> visit(ArrayNode *node, std::shared_ptr<Env> env);
         std::shared_ptr<Entity> visit(NameNode *node, std::shared_ptr<Env> env);
         std::shared_ptr<Entity> visit(TrueNode *node, std::shared_ptr<Env> env);
         std::shared_ptr<Entity> visit(FalseNode *node, std::shared_ptr<Env> env);

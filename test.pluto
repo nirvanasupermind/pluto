@@ -1,2 +1,1 @@
-var a = { 1, 2, 3 };
-System.print(a);
+println("a" + 2);

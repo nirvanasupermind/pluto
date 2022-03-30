@@ -1,6 +1,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <cstdint>
 
 #include "token.h"
 #include "lexer.h"
@@ -263,7 +264,7 @@ namespace pluto
             else
             {
                 std::string s(1, current_char());
-                raise_error("illegal character '" + s + "'");
+                raise_error("invalid character '" + s + "'");
             }
         }
 
@@ -309,7 +310,7 @@ namespace pluto
         }
         else
         {
-            return Token(line, INT, std::stol(val));
+            return Token(line, INT, (std::int32_t)std::stol(val));
         }
     }
 

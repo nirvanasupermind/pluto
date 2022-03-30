@@ -36,7 +36,7 @@ namespace pluto
         }
     }
 
-    Int::Int(long int int_val)
+    Int::Int(std::int32_t int_val)
     {
         this->int_val = int_val;
     }
@@ -51,7 +51,7 @@ namespace pluto
         return INT_ENTITY;
     }
 
-    std::string Int::to_string()
+    std::string Int::str()
     {
         return std::to_string(int_val);
     }
@@ -71,7 +71,7 @@ namespace pluto
         return DOUBLE_ENTITY;
     }
 
-    std::string Double::to_string()
+    std::string Double::str()
     {
         return std::to_string(double_val);
     }
@@ -91,7 +91,7 @@ namespace pluto
         return CHAR_ENTITY;
     }
 
-    std::string Char::to_string()
+    std::string Char::str()
     {
         return std::string(1, char_val);
     }
@@ -111,7 +111,7 @@ namespace pluto
         return BOOL_ENTITY;
     }
 
-    std::string Bool::to_string()
+    std::string Bool::str()
     {
         return (bool_val ? "true" : "false");
     }
@@ -134,7 +134,7 @@ namespace pluto
         return NIL_ENTITY;
     }
 
-    std::string Nil::to_string()
+    std::string Nil::str()
     {
         return "nil";
     }

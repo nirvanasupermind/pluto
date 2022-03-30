@@ -11,7 +11,7 @@ namespace pluto
         this->type = type;
     }
 
-    Token::Token(int line, TokenType type, long int int_val)
+    Token::Token(int line, TokenType type, std::int32_t int_val)
     {
         this->line = line;
         this->type = type;
@@ -47,7 +47,7 @@ namespace pluto
         }
     }
 
-    std::string Token::to_string()
+    std::string Token::str()
     {
         switch (type)
         {

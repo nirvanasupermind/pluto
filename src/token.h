@@ -2,6 +2,7 @@
 #define TOKEN_H
 
 #include <string>
+#include <cstdint>
 
 namespace pluto
 {
@@ -66,19 +67,22 @@ namespace pluto
     public:
         int line;
         TokenType type;
-        long int int_val;
-        double double_val;
-        unsigned char char_val;
+        union
+        {
+            std::int32_t int_val;
+            double double_val;
+            unsigned char char_val;
+        };
         std::string string_val;
         std::string name;
 
         Token(int line, TokenType type);
         Token(int line, TokenType type, unsigned char char_val);
-        Token(int line, TokenType type, long int int_val);
+        Token(int line, TokenType type, std::int32_t int_val);
         Token(int line, TokenType type, double double_val);
         Token(int line, TokenType type, std::string string_val, bool is_name = false);
 
-        std::string to_string();
+        std::string str();
     };
 }
 

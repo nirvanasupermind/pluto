@@ -17,7 +17,7 @@ namespace pluto
 
     void Parser::raise_error()
     {
-        throw std::string(filename + ":" + std::to_string(current().line) + ": invalid syntax (unexpected token '" + current().to_string() + "')");
+        throw std::string(filename + ":" + std::to_string(current().line) + ": syntax error near token '" + current().str() + "'");
     }
 
     void Parser::advance()
@@ -926,15 +926,7 @@ namespace pluto
 
             return std::shared_ptr<Node>(new LambdaNode(current_token.line, args, body));
         }
-        else if (current_token.type == LCURLY)
-        {
-            advance();
 
-            std::vector<std::shared_ptr<Node> > elems = expr_list(RCURLY);            
-            
-            return std::shared_ptr<Node>(new ArrayNode(current_token.line, elems));
-        }
-        
         raise_error();
     }
 }

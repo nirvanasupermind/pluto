@@ -18,7 +18,7 @@ namespace pluto
     {
         if (idx >= data.size())
         {
-            return Nil::NIL;
+            throw std::string(filename + ":" + std::to_string(line) + ": missing argument to function");
         }
 
         return data.at(idx);

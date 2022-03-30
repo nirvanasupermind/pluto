@@ -2,6 +2,7 @@
 #define ENTITY_H
 
 #include <string>
+#include <cstdint>
 
 namespace pluto
 {
@@ -24,21 +25,21 @@ namespace pluto
 
         virtual EntityKind kind() = 0;
         
-        virtual std::string to_string() = 0;
+        virtual std::string str() = 0;
     };
 
     class Int : public Entity
     {
     public:
-        long int int_val;
+        std::int32_t int_val;
 
-        Int(long int int_val);
+        Int(std::int32_t int_val);
 
         bool is_true();
 
         EntityKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class Double : public Entity
@@ -52,7 +53,7 @@ namespace pluto
 
         EntityKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class Char : public Entity
@@ -66,7 +67,7 @@ namespace pluto
 
         EntityKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class Bool : public Entity
@@ -83,7 +84,7 @@ namespace pluto
 
         EntityKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class Nil : public Entity
@@ -97,7 +98,7 @@ namespace pluto
 
         EntityKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 }
 

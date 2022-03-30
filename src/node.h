@@ -4,6 +4,7 @@
 #include <string>
 #include <memory>
 #include <vector>
+#include <cstdint>
 
 #include "token.h"
 
@@ -16,7 +17,6 @@ namespace pluto
         DOUBLE_NODE,
         CHAR_NODE,
         STRING_NODE,
-        ARRAY_NODE,
         NAME_NODE,
         TRUE_NODE,
         FALSE_NODE,
@@ -68,7 +68,7 @@ namespace pluto
 
         virtual NodeKind kind() = 0;
         
-        virtual std::string to_string() = 0;
+        virtual std::string str() = 0;
     };
 
     class ProgramNode : public Node
@@ -80,7 +80,7 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class CharNode : public Node
@@ -92,19 +92,19 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class IntNode : public Node
     {
     public:
-        long int int_val;
+        std::int32_t int_val;
 
-        IntNode(int line, long int int_val);
+        IntNode(int line, std::int32_t int_val);
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class DoubleNode : public Node
@@ -116,7 +116,7 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class StringNode : public Node
@@ -128,19 +128,7 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
-    };
-
-    class ArrayNode : public Node
-    {
-    public:
-        std::vector<std::shared_ptr<Node> > elems;
-
-        ArrayNode(int line, std::vector<std::shared_ptr<Node> > elems);
-
-        NodeKind kind();
-
-        std::string to_string();
+        std::string str();
     };
 
     class NameNode : public Node
@@ -152,7 +140,7 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class TrueNode : public Node
@@ -162,7 +150,7 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class FalseNode : public Node
@@ -172,7 +160,7 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class NilNode : public Node
@@ -182,7 +170,7 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class AddNode : public Node
@@ -195,7 +183,7 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class SubtractNode : public Node
@@ -208,7 +196,7 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class MultiplyNode : public Node
@@ -221,7 +209,7 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class DivideNode : public Node
@@ -234,7 +222,7 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class ModNode : public Node
@@ -247,7 +235,7 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
 
@@ -261,7 +249,7 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class AndNode : public Node
@@ -274,7 +262,7 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class XorNode : public Node
@@ -287,7 +275,7 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class BOrNode : public Node
@@ -300,7 +288,7 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class BAndNode : public Node
@@ -313,7 +301,7 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class BXorNode : public Node
@@ -326,7 +314,7 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class LShiftNode : public Node
@@ -339,7 +327,7 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class RShiftNode : public Node
@@ -352,7 +340,7 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class EENode : public Node
@@ -365,7 +353,7 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class NENode : public Node
@@ -378,7 +366,7 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class LTNode : public Node
@@ -391,7 +379,7 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
     
     class GTNode : public Node
@@ -404,7 +392,7 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class LTENode : public Node
@@ -417,7 +405,7 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class GTENode : public Node
@@ -430,7 +418,7 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class AssignNode : public Node
@@ -443,7 +431,7 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class PlusNode : public Node
@@ -455,7 +443,7 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class MinusNode : public Node
@@ -467,7 +455,7 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class NotNode : public Node
@@ -479,7 +467,7 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class BNotNode : public Node
@@ -491,7 +479,7 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class CallNode : public Node
@@ -504,7 +492,7 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class MemberAccessNode : public Node
@@ -517,7 +505,7 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class VarDefNode : public Node
@@ -530,7 +518,7 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class ConstDefNode : public Node
@@ -543,7 +531,7 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class BlockNode : public Node
@@ -555,7 +543,7 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class IfNode : public Node
@@ -568,7 +556,7 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class IfElseNode : public Node
@@ -582,7 +570,7 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class ForNode : public Node
@@ -597,7 +585,7 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class WhileNode : public Node
@@ -610,7 +598,7 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class FuncDefNode : public Node
@@ -624,7 +612,7 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class ReturnNode : public Node
@@ -636,7 +624,7 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class LambdaNode : public Node
@@ -649,7 +637,7 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class ClassDefNode : public Node
@@ -662,7 +650,7 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 
     class ModuleDefNode : public Node
@@ -675,7 +663,7 @@ namespace pluto
 
         NodeKind kind();
 
-        std::string to_string();
+        std::string str();
     };
 }
 
