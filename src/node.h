@@ -47,7 +47,7 @@ namespace pluto
         NOT_NODE,
         BNOT_NODE,
         CALL_NODE,
-        MEMBER_ACCESS_NODE,
+        FIELD_ACCESS_NODE,
         VAR_DEF_NODE,
         CONST_DEF_NODE,
         BLOCK_NODE,
@@ -508,13 +508,13 @@ namespace pluto
         std::string str();
     };
 
-    class MemberAccessNode : public Node
+    class FieldAccessNode : public Node
     {
     public:
         std::shared_ptr<Node> subject;
         std::string member;
 
-        MemberAccessNode(int line, std::shared_ptr<Node> subject, std::string member);
+        FieldAccessNode(int line, std::shared_ptr<Node> subject, std::string member);
 
         NodeKind kind();
 

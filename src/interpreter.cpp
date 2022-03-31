@@ -102,8 +102,8 @@ namespace pluto
             return visit((BNotNode *)node, env);
         case CALL_NODE:
             return visit((CallNode *)node, env);
-        case MEMBER_ACCESS_NODE:
-            return visit((MemberAccessNode *)node, env);
+        case FIELD_ACCESS_NODE:
+            return visit((FieldAccessNode *)node, env);
         case VAR_DEF_NODE:
             return visit((VarDefNode *)node, env);
         case CONST_DEF_NODE:
@@ -140,7 +140,7 @@ namespace pluto
             return Nil::NIL;
         }
 
-        for (int i = 0; i < node->nodes.size() - 1; i++)
+        for (std::size_t i = 0; i < node->nodes.size() - 1; i++)
         {
             visit(node->nodes.at(i), env);
         }
@@ -172,7 +172,7 @@ namespace pluto
     {
         std::vector<std::shared_ptr<Entity> > elems;
 
-        for (int i = 0; i < node->elems.size(); i++)
+        for (std::size_t i = 0; i < node->elems.size(); i++)
         {
             elems.push_back(visit(node->elems[i], env));
         }
@@ -776,9 +776,9 @@ namespace pluto
 
     std::shared_ptr<Entity> Interpreter::visit(AssignNode *node, std::shared_ptr<Env> env)
     {
-        if (node->key->kind() == MEMBER_ACCESS_NODE)
+        if (node->key->kind() == FIELD_ACCESS_NODE)
         {
-            MemberAccessNode *key_node = std::static_pointer_cast<MemberAccessNode>(node->key).get();
+            FieldAccessNode *key_node = std::static_pointer_cast<FieldAccessNode>(node->key).get();
 
             std::shared_ptr<Entity> subject = visit(key_node->subject, env);
 
@@ -897,16 +897,16 @@ namespace pluto
     {
         std::shared_ptr<Entity> self;
 
-        if (node->callee->kind() == MEMBER_ACCESS_NODE)
+        if (node->callee->kind() == FIELD_ACCESS_NODE)
         {
-            self = visit(std::static_pointer_cast<MemberAccessNode>(node->callee)->subject, env);
+            self = visit(std::static_pointer_cast<FieldAccessNode>(node->callee)->subject, env);
         }
 
         std::shared_ptr<Entity> callee = visit(node->callee, env);
 
         std::vector<std::shared_ptr<Entity> > data;
 
-        for (int i = 0; i < node->args.size(); i++)
+        for (std::size_t i = 0; i < node->args.size(); i++)
         {
             data.push_back(visit(node->args[i], env));
         }
@@ -915,45 +915,42 @@ namespace pluto
 
         args->self = self;
 
-        if (std::static_pointer_cast<Object>((callee))->func)
+        EntityKind calleekind = callee->kind();
+
+        if (calleekind != OBJECT_ENTITY)
+        {
+            raise_error(node->line, "cannot call " + error_desc(calleekind, true));
+        }
+
+        std::shared_ptr<Object> callee_obj = std::static_pointer_cast<Object>(callee);
+
+        if (callee_obj->func)
         {
             return std::static_pointer_cast<Object>(callee)->func(args);
         }
 
-        if (callee->kind() != OBJECT_ENTITY)
+        std::shared_ptr<Entity> obj(new Object(callee_obj->env, callee));
+
+        if (callee_obj->has_func(filename, node->line, "constructor"))
         {
-            raise_error(node->line, callee->str() + " is not callable");
-        }
+            std::shared_ptr<Object> constructor = std::static_pointer_cast<Object>(callee_obj->env->get("constructor"));
 
-        std::shared_ptr<Env> class_env = std::static_pointer_cast<Object>((callee))->env;
+            args->self = obj;
 
-        std::shared_ptr<Entity> obj(new Object(class_env));
-
-        if (class_env->has("constructor"))
-        {
-            std::shared_ptr<Entity> constructor = class_env->get("constructor");
-
-            if (constructor->kind() == OBJECT_ENTITY && (std::static_pointer_cast<Object>((constructor))->func))
-            {
-                std::shared_ptr<Arguments> args(new Arguments(filename, node->line, data));
-
-                args->self = obj;
-
-                std::static_pointer_cast<Object>(constructor)->func(args);
-            }
+            constructor->func(args);
         }
 
         return obj;
     }
 
-    std::shared_ptr<Entity> Interpreter::visit(MemberAccessNode *node, std::shared_ptr<Env> env)
+    std::shared_ptr<Entity> Interpreter::visit(FieldAccessNode *node, std::shared_ptr<Env> env)
     {
         std::shared_ptr<Entity> subject = visit(node->subject, env);
         EntityKind subjectkind = subject->kind();
 
         if (subjectkind != OBJECT_ENTITY)
         {
-            raise_error(node->line, "cannot access a member of " + error_desc(subjectkind, true) + " value");
+            raise_error(node->line, " ? ? ? ? ? ? ? ? ? ? ? " + error_desc(subjectkind, true) + " value");
         }
 
         std::string member = node->member;
@@ -1093,7 +1090,7 @@ namespace pluto
         {
             std::shared_ptr<Env> child_env(new Env(env));
 
-            for (int i = 0; i < node->args.size(); i++)
+            for (std::size_t i = 0; i < node->args.size(); i++)
             {
                 child_env->set(node->args.at(i), args->at(i));
             }
@@ -1103,10 +1100,10 @@ namespace pluto
                 child_env->set("self", args->self);
             }
 
-            BlockNode *block_node = (BlockNode *)node;
-            std::vector<std::shared_ptr<Node> > nodes = std::static_pointer_cast<ProgramNode>(block_node->node)->nodes;
+            std::shared_ptr<BlockNode> body = std::static_pointer_cast<BlockNode>(node->body);
+            std::vector<std::shared_ptr<Node> > nodes = std::static_pointer_cast<ProgramNode>(body->node)->nodes;
 
-            for (int i = 0; i < nodes.size(); i++)
+            for (std::size_t i = 0; i < nodes.size(); i++)
             {
                 std::shared_ptr<Entity> val = visit(nodes.at(i), child_env);
                 if (spotted_return_stmt)
@@ -1137,7 +1134,7 @@ namespace pluto
         {
             std::shared_ptr<Env> child_env(new Env(env));
 
-            for (int i = 0; i < node->args.size(); i++)
+            for (std::size_t i = 0; i < node->args.size(); i++)
             {
                 child_env->set(node->args.at(i), args->at(i));
             }
@@ -1147,10 +1144,10 @@ namespace pluto
                 return visit(node->body, child_env);
             }
 
-            BlockNode *block_node = (BlockNode *)node;
-            std::vector<std::shared_ptr<Node> > nodes = std::static_pointer_cast<ProgramNode>(block_node->node)->nodes;
+            std::shared_ptr<BlockNode> body = std::static_pointer_cast<BlockNode>(node->body);
+            std::vector<std::shared_ptr<Node> > nodes = std::static_pointer_cast<ProgramNode>(body->node)->nodes;
 
-            for (int i = 0; i < nodes.size(); i++)
+            for (std::size_t i = 0; i < nodes.size(); i++)
             {
                 std::shared_ptr<Entity> val = visit(nodes.at(i), child_env);
                 if (spotted_return_stmt)
@@ -1178,12 +1175,11 @@ namespace pluto
 
         visit(body, child_env);
 
-        Object *c1 = new Object(Builtins::class_env, Builtins::class_object);
-        c1->env->map = child_env->map;
+        Object *cls = new Object(std::shared_ptr<Env>(new Env(Builtins::object_env)), Builtins::class_class);
+        cls->name = node->name;
+        cls->env->map = child_env->map;
 
-        std::shared_ptr<Entity> c2(c1);
-
-        env->set(node->name, c2);
+        env->set(node->name, std::shared_ptr<Entity>(cls));
 
         return Nil::NIL;
     }

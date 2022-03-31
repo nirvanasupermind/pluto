@@ -10,14 +10,14 @@
 
 namespace pluto
 {
-    const std::shared_ptr<Entity> Builtins::class_class(new Object());
+    const std::shared_ptr<Entity> Builtins::class_class(new Object("Class"));
     const std::shared_ptr<Env> Builtins::class_env = ((Object *)(Builtins::class_class.get()))->env;
-    const std::shared_ptr<Entity> Builtins::class_object(new Object(std::shared_ptr<Env>(new Env())));
-    const std::shared_ptr<Entity> Builtins::class_string(new Object(std::shared_ptr<Env>(new Env(Builtins::object_env)), Builtins::class_class));
-    const std::shared_ptr<Entity> Builtins::class_list(new Object(std::shared_ptr<Env>(new Env(Builtins::object_env)), Builtins::class_class));
-    const std::shared_ptr<Entity> Builtins::class_func(new Object(std::shared_ptr<Env>(new Env(Builtins::object_env)), Builtins::class_class));
-    const std::shared_ptr<Entity> Builtins::class_module(new Object(std::shared_ptr<Env>(new Env(Builtins::object_env)), Builtins::class_class));
-    const std::shared_ptr<Entity> Builtins::class_math(new Object(std::shared_ptr<Env>(new Env(Builtins::object_env)), Builtins::class_class));
+    const std::shared_ptr<Entity> Builtins::class_object(new Object(std::shared_ptr<Env>(new Env()), "Object"));
+    const std::shared_ptr<Entity> Builtins::class_string(new Object(std::shared_ptr<Env>(new Env(Builtins::object_env)), Builtins::class_class, "String", true));
+    const std::shared_ptr<Entity> Builtins::class_list(new Object(std::shared_ptr<Env>(new Env(Builtins::object_env)), Builtins::class_class, "List", true));
+    const std::shared_ptr<Entity> Builtins::class_func(new Object(std::shared_ptr<Env>(new Env(Builtins::object_env)), Builtins::class_class, "Func", true));
+    const std::shared_ptr<Entity> Builtins::class_module(new Object(std::shared_ptr<Env>(new Env(Builtins::object_env)), Builtins::class_class, "Module", true));
+    const std::shared_ptr<Entity> Builtins::class_math(new Object(std::shared_ptr<Env>(new Env(Builtins::object_env)), Builtins::class_class, "Math", true));
 
     const std::shared_ptr<Env> Builtins::object_env = ((Object *)(Builtins::class_object.get()))->env;
     const std::shared_ptr<Env> Builtins::string_env = ((Object *)(Builtins::class_string.get()))->env;
@@ -26,8 +26,9 @@ namespace pluto
     const std::shared_ptr<Env> Builtins::module_env = ((Object *)(Builtins::class_module.get()))->env;
     const std::shared_ptr<Env> Builtins::math_env = ((Object *)(Builtins::class_math.get()))->env;
 
-    const std::shared_ptr<Entity> Builtins::func_math_acos(new Object(std::shared_ptr<Env>(new Env()), Builtins::class_string, [](std::shared_ptr<Arguments> args)
-                                                                      {
+    const std::shared_ptr<Entity> Builtins::func_math_acos(new Object(
+        std::shared_ptr<Env>(new Env()), Builtins::class_string, [](std::shared_ptr<Arguments> args)
+        {
         std::shared_ptr<Entity> a = args->at(0);
         EntityKind akind = a->kind();
 
@@ -37,10 +38,12 @@ namespace pluto
             return std::shared_ptr<Entity>(new Double(std::acos(std::static_pointer_cast<Double>(a)->double_val)));
         } else {
              throw std::string(args->filename + ":" + std::to_string(args->line) + ": invalid argument #1 to 'acos' (int or double expected, got " + error_desc(akind) + ")");
-        } }));
+        } },
+        "acos"));
 
-    const std::shared_ptr<Entity> Builtins::func_math_asin(new Object(std::shared_ptr<Env>(new Env()), Builtins::class_func, [](std::shared_ptr<Arguments> args)
-                                                                      {
+    const std::shared_ptr<Entity> Builtins::func_math_asin(new Object(
+        std::shared_ptr<Env>(new Env()), Builtins::class_func, [](std::shared_ptr<Arguments> args)
+        {
         std::shared_ptr<Entity> a = args->at(0);
         EntityKind akind = a->kind();
 
@@ -50,10 +53,12 @@ namespace pluto
             return std::shared_ptr<Entity>(new Double(std::asin(std::static_pointer_cast<Double>(a)->double_val)));
         } else {
             throw std::string(args->filename + ":" + std::to_string(args->line) + ": invalid argument #1 to 'asin' (int or double expected, got " + error_desc(akind) + ")");
-        } }));
+        } },
+        "asin"));
 
-    const std::shared_ptr<Entity> Builtins::func_math_atan(new Object(std::shared_ptr<Env>(new Env()), Builtins::class_func, [](std::shared_ptr<Arguments> args)
-                                                                      {
+    const std::shared_ptr<Entity> Builtins::func_math_atan(new Object(
+        std::shared_ptr<Env>(new Env()), Builtins::class_func, [](std::shared_ptr<Arguments> args)
+        {
         std::shared_ptr<Entity> a = args->at(0);
         EntityKind akind = a->kind();
 
@@ -63,10 +68,34 @@ namespace pluto
             return std::shared_ptr<Entity>(new Double(std::atan(std::static_pointer_cast<Double>(a)->double_val)));
         } else {
             throw std::string(args->filename + ":" + std::to_string(args->line) + ": invalid argument #1 to 'atan' (int or double expected, got " + error_desc(akind) + ")");
-        } }));
+        } },
+        "atan"));
 
-    const std::shared_ptr<Entity> Builtins::func_string_charat(new Object(std::shared_ptr<Env>(new Env()), Builtins::class_func, [](std::shared_ptr<Arguments> args)
-                                                                          {
+    const std::shared_ptr<Entity> Builtins::func_math_sqrt(new Object(
+        std::shared_ptr<Env>(new Env()), Builtins::class_func, [](std::shared_ptr<Arguments> args)
+        {
+        std::shared_ptr<Entity> a = args->at(0);
+        EntityKind akind = a->kind();
+
+        if(akind == INT) {
+            return std::shared_ptr<Entity>(new Double(std::sqrt(std::static_pointer_cast<Int>(a)->int_val)));
+        } else if(akind == DOUBLE) {
+            return std::shared_ptr<Entity>(new Double(std::sqrt(std::static_pointer_cast<Double>(a)->double_val)));
+        } else {
+            throw std::string(args->filename + ":" + std::to_string(args->line) + ": invalid argument #1 to 'atan' (int or double expected, got " + error_desc(akind) + ")");
+        } },
+        "sqrt"));
+
+    const std::shared_ptr<Entity> Builtins::func_object_tostring(new Object(
+        std::shared_ptr<Env>(new Env()), Builtins::class_func, [](std::shared_ptr<Arguments> args)
+        { 
+            return std::shared_ptr<Entity>(new Object(std::shared_ptr<Env>(new Env()), Builtins::class_string, args->self->str()));
+        },
+        "toString"));
+
+    const std::shared_ptr<Entity> Builtins::func_string_charat(new Object(
+        std::shared_ptr<Env>(new Env()), Builtins::class_func, [](std::shared_ptr<Arguments> args)
+        {
         std::shared_ptr<Entity> a = args->at(0);
         EntityKind akind = a->kind();
 
@@ -83,13 +112,20 @@ namespace pluto
             return std::shared_ptr<Entity>((new Char(string_val[int_val])));
         } else {
              throw std::string(args->filename + ":" + std::to_string(args->line) + ": invalid argument #1 to 'charAt' (int expected, got " + error_desc(akind) + ")");
-        } }));
+        } },
+        "charAt"));
 
-    const std::shared_ptr<Entity> Builtins::func_string_tostring(new Object(std::shared_ptr<Env>(new Env()), Builtins::class_func, [](std::shared_ptr<Arguments> args)
-                                                                            { return args->self; }));
+    const std::shared_ptr<Entity> Builtins::func_string_tostring(new Object(
+        std::shared_ptr<Env>(new Env()), Builtins::class_func, [](std::shared_ptr<Arguments> args)
+        { 
+            return args->self; 
+        },
+        "toString"));
 
-    const std::shared_ptr<Entity> Builtins::func_list_get(new Object(std::shared_ptr<Env>(new Env()), Builtins::class_func, [](std::shared_ptr<Arguments> args)
-                                                                          {
+
+    const std::shared_ptr<Entity> Builtins::func_list_get(new Object(
+        std::shared_ptr<Env>(new Env()), Builtins::class_func, [](std::shared_ptr<Arguments> args)
+        {
         std::shared_ptr<Entity> a = args->at(0);
         EntityKind akind = a->kind();
 
@@ -106,11 +142,12 @@ namespace pluto
             return elems.at(int_val);
         } else {
              throw std::string(args->filename + ":" + std::to_string(args->line) + ": invalid argument #1 to 'get' (int expected, got " + error_desc(akind) + ")");
-        } }));
+        } },
+        "get"));
 
-
-    const std::shared_ptr<Entity> Builtins::func_list_set(new Object(std::shared_ptr<Env>(new Env()), Builtins::class_func, [](std::shared_ptr<Arguments> args)
-                                                                          {
+    const std::shared_ptr<Entity> Builtins::func_list_set(new Object(
+        std::shared_ptr<Env>(new Env()), Builtins::class_func, [](std::shared_ptr<Arguments> args)
+        {
         std::shared_ptr<Entity> a = args->at(0);
         std::shared_ptr<Entity> b = args->at(1);
         EntityKind akind = a->kind();
@@ -130,11 +167,12 @@ namespace pluto
             return Nil::NIL;
         } else {
              throw std::string(args->filename + ":" + std::to_string(args->line) + ": invalid argument #1 to 'get' (int expected, got " + error_desc(akind) + ")");
-        } }));
+        } },
+        "set"));
 
-
-    const std::shared_ptr<Entity> Builtins::func_list_tostring(new Object(std::shared_ptr<Env>(new Env()), Builtins::class_func, [](std::shared_ptr<Arguments> args)
-                                                                           {
+    const std::shared_ptr<Entity> Builtins::func_list_tostring(new Object(
+        std::shared_ptr<Env>(new Env()), Builtins::class_func, [](std::shared_ptr<Arguments> args)
+        {
         Object *self = ((Object *)args->self.get());
 
         std::string result = "[";
@@ -148,7 +186,7 @@ namespace pluto
 
             if (elem->kind() == OBJECT_ENTITY)
             {
-                s = ((Object *)elem.get())->advanced_str(args);
+                s = ((Object *)elem.get())->advanced_str(args->filename, args->line);
             }
 
             result += s + ", ";
@@ -160,43 +198,48 @@ namespace pluto
         }
 
         result += "]";
-        return std::shared_ptr<Entity>(new Object(std::shared_ptr<Env>(new Env()), Builtins::class_list, result)); }));
+        return std::shared_ptr<Entity>(new Object(std::shared_ptr<Env>(new Env()), Builtins::class_list, result)); },
+        "toString"));
 
-
-    const std::shared_ptr<Entity> Builtins::func_print(new Object(std::shared_ptr<Env>(new Env()), Builtins::class_func, [](std::shared_ptr<Arguments> args)
-                                                                         {
+    const std::shared_ptr<Entity> Builtins::func_print(new Object(
+        std::shared_ptr<Env>(new Env()), Builtins::class_func, [](std::shared_ptr<Arguments> args)
+        {
         std::shared_ptr<Entity> arg = args->at(0);
 
         std::string s = arg->str();
 
         if (arg->kind() == OBJECT_ENTITY)
         {
-            s = std::static_pointer_cast<Object>(arg)->advanced_str(args);
+            s = std::static_pointer_cast<Object>(arg)->advanced_str(args->filename, args->line);
         }
 
         std::cout << s;
 
-        return Nil::NIL; }));
+        return Nil::NIL; },
+        "print"));
 
-    const std::shared_ptr<Entity> Builtins::func_println(new Object(std::shared_ptr<Env>(new Env()), Builtins::class_func, [](std::shared_ptr<Arguments> args)
-                                                                         {
+    const std::shared_ptr<Entity> Builtins::func_println(new Object(
+        std::shared_ptr<Env>(new Env()), Builtins::class_func, [](std::shared_ptr<Arguments> args)
+        {
         std::shared_ptr<Entity> arg = args->at(0);
 
         std::string s = arg->str();
 
         if (arg->kind() == OBJECT_ENTITY)
         {
-            s = std::static_pointer_cast<Object>(arg)->advanced_str(args);
+            s = std::static_pointer_cast<Object>(arg)->advanced_str(args->filename, args->line);
         }
 
         std::cout << s << '\n';
 
-        return Nil::NIL; }));
+        return Nil::NIL; },
+        "println"));
 
-
-    const std::shared_ptr<Entity> Builtins::func_exit(new Object(std::shared_ptr<Env>(new Env()), Builtins::class_func, [](std::shared_ptr<Arguments> args)
-                                                                         {
+    const std::shared_ptr<Entity> Builtins::func_exit(new Object(
+        std::shared_ptr<Env>(new Env()), Builtins::class_func, [](std::shared_ptr<Arguments> args)
+        {
         std::exit(0);
 
-        return Nil::NIL; }));
+        return Nil::NIL; },
+        "exit"));
 }

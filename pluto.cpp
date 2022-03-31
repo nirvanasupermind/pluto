@@ -36,6 +36,8 @@ void run(std::string filename, std::string text)
     global_env->set("print", pluto::Builtins::func_print);
     global_env->set("println", pluto::Builtins::func_println);
 
+    pluto::Builtins::object_env->set("toString", pluto::Builtins::func_object_tostring);
+
     pluto::Builtins::string_env->set("charAt", pluto::Builtins::func_string_charat);
     pluto::Builtins::string_env->set("toString", pluto::Builtins::func_string_tostring);
 
@@ -46,6 +48,7 @@ void run(std::string filename, std::string text)
     pluto::Builtins::math_env->set("acos", pluto::Builtins::func_math_acos);
     pluto::Builtins::math_env->set("asin", pluto::Builtins::func_math_asin);
     pluto::Builtins::math_env->set("atan", pluto::Builtins::func_math_asin);
+    pluto::Builtins::math_env->set("sqrt", pluto::Builtins::func_math_sqrt);
 
     pluto::Interpreter interpreter(filename);
     interpreter.visit(std::move(tree), std::move(global_env));

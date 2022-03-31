@@ -799,7 +799,7 @@ namespace pluto
 
                 advance();
 
-                result = std::shared_ptr<Node>(new MemberAccessNode(result->line, result, prop));
+                result = std::shared_ptr<Node>(new FieldAccessNode(result->line, result, prop));
             }
         }
 

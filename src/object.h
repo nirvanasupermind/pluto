@@ -19,20 +19,25 @@ namespace pluto
     public:
         std::shared_ptr<Env> env;
         std::string string_val;
-        std::vector<std::shared_ptr<Entity>> elems;
+        std::vector<std::shared_ptr<Entity> > elems;
         func_t func;
         std::shared_ptr<Entity> type;
+        std::string name;
     
         Object();
+        Object(std::string name);
         Object(std::shared_ptr<Env> env);
-        Object(std::shared_ptr<Env> env, std::shared_ptr<Entity> type, std::string string_val);
+        Object(std::shared_ptr<Env> env, std::string name);
+        Object(std::shared_ptr<Env> env, std::shared_ptr<Entity> type, std::string string_val, bool is_name = false);
         Object(std::shared_ptr<Env> env, std::shared_ptr<Entity> type, func_t func);
+        Object(std::shared_ptr<Env> env, std::shared_ptr<Entity> type, func_t func, std::string name);
         Object(std::shared_ptr<Env> env, std::shared_ptr<Entity> type, std::vector<std::shared_ptr<Entity> > elems);
         Object(std::shared_ptr<Env> env, std::shared_ptr<Entity> type);
         bool is_true();
         EntityKind kind();
+        bool has_func(std::string filename, int line, std::string name);
         std::string str();
-        std::string advanced_str(std::shared_ptr<Arguments> args);
+        std::string advanced_str(std::string filename, int line);
     };
 }
 

@@ -646,21 +646,21 @@ namespace pluto
         return result;
     }
 
-    MemberAccessNode::MemberAccessNode(int line, std::shared_ptr<Node> subject, std::string member)
+    FieldAccessNode::FieldAccessNode(int line, std::shared_ptr<Node> subject, std::string member)
     {
         this->line = line;
         this->subject = subject;
         this->member = member;
     }
 
-    NodeKind MemberAccessNode::kind()
+    NodeKind FieldAccessNode::kind()
     {
-        return MEMBER_ACCESS_NODE;
+        return FIELD_ACCESS_NODE;
     }
 
-    std::string MemberAccessNode::str()
+    std::string FieldAccessNode::str()
     {
-        return "(member-access " + subject->str() + " " + member + ")";
+        return "(field-access " + subject->str() + " " + member + ")";
     }
 
     BlockNode::BlockNode(int line, std::shared_ptr<Node> node)

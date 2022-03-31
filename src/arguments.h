@@ -18,7 +18,7 @@ namespace pluto
         std::vector<std::shared_ptr<Entity> > data;
         Arguments(std::string filename, int line, std::vector<std::shared_ptr<Entity> > data);
 
-        std::shared_ptr<Entity> at(int idx);
+        std::shared_ptr<Entity> at(int idx, std::string func_name = "(?)");
     };
 }
 

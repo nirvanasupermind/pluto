@@ -10,6 +10,8 @@ namespace pluto
         {
             switch (kind)
             {
+            case NIL_ENTITY:
+                return "nil";
             case INT_ENTITY:
                 return "an int";
             case OBJECT_ENTITY:

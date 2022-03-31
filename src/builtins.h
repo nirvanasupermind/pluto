@@ -30,6 +30,7 @@ namespace pluto
         static const std::shared_ptr<Env> func_env;
         static const std::shared_ptr<Env> math_env;
         static const std::shared_ptr<Env> module_env;
+        static const std::shared_ptr<Entity> func_object_tostring;
         static const std::shared_ptr<Entity> func_string_charat;
         static const std::shared_ptr<Entity> func_string_tostring;
         static const std::shared_ptr<Entity> func_list_get;
@@ -41,6 +42,7 @@ namespace pluto
         static const std::shared_ptr<Entity> func_math_cos;
         static const std::shared_ptr<Entity> func_math_sin;
         static const std::shared_ptr<Entity> func_math_tan;
+        static const std::shared_ptr<Entity> func_math_sqrt;
         static const std::shared_ptr<Entity> func_print;
         static const std::shared_ptr<Entity> func_println;    
         static const std::shared_ptr<Entity> func_exit;
