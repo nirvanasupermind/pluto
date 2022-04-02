@@ -1,6 +1,0 @@
-{
-    "files.associations": {
-        "*.pluto": "coffeescript",
-        "memory": "cpp"
-    }
-}
