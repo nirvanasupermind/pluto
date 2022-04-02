@@ -9,6 +9,6 @@ class Vec {
     }
 }
 
-var vec = Vec(2, 3);
+var vec = Vec(2.0, 3.0);
 
-println(vec.magnitude()); # 13
+println(vec.magnitude()); # => 13.0
