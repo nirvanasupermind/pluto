@@ -4,8 +4,8 @@ def fac(x) {
     if(x == 0.0) {
         return 1.0;
     } else {
-        return x * fact(x - 1.0);
+        return x * fac(x - 1.0);
     }
 }
 
-println(fact(5.0)); # => 120.0
+println(fac(5.0)); # => 120.0

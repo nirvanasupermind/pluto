@@ -33,6 +33,7 @@ namespace pluto
         static const std::shared_ptr<Entity> func_object_tostring;
         static const std::shared_ptr<Entity> func_string_charat;
         static const std::shared_ptr<Entity> func_string_first;
+        static const std::shared_ptr<Entity> func_string_indexof;
         static const std::shared_ptr<Entity> func_string_last;
         static const std::shared_ptr<Entity> func_string_length;
         static const std::shared_ptr<Entity> func_string_tostring;

@@ -1,6 +1,6 @@
-# Pluto
+# Pluto 0.1.0
 Work-in-progress C++ interpreter for the Pluto programming language.
 
 Once completed, Pluto will be a lightweight, dynamic programming language with multithreading support.
 
-Examples  can be found in the `examples` folder.
+Examples can be found in the `examples` folder.
