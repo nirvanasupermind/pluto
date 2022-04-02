@@ -7,4 +7,4 @@ Examples can be found in the `examples` folder.
 
 # Status
 
-Pluto is currently on release 0.1, an incomplete pre-release which does not support features such as multithreading and inheritance. In the next release, Pluto's interpreter is planned to be reset and rebuilt from the ground-up and these features will be added.
+Pluto is currently on release 0.1, an incomplete pre-release which lacks a large standard library and does not support features such as multithreading and inheritance. In the next release, Pluto's interpreter is planned to be reset and rebuilt from the ground-up and the aftermentioned features will be added.
