@@ -1,3 +1,5 @@
+# Compute factorial of x
+
 def fac(x) {
     if(x == 0.0) {
         return 1.0;
@@ -6,4 +8,4 @@ def fac(x) {
     }
 }
 
-println(fact(5.0)); # 120.0
+println(fact(5.0)); # => 120.0

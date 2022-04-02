@@ -4,13 +4,13 @@ var list = ["a", "b", "c"];
 
 var first = Thread(lambda () {
     for(var i = 0; i < list.size(); i = i + 1;) {
-        println(first.hashCode(), " ", list.get(i), "\n");
+        println(list.get(i));
     }
 });
 
 var second = Thread(lambda () {
     for(var i = 0; i < list.size(); i = i + 1;) {
-        println(second.hashCode(), " ", list.get(i), "\n");
+        println(list.get(i));
     }
 });
 
