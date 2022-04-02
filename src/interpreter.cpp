@@ -904,17 +904,6 @@ namespace pluto
 
         std::shared_ptr<Entity> callee = visit(node->callee, env);
 
-        std::vector<std::shared_ptr<Entity> > data;
-
-        for (std::size_t i = 0; i < node->args.size(); i++)
-        {
-            data.push_back(visit(node->args[i], env));
-        }
-
-        std::shared_ptr<Arguments> args(new Arguments(filename, node->line, data));
-
-        args->self = self;
-
         EntityKind calleekind = callee->kind();
 
         if (calleekind != OBJECT_ENTITY)
@@ -922,7 +911,18 @@ namespace pluto
             raise_error(node->line, "cannot call " + error_desc(calleekind, true));
         }
 
+        std::vector<std::shared_ptr<Entity> > data;
+
+        for (std::size_t i = 0; i < node->args.size(); i++)
+        {
+            data.push_back(visit(node->args[i], env));
+        }
+
         std::shared_ptr<Object> callee_obj = std::static_pointer_cast<Object>(callee);
+
+        std::shared_ptr<Arguments> args(new Arguments(filename, node->line, data, callee_obj->name));
+
+        args->self = self;
 
         if (callee_obj->func)
         {
@@ -939,6 +939,8 @@ namespace pluto
 
             constructor->func(args);
         }
+
+        // raise_error(node->line, "cannot find constructor of class '"+callee_obj->name+"'");
 
         return obj;
     }
@@ -1115,7 +1117,7 @@ namespace pluto
             return Nil::NIL;
         };
 
-        std::shared_ptr<Entity> obj(new Object(std::shared_ptr<Env>(new Env()), Builtins::class_func, new_func));
+        std::shared_ptr<Entity> obj(new Object(std::shared_ptr<Env>(new Env()), Builtins::class_func, new_func, node->name));
 
         env->set(node->name, obj);
 

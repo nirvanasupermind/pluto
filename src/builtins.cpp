@@ -12,14 +12,14 @@ namespace pluto
 {
     const std::shared_ptr<Entity> Builtins::class_class(new Object("Class"));
     const std::shared_ptr<Env> Builtins::class_env = ((Object *)(Builtins::class_class.get()))->env;
-    const std::shared_ptr<Entity> Builtins::class_object(new Object(std::shared_ptr<Env>(new Env()), "Object"));
+    const std::shared_ptr<Entity> Builtins::class_object(new Object(std::shared_ptr<Env>(new Env()), Builtins::class_class, "Object", true));
+    const std::shared_ptr<Env> Builtins::object_env = ((Object *)(Builtins::class_object.get()))->env;
     const std::shared_ptr<Entity> Builtins::class_string(new Object(std::shared_ptr<Env>(new Env(Builtins::object_env)), Builtins::class_class, "String", true));
     const std::shared_ptr<Entity> Builtins::class_list(new Object(std::shared_ptr<Env>(new Env(Builtins::object_env)), Builtins::class_class, "List", true));
     const std::shared_ptr<Entity> Builtins::class_func(new Object(std::shared_ptr<Env>(new Env(Builtins::object_env)), Builtins::class_class, "Func", true));
     const std::shared_ptr<Entity> Builtins::class_module(new Object(std::shared_ptr<Env>(new Env(Builtins::object_env)), Builtins::class_class, "Module", true));
     const std::shared_ptr<Entity> Builtins::class_math(new Object(std::shared_ptr<Env>(new Env(Builtins::object_env)), Builtins::class_class, "Math", true));
 
-    const std::shared_ptr<Env> Builtins::object_env = ((Object *)(Builtins::class_object.get()))->env;
     const std::shared_ptr<Env> Builtins::string_env = ((Object *)(Builtins::class_string.get()))->env;
     const std::shared_ptr<Env> Builtins::list_env = ((Object *)(Builtins::class_list.get()))->env;
     const std::shared_ptr<Env> Builtins::func_env = ((Object *)(Builtins::class_func.get()))->env;
@@ -115,6 +115,24 @@ namespace pluto
         } },
         "charAt"));
 
+    const std::shared_ptr<Entity> Builtins::func_string_first(new Object(
+        std::shared_ptr<Env>(new Env()), Builtins::class_func, [](std::shared_ptr<Arguments> args)
+        {
+        return std::shared_ptr<Entity>(new Char(std::static_pointer_cast<Object>(args->self)->string_val.front())); },
+        "first"));
+
+    const std::shared_ptr<Entity> Builtins::func_string_last(new Object(
+        std::shared_ptr<Env>(new Env()), Builtins::class_func, [](std::shared_ptr<Arguments> args)
+        {
+        return std::shared_ptr<Entity>(new Char(std::static_pointer_cast<Object>(args->self)->string_val.back())); },
+        "last"));
+
+    const std::shared_ptr<Entity> Builtins::func_string_length(new Object(
+        std::shared_ptr<Env>(new Env()), Builtins::class_func, [](std::shared_ptr<Arguments> args)
+        {
+        return std::shared_ptr<Entity>(new Int(std::static_pointer_cast<Object>(args->self)->string_val.size())); },
+        "length"));
+
     const std::shared_ptr<Entity> Builtins::func_string_tostring(new Object(
         std::shared_ptr<Env>(new Env()), Builtins::class_func, [](std::shared_ptr<Arguments> args)
         { 
@@ -152,8 +170,9 @@ namespace pluto
         std::shared_ptr<Entity> b = args->at(1);
         EntityKind akind = a->kind();
 
-        std::vector<std::shared_ptr<Entity> > elems = std::static_pointer_cast<Object>(args->self)->elems;
-        int size = elems.size();
+        std::shared_ptr<Object> self = std::static_pointer_cast<Object>(args->self);
+
+        int size = self->elems.size();
 
         if(akind == INT) {
             int int_val = std::static_pointer_cast<Int>(a)->int_val;
@@ -162,20 +181,32 @@ namespace pluto
                 throw std::string(args->filename + ":" + std::to_string(args->line) + ": list index out of range");
             }
 
-            elems[int_val] = b;
-            std::cout << elems[int_val]->str() << '\n';
+            self->elems[int_val] = b;
             return Nil::NIL;
         } else {
              throw std::string(args->filename + ":" + std::to_string(args->line) + ": invalid argument #1 to 'get' (int expected, got " + error_desc(akind) + ")");
         } },
         "set"));
 
+
+    const std::shared_ptr<Entity> Builtins::func_list_size(new Object(
+        std::shared_ptr<Env>(new Env()), Builtins::class_func, [](std::shared_ptr<Arguments> args)
+        {
+        return std::shared_ptr<Entity>(new Int(std::static_pointer_cast<Object>(args->self)->elems.size())); },
+        "size"));
+
+
     const std::shared_ptr<Entity> Builtins::func_list_tostring(new Object(
         std::shared_ptr<Env>(new Env()), Builtins::class_func, [](std::shared_ptr<Arguments> args)
         {
-        Object *self = ((Object *)args->self.get());
+        std::shared_ptr<Object> self = std::static_pointer_cast<Object>(args->self);
+
+        if(self->elems.size() == 0) {
+            return std::shared_ptr<Entity>(new Object(std::shared_ptr<Env>(new Env()), Builtins::class_list, "[]"));
+        }
 
         std::string result = "[";
+
 
         for (int i = 0; i < self->elems.size(); i++)
         {
@@ -192,10 +223,8 @@ namespace pluto
             result += s + ", ";
         }
 
-        if(self->elems.size() > 0) {
-            result.pop_back();
-            result.pop_back();
-        }
+        result.pop_back();
+        result.pop_back();
 
         result += "]";
         return std::shared_ptr<Entity>(new Object(std::shared_ptr<Env>(new Env()), Builtins::class_list, result)); },

@@ -39,10 +39,14 @@ void run(std::string filename, std::string text)
     pluto::Builtins::object_env->set("toString", pluto::Builtins::func_object_tostring);
 
     pluto::Builtins::string_env->set("charAt", pluto::Builtins::func_string_charat);
+    pluto::Builtins::string_env->set("first", pluto::Builtins::func_string_first);
+    pluto::Builtins::string_env->set("last", pluto::Builtins::func_string_last);
+    pluto::Builtins::string_env->set("length", pluto::Builtins::func_string_length);
     pluto::Builtins::string_env->set("toString", pluto::Builtins::func_string_tostring);
 
     pluto::Builtins::list_env->set("get", pluto::Builtins::func_list_get);
     pluto::Builtins::list_env->set("set", pluto::Builtins::func_list_set);
+    pluto::Builtins::list_env->set("size", pluto::Builtins::func_list_size);
     pluto::Builtins::list_env->set("toString", pluto::Builtins::func_list_tostring);
 
     pluto::Builtins::math_env->set("acos", pluto::Builtins::func_math_acos);
@@ -52,8 +56,6 @@ void run(std::string filename, std::string text)
 
     pluto::Interpreter interpreter(filename);
     interpreter.visit(std::move(tree), std::move(global_env));
-    
-    // std::cout << entity->to_string() << '\n';
 }
 
 int main(int argc, char **argv)

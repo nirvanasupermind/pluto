@@ -1,14 +1,1 @@
-class Vec {
-    def constructor(x, y) {
-        self.x = x;
-        self.y = y;
-    }
-
-    def magnitude() {
-        return Math.sqrt(self.x * self.x + self.y * self.y);
-    }
-}
-
-var vec = Vec(3, 4);
-
-println(vec.magnitude()); # 5
+println([1, 2, 3].get(0));

@@ -32,9 +32,13 @@ namespace pluto
         static const std::shared_ptr<Env> module_env;
         static const std::shared_ptr<Entity> func_object_tostring;
         static const std::shared_ptr<Entity> func_string_charat;
+        static const std::shared_ptr<Entity> func_string_first;
+        static const std::shared_ptr<Entity> func_string_last;
+        static const std::shared_ptr<Entity> func_string_length;
         static const std::shared_ptr<Entity> func_string_tostring;
         static const std::shared_ptr<Entity> func_list_get;
-        static const std::shared_ptr<Entity> func_list_set;        
+        static const std::shared_ptr<Entity> func_list_set;  
+        static const std::shared_ptr<Entity> func_list_size;    
         static const std::shared_ptr<Entity> func_list_tostring;
         static const std::shared_ptr<Entity> func_math_acos;
         static const std::shared_ptr<Entity> func_math_asin;

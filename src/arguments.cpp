@@ -14,7 +14,15 @@ namespace pluto
         this->data = data;
     }
 
-    std::shared_ptr<Entity> Arguments::at(int idx, std::string func_name)
+    Arguments::Arguments(std::string filename, int line, std::vector<std::shared_ptr<Entity> > data, std::string func_name)
+    {
+        this->filename = filename;
+        this->line = line;
+        this->data = data; 
+        this->func_name = func_name;
+    }
+
+    std::shared_ptr<Entity> Arguments::at(int idx)
     {
         if (idx >= data.size())
         {

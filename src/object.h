@@ -33,6 +33,7 @@ namespace pluto
         Object(std::shared_ptr<Env> env, std::shared_ptr<Entity> type, func_t func, std::string name);
         Object(std::shared_ptr<Env> env, std::shared_ptr<Entity> type, std::vector<std::shared_ptr<Entity> > elems);
         Object(std::shared_ptr<Env> env, std::shared_ptr<Entity> type);
+        std::shared_ptr<Entity> get(std::string key);
         bool is_true();
         EntityKind kind();
         bool has_func(std::string filename, int line, std::string name);

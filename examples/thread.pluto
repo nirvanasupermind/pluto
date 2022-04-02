@@ -1,16 +1,16 @@
-# This does not run yet
+# This does not run yet.
 
-var list = [ "a", "b", "c" ];
+var list = ["a", "b", "c"];
 
 var first = Thread(lambda () {
     for(var i = 0; i < list.size(); i = i + 1;) {
-        Stdout.write(first.hashCode(), " ", list.get(i), "\n");
+        println(first.hashCode(), " ", list.get(i), "\n");
     }
 });
 
 var second = Thread(lambda () {
     for(var i = 0; i < list.size(); i = i + 1;) {
-        Stdout.write(second.hashCode(), " ", list.get(i), "\n");
+        println(second.hashCode(), " ", list.get(i), "\n");
     }
 });
 

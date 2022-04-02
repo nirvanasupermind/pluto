@@ -26,7 +26,6 @@ namespace pluto
         name = "(?)";
     }
 
-
     Object::Object(std::shared_ptr<Env> env, std::string name)
     {
         this->env = env;
@@ -40,13 +39,16 @@ namespace pluto
         name = "(?)";
     }
 
-    Object::Object(std::shared_ptr<Env> env, std::shared_ptr<Entity> type, std::string string_val,  bool is_name)
+    Object::Object(std::shared_ptr<Env> env, std::shared_ptr<Entity> type, std::string string_val, bool is_name)
     {
         this->env = env;
         this->type = type;
-        if(is_name) {
+        if (is_name)
+        {
             this->name = string_val;
-        } else {
+        }
+        else
+        {
             this->string_val = string_val;
             name = "(?)";
         }
@@ -91,7 +93,7 @@ namespace pluto
     {
         std::shared_ptr<Env> my_env = nullptr;
 
-        if (type != nullptr && type->kind() == OBJECT_ENTITY)
+        if (type.get() != nullptr && type->kind() == OBJECT_ENTITY)
         {
             std::shared_ptr<Object> type_obj = std::static_pointer_cast<Object>(type);
             if (type_obj->env->has(name))
@@ -118,6 +120,25 @@ namespace pluto
         return false;
     }
 
+    std::shared_ptr<Entity> Object::get(std::string key)
+    {
+        // passes in the function f
+        // goes to if clause
+        // if clause makes a call to the parent class
+        // passes in the class 'Func', whose instances are functions
+        // goes to else clause
+        // else clause makes a call to env->get
+
+        if (!env->has(key) && type.get() != nullptr)
+        {
+            return std::static_pointer_cast<Object>(type)->get(key);
+        }
+        else
+        {
+            return env->get(key);
+        }
+    }
+
     std::string Object::str()
     {
         std::stringstream oss;
@@ -132,7 +153,7 @@ namespace pluto
         std::shared_ptr<Arguments> tostring_args(new Arguments(filename, line, std::vector<std::shared_ptr<Entity> >()));
         tostring_args->self = shared_from_this();
 
-        std::shared_ptr<Entity> res = std::static_pointer_cast<Object>(env->get("toString"))->func(tostring_args);
+        std::shared_ptr<Entity> res = std::static_pointer_cast<Object>(get("toString"))->func(tostring_args);
 
         if (res->kind() == OBJECT_ENTITY)
         {

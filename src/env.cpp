@@ -26,7 +26,7 @@ namespace pluto
     {
         if (map.count(key) == 0 && parent.get() != nullptr)
         {
-            return parent.get()->get(key);
+            return parent->get(key);
         }
         else
         {
