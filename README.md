@@ -1,5 +1,4 @@
 [<img src="pluto.png" width="50" alt="Pluto symbol"/>](pluto.png)
-<br />
 # Pluto 1.0.0-alpha1
 
 Work-in-progress C++ interpreter for the Pluto programming language.
