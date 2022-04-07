@@ -1,7 +1,0 @@
-# Compute numerical derivative of a given function f at a point x
-
-def deriv(delta, f, x) {
-    return (f(x + delta) - f(x - delta)) / (2 * delta); 
-}
-
-println(deriv(0.001, lambda (x) x * x, 10.0)); # 20.0
