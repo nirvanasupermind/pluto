@@ -1,4 +1,4 @@
-[<img src="pluto.png" width="250" alt="Pluto symbol"/>](pluto.png)
+[<img src="pluto.png" width="50" alt="Pluto symbol"/>](pluto.png)
 <br />
 v1.0.0-alpha1
 <hr />
