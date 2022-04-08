@@ -30,13 +30,13 @@ int main()
 
             while (true)
             {
-                pluto::Token token = lexer.next();
+                pluto::Token token = lexer.gettok();
                 if (token.type == pluto::TokenType::EOF_)
                 {
                     break;
                 }
 
-                std::cout << token.str() << '\n';
+                std::cout << token.repr() << '\n';
             }
         }
         catch (const std::string &e)

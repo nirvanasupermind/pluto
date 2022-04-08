@@ -7,28 +7,27 @@
 
 namespace pluto
 {
-    
+    // Token - String in the program with an assigned type or meaning
+
     enum class TokenType
     {
         INT,
         DOUBLE,
-        STRING,
-        IGNORE,
+        SYMBOL,
         EOF_
     };
-
-    // Token - String in the program with an assigned type or meaning,
-    // such as a numeric or string literal.
 
     class Token
     {
     public:
         Location loc;
         TokenType type;
-        std::string lexeme{};
-        Token();
+        std::string lexeme;
+
         Token(const Location &loc, const TokenType &type, const std::string &lexeme);
-        std::string str() const;
+
+        bool matches(const TokenType &type, const std::string &lexeme) const;
+        std::string repr() const;
     };
 
 } // namespace pluto

@@ -9,7 +9,12 @@ namespace pluto
     {
     }
 
-    std::string Location::str() const
+    Location Location::clone() const
+    {
+        return Location(idx, line, col);
+    }
+
+    std::string Location::repr() const
     {
         return std::to_string(line) + ":" + std::to_string(col);
     }

@@ -1,72 +1,86 @@
-#include <string>
-#include <vector>
-#include <map>
-#include <regex>
-
 #include "location.h"
 #include "token.h"
 #include "lexer.h"
 
 namespace pluto
 {
+
     Lexer::Lexer(const std::string &text)
-        : text(text), loc(Location(-1, 1, 0)), current_char('\0')
+        : text(text), loc(Location(0, 1, 0)), current(0)
     {
         advance();
     }
 
-    void Lexer::raise_error(const std::string &msg) const
+    void Lexer::advance()
     {
-        throw std::string(loc.str() + ": " + msg);
-    }
-
-    void Lexer::advance(int amount)
-    {
-        for (int i = 0; i < amount; i++)
+        if (loc.idx < text.length())
         {
-            current_char = text[++loc.idx];
-
-            if (current_char == '\n')
-            {
-                loc.line++;
-            }
-
-            loc.col++;
+            current = text.at(loc.idx++);
+        }
+        else
+        {
+            current = EOF; 
         }
     }
 
-    Token Lexer::next()
+    Token Lexer::gettok()
     {
-        Location orig_loc = loc;
-
-        if (loc.idx >= text.length())
+        if (current == EOF)
         {
-            return Token(orig_loc, TokenType::EOF_, "");
+            // EOF.
+            return Token(loc, TokenType::EOF_, "EOF");
+        }
+        
+        if (WHITESPACE.find(current) != std::string::npos || NEWLINE.find(current) != std::string::npos)
+        {
+            // Whitespace or newline.
+
+            advance();
+            return gettok();
         }
 
-        for (const auto &pair : regexes)
+        if (current == '#')
         {
-            // Extract the regex for this token type and test it on the source code
+            // Comment until end of line.
+            
+            do
+                advance();
+            while (current != EOF && NEWLINE.find(current) == std::string::npos);
 
-            std::string substr = text.substr(loc.idx);
-            std::regex regex(pair.first);
-            TokenType type = pair.second;
+            if (current != EOF)
+                return gettok();
+        }
 
-            std::smatch sm;
-            std::regex_search(substr, sm, regex);
+        if (isdigit(current) || current == '.')
+        {
+            int dot_count = 0;
+            Location original_loc = loc.clone();
 
-            if (sm.empty())
+            // Number: [0-9.]+
+            std::string result;
+            do
             {
-                continue;
-            }
+                if(current == '.') 
+                    if(++dot_count >= 2)
+                        break;
 
-            advance(sm.str().length());
+                result += current;
+                advance();
+            } while (isdigit(current) || current == '.');
 
-            return Token(orig_loc, type, sm.str());
+            if (dot_count == 0)
+                return Token(original_loc, TokenType::INT, result);     
+                      
+            return Token(original_loc, TokenType::DOUBLE, result);
         }
 
-        raise_error("illegal character: " + std::string(1, current_char));
-        return Token();
+        // Anything else is just a symbol.
+
+        Token result = Token(loc, TokenType::SYMBOL, std::string(1, current));
+
+        advance();
+
+        return result;
     }
 
 } // namespace pluto

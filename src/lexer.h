@@ -1,38 +1,28 @@
 #ifndef LEXER_H
 #define LEXER_H
 
-#include <string>
-#include <vector>
-#include <map>
-#include <regex>
-
-#include "token.h"
 #include "location.h"
+#include "token.h"
 
 namespace pluto
 {
-    std::map<std::string, TokenType> regexes{
-        {"^[0-9]+(?![0-9.])", TokenType::INT},
-        {"^[0-9]+\\.[0-9]+", TokenType::DOUBLE},
-        {"^\"[^\"]*\"", TokenType::STRING},
-        {"^\\s+", TokenType::IGNORE}
-    };
+    const std::string WHITESPACE = " \t";
+    const std::string NEWLINE = "\n\r";
 
-    // Lexer - Converts the source code into a stream of tokens.
+    // Lexer - Converts the source code into a stream of tokens
 
     class Lexer
     {
-    private:
+    public:
         std::string text{};
         Location loc;
-        char current_char;
+        char current;
 
-    public:
         Lexer(const std::string &text);
-        void raise_error(const std::string &msg) const;
-        void advance(int amount = 1);
-        Token next();
-    };
-} // namespace pluto
 
-#endif // LEXER_H
+        void advance();
+        Token gettok();
+    };
+}
+
+#endif

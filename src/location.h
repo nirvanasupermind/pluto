@@ -5,7 +5,7 @@
 
 namespace pluto
 {
-    // Location - Index, line and column in the program.
+    // Location - Stores the index, line and column of a character in the source code. Useful for error messages.
 
     class Location
     {
@@ -14,7 +14,9 @@ namespace pluto
         int line;
         int col;
         Location(int idx, int line, int col);
-        std::string str() const;
+        ~Location() = default;
+        Location clone() const; // Used in lexer
+        std::string repr() const;
     };
 
 } // namespace pluto
