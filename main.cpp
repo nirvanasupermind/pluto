@@ -1,12 +1,9 @@
 #include <iostream>
 #include <string>
 
-#include "tokens.cpp"
-#include "lexer.cpp"
-#include "nodes.cpp"
-#include "parser.cpp"
-#include "values.cpp"
-#include "interpreter.cpp"
+#include "src/location.cpp"
+#include "src/token.cpp"
+#include "src/lexer.cpp"
 
 int main()
 {
@@ -30,24 +27,17 @@ int main()
             }
 
             pluto::Lexer lexer(text);
-            std::vector<pluto::Token> tokens = lexer.generate_tokens();
 
-            // pluto::print_tokens(tokens);
-
-            pluto::Parser parser(tokens);
-            std::shared_ptr<pluto::Node> tree = parser.parse();
-
-            if (!tree)
+            while (true)
             {
-                continue;
+                pluto::Token token = lexer.next();
+                if (token.type == pluto::TokenType::EOF_)
+                {
+                    break;
+                }
+
+                std::cout << token.str() << '\n';
             }
-
-            // std::cout << tree->str() << '\n';
-
-            pluto::Interpreter interpreter;
-            pluto::Number value = interpreter.visit(tree);
-
-            std::cout << value.str() << '\n';
         }
         catch (const std::string &e)
         {
