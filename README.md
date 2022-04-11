@@ -1,1 +1,1 @@
-This project is an older version of volcano.
+This project is an older version of [Eris](https://github.com/nirvanasupermind/eris).
